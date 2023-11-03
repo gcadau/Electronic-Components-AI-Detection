@@ -1,7 +1,7 @@
 # Electronic-Components-AI-Detection
 AI for electronic components detection. 
 
-Master thesis projecy. 
+Master thesis project. 
 
 Msc Data Science and Engineering @Polito. 
 
