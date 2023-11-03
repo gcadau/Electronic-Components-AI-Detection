@@ -1,5 +1,5 @@
 # Electronic-Components-AI-Detection
-AI for electronic components detection. 
+Artificial Intelligence for electronic components detection. 
 
 Master thesis project. 
 
