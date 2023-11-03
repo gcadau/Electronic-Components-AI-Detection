@@ -44,7 +44,7 @@ class DataImage(Dataset):
         self.data_path = data_path
         self.data = []
         if os.path.exists(self.data_path):
-            file_list = os.listdir(self.data_path)
+            file_list = [os.path.join(self.data_path, f) for f in os.listdir(self.data_path)]
             for f in file_list:
                 try:
                     image = Image.open(f)
@@ -101,6 +101,8 @@ class DataImage(Dataset):
         split = f"Split: {self.split}"
         trans = f"Transform used: {str(self.transform)}"
         for s in (dataset, number, loc, split, trans):
+            if s != dataset:
+                s = '\t' + s
             repr += s + "\n"
         return repr
 
