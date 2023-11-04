@@ -1,13 +1,6 @@
 import os
-import torch
-import numpy as np
-import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import Dataset
-from PIL import Image
-from PIL import Image, UnidentifiedImageError
 from torchvision import transforms
-from torch.utils.data import DataLoader
 from PIL import Image, UnidentifiedImageError
 
 
@@ -40,8 +33,11 @@ class NotCorrectImageFormatException(Exception):
 class DataImage(Dataset):
     def __init__(self, data_path="./data", split="train", transform=None, normalize=False, mean=None, std=None,
                  name=None):
+
+        self.__format = None
         self.dataset_name = name
         self.data_path = data_path
+
         self.data = []
         if os.path.exists(self.data_path):
             file_list = [os.path.join(self.data_path, f) for f in os.listdir(self.data_path)]
@@ -49,6 +45,8 @@ class DataImage(Dataset):
                 try:
                     image = Image.open(f)
                     self.data.append(f)
+                    if self.__format is None:
+                        self.__format = image.mode
                 except UnidentifiedImageError:
                     raise NotCorrectImageFormatException(f)
         else:
@@ -62,30 +60,36 @@ class DataImage(Dataset):
 
         if transform is not None:
             self.transform = transforms.Compose([
-                transform,
-                transforms.PILToTensor()
+                *transform.transforms,
+                transforms.ToTensor()
             ])
         else:
-            self.transform = transforms.PILToTensor()
+            self.transform = transforms.Compose([
+                transforms.PILToTensor()
+            ])
 
         if normalize:
             if mean is None or std is None:
                 raise NotCorrectNormalizationException()
+            if mean == 'auto':
+                mean = self.__set_normalization_parameters("mean")
+            if std == 'auto':
+                std = self.__set_normalization_parameters("std")
             self.transform = transforms.Compose([
-                self.transform,
+                *self.transform.transforms,
                 transforms.Normalize(mean=mean, std=std)
             ])
 
     def __len__(self):
         return len(self.data)
 
-    def __get_item__(self, index):
+    def __getitem__(self, index):
         # GESTIRE LABELS E SPLIT.
         file = self.data[index]
         img = Image.open(file)
         try:
             lbl = self.labels[index]
-        except IndexError:
+        except TypeError:
             lbl = None
 
         if self.transform is not None:
@@ -118,3 +122,27 @@ class DataImage(Dataset):
 
         # show images
         # imshow(torchvision.utils.make_grid(img_tensor))
+
+    def __set_normalization_parameters(self, param):
+        normalization_values = \
+        {
+            "RGB":
+            {
+                "mean": [0.485, 0.456, 0.406],
+                "std": [0.229, 0.224, 0.225]
+            },
+            "Grayscale":
+            {
+                "mean": [0.5],
+                "std": [0.5]
+            },
+            "RGBA":
+            {
+                "mean": [0.485, 0.456, 0.406, 0.0],
+                "std": [0.229, 0.224, 0.225, 1.0]
+            }
+        }
+        try:
+            return normalization_values[self.__format][param]
+        except KeyError:
+            return [0.5, 0.5, 0.5]
