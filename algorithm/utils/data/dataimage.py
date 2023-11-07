@@ -32,9 +32,9 @@ class NotCorrectImageFormatException(Exception):
 
 class DataImage(Dataset):
     def __init__(self, data_path="./data", split="train", transform=None, normalize=False, mean=None, std=None,
-                 name=None):
+                 name=None, format=None):
 
-        self.__format = None
+        self.__format = format
         self.dataset_name = name
         self.data_path = data_path
 
