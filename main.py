@@ -12,8 +12,7 @@ trainset = DataImage(data_path="Input/dataset", split="Train", name="Toy Dataset
 
 display(trainset)
 
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                         shuffle=True, num_workers=0)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
 
 display(trainloader)
 
