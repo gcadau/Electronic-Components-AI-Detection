@@ -1,4 +1,5 @@
 import os
+import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image, UnidentifiedImageError
@@ -24,6 +25,12 @@ class NotCorrectNormalizationException(Exception):
         super().__init__(self.message)
 
 
+class NotCorrectResizeException(Exception):
+    def __init__(self):
+        self.message = f"Height and/or width has to be specified."
+        super().__init__(self.message)
+
+
 class NotCorrectImageFormatException(Exception):
     def __init__(self, file):
         self.message = f"{file} is not a valid image file."
@@ -32,7 +39,7 @@ class NotCorrectImageFormatException(Exception):
 
 class DataImage(Dataset):
     def __init__(self, data_path="./data", split="train", transform=None, normalize=False, mean=None, std=None,
-                 name=None, format=None):
+                 resize=False, height=None, width=None, name=None, format=None):
 
         self.__format = format
         self.dataset_name = name
@@ -58,14 +65,29 @@ class DataImage(Dataset):
 
         self.labels = None
 
+        convertion = Lambda_(lambda x: x.to(torch.float32), 'ConvertToFloat32')
         if transform is not None:
             self.transform = transforms.Compose([
                 *transform.transforms,
-                transforms.ToTensor()
+                transforms.PILToTensor(),
+                convertion
             ])
         else:
             self.transform = transforms.Compose([
-                transforms.PILToTensor()
+                transforms.PILToTensor(),
+                convertion
+            ])
+
+        if resize:
+            if height is None or width is None:
+                raise NotCorrectResizeException()
+            if height == 'auto':
+                height = self.__set_resize_parameters("height")
+            if std == 'auto':
+                width = self.__set_resize_parameters("width")
+            self.transform = transforms.Compose([
+                *self.transform.transforms,
+                transforms.Resize((height, width))
             ])
 
         if normalize:
@@ -80,6 +102,7 @@ class DataImage(Dataset):
                 transforms.Normalize(mean=mean, std=std)
             ])
 
+
     def __len__(self):
         return len(self.data)
 
@@ -90,7 +113,7 @@ class DataImage(Dataset):
         try:
             lbl = self.labels[index]
         except TypeError:
-            lbl = None
+            lbl = "-No label available-"
 
         if self.transform is not None:
             img = self.transform(img)
@@ -103,7 +126,9 @@ class DataImage(Dataset):
         number = f"Number of points: {self.__len__()}"
         loc = f"Root location: {self.data_path}"
         split = f"Split: {self.split}"
-        trans = f"Transform used: {str(self.transform)}"
+        trans = f"Transform used:"
+        for t in str(self.transform).split("\n"):
+            trans += "\t" + t + "\n"
         for s in (dataset, number, loc, split, trans):
             if s != dataset:
                 s = '\t' + s
@@ -146,3 +171,19 @@ class DataImage(Dataset):
             return normalization_values[self.__format][param]
         except KeyError:
             return [0.5, 0.5, 0.5]
+
+    def __set_resize_parameters(self, param):
+        if param == "height":
+            return 128
+        if param == "width":
+            return 128
+
+
+
+class Lambda_(transforms.Lambda):
+    def __init__(self, func, name):
+        super(Lambda_, self).__init__(func)
+        self.name = name
+
+    def __repr__(self) -> str:
+        return self.name
