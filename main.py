@@ -1,5 +1,5 @@
 from IPython.core.display_functions import display
-from algorithm.utils.data.dataimage import DataImage
+from algorithm.utils.data.pt.dataimage import DataImage
 import torch
 from torch.utils.data import DataLoader
 from PIL import Image
