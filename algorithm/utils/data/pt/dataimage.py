@@ -3,38 +3,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image, UnidentifiedImageError
-
-
-class NotFoundDirectoryException(Exception):
-    def __init__(self, path):
-        self.path = path
-        self.message = f"Invalid path. {self.path} does not exist."
-        super().__init__(self.message)
-
-
-class NotCorrectSplitException(Exception):
-    def __init__(self, split):
-        self.split = split
-        self.message = f"Invalid category. {self.split} is not a valid option. You can only choose between train and test."
-        super().__init__(self.message)
-
-
-class NotCorrectNormalizationException(Exception):
-    def __init__(self):
-        self.message = f"Mean and/or standard deviation has to be specified."
-        super().__init__(self.message)
-
-
-class NotCorrectResizeException(Exception):
-    def __init__(self):
-        self.message = f"Height and/or width has to be specified."
-        super().__init__(self.message)
-
-
-class NotCorrectImageFormatException(Exception):
-    def __init__(self, file):
-        self.message = f"{file} is not a valid image file."
-        super().__init__(self.message)
+from algorithm.utils.data.exceptions import *
 
 
 class DataImage(Dataset):
@@ -150,23 +119,23 @@ class DataImage(Dataset):
 
     def __set_normalization_parameters(self, param):
         normalization_values = \
-        {
-            "RGB":
             {
-                "mean": [0.485, 0.456, 0.406],
-                "std": [0.229, 0.224, 0.225]
-            },
-            "Grayscale":
-            {
-                "mean": [0.5],
-                "std": [0.5]
-            },
-            "RGBA":
-            {
-                "mean": [0.485, 0.456, 0.406, 0.0],
-                "std": [0.229, 0.224, 0.225, 1.0]
+                "RGB":
+                    {
+                        "mean": [0.485, 0.456, 0.406],
+                        "std": [0.229, 0.224, 0.225]
+                    },
+                "Grayscale":
+                    {
+                        "mean": [0.5],
+                        "std": [0.5]
+                    },
+                "RGBA":
+                    {
+                        "mean": [0.485, 0.456, 0.406, 0.0],
+                        "std": [0.229, 0.224, 0.225, 1.0]
+                    }
             }
-        }
         try:
             return normalization_values[self.__format][param]
         except KeyError:
@@ -177,7 +146,6 @@ class DataImage(Dataset):
             return 128
         if param == "width":
             return 128
-
 
 
 class Lambda_(transforms.Lambda):
