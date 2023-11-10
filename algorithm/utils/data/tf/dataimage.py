@@ -7,7 +7,7 @@ from algorithm.utils.data.exceptions import *
 
 
 class DataImage:
-    def __init__(self, data_path="./data", split="train", transform=None, normalize=False, mean=None, std=None,
+    def __init__(self, data_path="./data", split=1, transform=None, normalize=False, mean=None, std=None,
                  resize=False, height=None, width=None, name=None, format=None, buffer_size=500, batch_size=32):
 
         self.__SEPARATOR = "_"
@@ -27,17 +27,18 @@ class DataImage:
         self.split = split
         if self.split is None:
             self.split = default_split
-        if self.split.lower() == 'auto':
-            self.split = default_split
+        if isinstance(self.split, str):
+            if self.split.lower() == 'auto':
+                self.split = default_split
         else:
             if not isinstance(self.split, int) and not isinstance(self.split, float):
                 raise NotCorrectSplitException(self.split, "no number")
             if self.split <= 0 or self.split > 1:
                 raise NotCorrectSplitException(self.split, "wrong number")
         self.data = self.data.shuffle(len(self.data), reshuffle_each_iteration=False)
-        train_data = self.data.skip(int(len(self.data)*self.split))
+        train_data = self.data.skip(int(len(self.data) * self.split))
         if self.split != 1:
-            val_data = self.data.take(int(len(self.data)*self.split))
+            val_data = self.data.take(int(len(self.data) * self.split))
         else:
             val_data = None
         self.data_splitted = {"train": train_data, "validation": val_data}
@@ -47,23 +48,31 @@ class DataImage:
         self.resize = resize
         self.dims = height, width
 
-        self.normalize = normalize # to be implemented.
+        self.normalize = normalize  # to be implemented.
 
         self.transforms = transform  # to be implemented various transforms.
         if self.transforms is None:
             self.transforms = []
         if self.resize:
-            self.transforms.append(f"Resize(size=({height}), {width})")
+            height, width = self.dims
+            if self.dims[0] is None or self.dims[1] is None:
+                raise NotCorrectResizeException()
+            if self.dims[0] == 'auto':
+                height = self.__set_resize_parameters("height")
+            if self.dims[1] == 'auto':
+                width = self.__set_resize_parameters("width")
+            self.dims = (height, width)
+            self.transforms.append(f"Resize(size=({height}, {width})")
         if self.normalize:
-            self.transforms.append(f"Normalize(mean={mean}, std={mean})")
+            self.transforms.append(f"Normalize(mean={mean}, std={std})")
 
         self.buffer_size = buffer_size
         self.batch_size = batch_size
 
-
+        self.__format = Image.open(next(iter(self.data.take(1))).numpy()).mode
 
     def __len__(self):
-        return len(self.data)
+        return self.data.cardinality()
 
     def get_set(self, split="train"):
         ds = self.data_splitted[split.lower()]
@@ -122,15 +131,14 @@ class DataImage:
         if param == "width":
             return 128
 
-
     def __get_class_names(self, dataset):
-        return list(set([os.path.basename(el.numpy().decode('utf-8')).split(self.__SEPARATOR)[self.__LABEL_ID] for el in dataset]))
-
+        return list(set([os.path.basename(el.numpy().decode('utf-8')).split(self.__SEPARATOR)[self.__LABEL_ID] for el in
+                         dataset]))
 
     def __get_label(self, file_path):
-        name = os.path.basename(file_path.numpy().decode('utf-8')).split(self.__SEPARATOR)[self.__LABEL_ID]
+        file_name = tf.strings.split(file_path, os.path.sep)[-1]
+        name = tf.strings.split(file_name, self.__SEPARATOR)[self.__LABEL_ID]
         return name
-
 
     def __decode_img(self, img, dims, file_path):
         img_height, img_width = dims
@@ -145,48 +153,22 @@ class DataImage:
             t = tf.image
         return t
 
-
+    @tf.autograph.experimental.do_not_convert
     def __process_path(self, file_path):
         label = self.__get_label(file_path)
         img = tf.io.read_file(file_path)
-        imgg = Image.open(file_path)
-        self.__format = imgg.mode
         height, width = None, None
         if self.resize:
             height, width = self.dims
-            if self.dims[0] is None or self.dims[1] is None:
-                raise NotCorrectResizeException()
-            if self.dims[0] == 'auto':
-                height = self.__set_resize_parameters("height")
-            if self.dims[1] == 'auto':
-                width = self.__set_resize_parameters("width")
         img = self.__decode_img(img, (height, width), file_path)
         return img, label
 
-
-
     def __set_channels_parameters(self, param):
-        n_channels = \
-            {
-                "RGB":
-                    {
-                        3
-                    },
-                "Grayscale":
-                    {
-                       1
-                    },
-                "RGBA":
-                    {
-                        4
-                    }
-            }
+        n_channels = {"RGB": 3, "Grayscale": 1, "RGBA": 4}
         try:
             return n_channels[self.__format]
         except KeyError:
             return 3
-
-
 
     def configure_for_performance(self, ds):
         ds = ds.cache()
