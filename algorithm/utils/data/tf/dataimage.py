@@ -172,7 +172,11 @@ class DataImage:
 
     def configure_for_performance(self, ds):
         ds = ds.cache()
-        ds = ds.shuffle(self.buffer_size)
+        size = self.buffer_size
+        if isinstance(self.buffer_size, str):
+            if self.buffer_size == 'auto':
+                size = ds[1].shape[0]
+        ds = ds.shuffle(size)
         ds = ds.batch(self.batch_size)
         ds = ds.prefetch(buffer_size=AUTOTUNE)
         return ds
