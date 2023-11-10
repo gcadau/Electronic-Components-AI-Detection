@@ -52,7 +52,7 @@ class DataImage(Dataset):
                 raise NotCorrectResizeException()
             if height == 'auto':
                 height = self.__set_resize_parameters("height")
-            if std == 'auto':
+            if width == 'auto':
                 width = self.__set_resize_parameters("width")
             self.transform = transforms.Compose([
                 *self.transform.transforms,
