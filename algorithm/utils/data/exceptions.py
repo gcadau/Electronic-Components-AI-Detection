@@ -6,9 +6,17 @@ class NotFoundDirectoryException(Exception):
 
 
 class NotCorrectSplitException(Exception):
-    def __init__(self, split):
+    def __init__(self, split, kind):
         self.split = split
-        self.message = f"Invalid category. {self.split} is not a valid option. You can only choose between train and test."
+        if kind == 'category':
+            self.message = (f"Invalid category. {self.split} is not a valid option. You can only choose between train "
+                            f"and test.")
+        if kind == 'no number':
+            self.message = (f"Invalid split term. {self.split} is not a valid option. You can only choose a number ("
+                            f"float or int).")
+        if kind == 'wrong number':
+            self.message = (f"Invalid split value. {self.split} is not a valid option. The value you can choose must "
+                            f"be a number between 0 and 1.")
         super().__init__(self.message)
 
 

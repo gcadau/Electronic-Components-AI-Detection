@@ -30,7 +30,7 @@ class DataImage(Dataset):
 
         self.split = split.lower()
         if self.split not in ["train", "test"]:
-            raise NotCorrectSplitException(self.split)
+            raise NotCorrectSplitException(self.split, "category")
 
         self.labels = None
 
