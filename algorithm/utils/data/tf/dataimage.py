@@ -8,7 +8,7 @@ from algorithm.utils.data.exceptions import *
 
 class DataImage:
     def __init__(self, data_path="./data", split="train", transform=None, normalize=False, mean=None, std=None,
-                 resize=False, height=None, width=None, name=None, format=None):
+                 resize=False, height=None, width=None, name=None, format=None, buffer_size=500, batch_size=32):
 
         self.__SEPARATOR = "_"
         self.__LABEL_ID = 0
@@ -57,6 +57,9 @@ class DataImage:
         if self.normalize:
             self.transforms.append(f"Normalize(mean={mean}, std={mean})")
 
+        self.buffer_size = buffer_size
+        self.batch_size = batch_size
+
 
 
     def __len__(self):
@@ -65,6 +68,7 @@ class DataImage:
     def get_set(self, split="train"):
         ds = self.data_splitted[split.lower()]
         ds = ds.map(self.__process_path, num_parallel_calls=AUTOTUNE)
+        ds = self.configure_for_performance(ds)
         return ds
 
     def __repr__(self):
@@ -181,3 +185,12 @@ class DataImage:
             return n_channels[self.__format]
         except KeyError:
             return 3
+
+
+
+    def configure_for_performance(self, ds):
+        ds = ds.cache()
+        ds = ds.shuffle(self.buffer_size)
+        ds = ds.batch(self.batch_size)
+        ds = ds.prefetch(buffer_size=AUTOTUNE)
+        return ds
