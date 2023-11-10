@@ -48,7 +48,8 @@ class DataImage:
         self.resize = resize
         self.dims = height, width
 
-        self.normalize = normalize  # to be implemented.
+        self.normalize = normalize
+        self.norms = mean, std
 
         self.transforms = transform  # to be implemented various transforms.
         if self.transforms is None:
@@ -64,6 +65,14 @@ class DataImage:
             self.dims = (height, width)
             self.transforms.append(f"Resize(size=({height}, {width})")
         if self.normalize:
+            mean, std = self.norms
+            if self.norms[0] is None:
+                raise NotCorrectNormalizationException()
+            if self.norms[0] == 'auto':
+                mean = self.__set_normalization_parameters("mean")
+            if self.norms[1] == 'auto':
+                std = self.__set_normalization_parameters("std")
+            self.norms = (mean, std)
             self.transforms.append(f"Normalize(mean={mean}, std={std})")
 
         self.buffer_size = buffer_size
@@ -106,7 +115,7 @@ class DataImage:
             {
                 "RGB":
                     {
-                        "mean": [0.485, 0.456, 0.406],
+                        "mean": [float(1/255), float(1/255), float(1/255)],
                         "std": [0.229, 0.224, 0.225]
                     },
                 "Grayscale":
@@ -123,7 +132,7 @@ class DataImage:
         try:
             return normalization_values[self.__format][param]
         except KeyError:
-            return [0.5, 0.5, 0.5]
+            return [float(1/255), float(1/255), float(1/255)]
 
     def __set_resize_parameters(self, param):
         if param == "height":
@@ -140,8 +149,9 @@ class DataImage:
         name = tf.strings.split(file_name, self.__SEPARATOR)[self.__LABEL_ID]
         return name
 
-    def __decode_img(self, img, dims, file_path):
+    def __decode_img(self, img, dims, norms, file_path):
         img_height, img_width = dims
+        mean, std = norms
         try:
             num_channels = self.__set_channels_parameters(self.__format)
             img = tf.io.decode_jpeg(img, channels=num_channels)
@@ -151,6 +161,11 @@ class DataImage:
             t = tf.image.resize(img, [img_height, img_width])
         else:
             t = tf.image
+        if mean is not None:
+            if std is not None:
+                # To be implemented
+                pass
+            t = t*mean
         return t
 
     @tf.autograph.experimental.do_not_convert
@@ -160,7 +175,10 @@ class DataImage:
         height, width = None, None
         if self.resize:
             height, width = self.dims
-        img = self.__decode_img(img, (height, width), file_path)
+        mean, std = None, None
+        if self.normalize:
+            mean, std = self.norms
+        img = self.__decode_img(img, (height, width), (mean, std), file_path)
         return img, label
 
     def __set_channels_parameters(self, param):
