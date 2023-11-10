@@ -8,7 +8,7 @@ from algorithm.utils.data.exceptions import *
 
 class DataImage:
     def __init__(self, data_path="./data", split=1, transform=None, normalize=False, mean=None, std=None,
-                 resize=False, height=None, width=None, name=None, format=None, buffer_size=500, batch_size=32):
+                 resize=False, height=None, width=None, one_hot_encoding=False, name=None, format=None, buffer_size=500, batch_size=32):
 
         self.__SEPARATOR = "_"
         self.__LABEL_ID = 0
@@ -75,10 +75,14 @@ class DataImage:
             self.norms = (mean, std)
             self.transforms.append(f"Normalize(mean={mean}, std={std})")
 
+        self.one_hot_encoding = one_hot_encoding # to be implemented
+
         self.buffer_size = buffer_size
         self.batch_size = batch_size
 
         self.__format = Image.open(next(iter(self.data.take(1))).numpy()).mode
+
+
 
     def __len__(self):
         return self.data.cardinality()
@@ -86,7 +90,7 @@ class DataImage:
     def get_set(self, split="train"):
         ds = self.data_splitted[split.lower()]
         ds = ds.map(self.__process_path, num_parallel_calls=AUTOTUNE)
-        ds = self.configure_for_performance(ds)
+        ds = self.__configure_for_performance(ds)
         return ds
 
     def __repr__(self):
@@ -109,6 +113,31 @@ class DataImage:
     def print_item(self, index):  # TO BE IMPLEMENTED.
         # To be implemented
         pass
+
+
+    def __one_hot_encode(self, image_batch, label_batch, label_mapping):
+        one_hot_label_batch = []
+        for label in label_batch:
+            label_str = label.numpy() if isinstance(label, tf.Tensor) else label
+            label_int = label_mapping[label_str.decode("utf-8")]
+            one_hot_label = tf.one_hot(label_int, depth=len(self.labels))
+            one_hot_label_batch.append(one_hot_label)
+        return image_batch, tf.stack(one_hot_label_batch)
+
+    @tf.autograph.experimental.do_not_convert
+    def apply_one_hot_encoding(self, ds):
+        label_mapping = {label: idx for idx, label in enumerate(self.labels)}
+
+        def one_hot_encode_wrapper(image_batch, label_batch):
+            return tf.py_function(
+                func=lambda imgs, lbls: self.__one_hot_encode(imgs, lbls, label_mapping),
+                inp=[image_batch, label_batch],
+                Tout=(tf.float32, tf.float32)  # Adjust the output data types as needed
+            )
+
+        ds = ds.map(one_hot_encode_wrapper, num_parallel_calls=tf.data.AUTOTUNE)
+        return ds
+
 
     def __set_normalization_parameters(self, param):
         normalization_values = \
@@ -188,7 +217,7 @@ class DataImage:
         except KeyError:
             return 3
 
-    def configure_for_performance(self, ds):
+    def __configure_for_performance(self, ds):
         ds = ds.cache()
         size = self.buffer_size
         if isinstance(self.buffer_size, str):
