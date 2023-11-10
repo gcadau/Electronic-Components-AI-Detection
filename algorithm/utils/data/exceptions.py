@@ -16,7 +16,7 @@ class NotCorrectSplitException(Exception):
                             f"float or int).")
         if kind == 'wrong number':
             self.message = (f"Invalid split value. {self.split} is not a valid option. The value you can choose must "
-                            f"be a number between 0 and 1.")
+                            f"be a number between 0 and 1, strictly greater than 0.")
         super().__init__(self.message)
 
 
