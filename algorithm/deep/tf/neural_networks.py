@@ -1,6 +1,7 @@
 from tensorflow import keras
 
 
+
 class ResNetBlock(keras.layers.Layer):
     def __init__(self, filters):
         super(ResNetBlock, self).__init__()
@@ -43,3 +44,79 @@ class ResNet1(keras.Model):
         x = self.do(x)
         x = self.dense_2(x)
         return x
+
+
+
+
+class ResNet2_0(keras.Model):
+    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+        super(ResNet2_0, self).__init__()
+        self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
+        self.flatten = keras.layers.Flatten()
+        self.dense1 = keras.layers.Dense(1000, activation='relu')
+        self.dense2 = keras.layers.Dense(n_classes, activation='softmax')
+
+        x = self.flatten(self.base_model.output)
+        x = self.dense1(x)
+        self.y = self.dense2(x)
+
+        self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
+
+
+    def call(self, inputs):
+        return self.model(inputs)
+
+
+
+
+class ResNet2_1(keras.Model):
+    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+        super(ResNet2_1, self).__init__()
+        self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
+        for layer in self.base_model.layers:
+            layer.trainable = False
+        self.flatten = keras.layers.Flatten()
+        self.dense1 = keras.layers.Dense(1000, activation='relu')
+        self.dense2 = keras.layers.Dense(n_classes, activation='softmax')
+
+        x = self.flatten(self.base_model.output)
+        x = self.dense1(x)
+        self.y = self.dense2(x)
+
+        self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
+
+
+    def call(self, inputs):
+        return self.model(inputs)
+
+
+
+
+class ResNet2_0_1(ResNet2_0):
+    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+        super(ResNet2_0_1, self).__init__(n_classes=n_classes, input_shape=input_shape)
+        # To be implemented:
+        #       Even after two epochs, validation accuracy arrives near 90%. After 40 epochs the model
+        #       comfortably converges. It is possible to reach up to higher accuracies by adding a couple of more fully
+        #       connected layers. The successful results with only one hidden fully connected layer mean that ResNet-152
+        #       does a pretty good job while extracting features for the classifier even though ImageNet and MNIST
+        #       contain fairly distant image samples.
+
+    def call(self, inputs):
+        return self.model(inputs)
+
+
+
+
+class ResNet2_1_1(ResNet2_0):
+    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+        super(ResNet2_1_1, self).__init__(n_classes=n_classes, input_shape=input_shape)
+        # To be implemented:
+        #       Even after two epochs, validation accuracy arrives near 90%. After 40 epochs the model
+        #       comfortably converges. It is possible to reach up to higher accuracies by adding a couple of more fully
+        #       connected layers. The successful results with only one hidden fully connected layer mean that ResNet-152
+        #       does a pretty good job while extracting features for the classifier even though ImageNet and MNIST
+        #       contain fairly distant image samples.
+
+    def call(self, inputs):
+        return self.model(inputs)
