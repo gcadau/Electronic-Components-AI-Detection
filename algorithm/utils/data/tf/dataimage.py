@@ -1,4 +1,5 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 from tensorflow.python.data import AUTOTUNE
 from tensorflow.python.framework.errors_impl import InvalidArgumentError
@@ -20,7 +21,7 @@ class DataImage:
         default_split, only_train_split = 0.2, 1
 
         if os.path.exists(self.data_path):
-            self.data = tf.data.Dataset.list_files(f"{self.data_path}\\*", shuffle=False)
+            self.data = tf.data.Dataset.list_files(f"{self.data_path}/*", shuffle=False)
         else:
             raise NotFoundDirectoryException(self.data_path)
 
