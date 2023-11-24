@@ -22,6 +22,7 @@ class DataImage:
 
         if os.path.exists(self.data_path):
             self.data = tf.data.Dataset.list_files(f"{self.data_path}/*", shuffle=False)
+            self.__identifier = [os.path.join(self.data_path, n) for n in os.listdir(self.data_path)]
         else:
             raise NotFoundDirectoryException(self.data_path)
 
@@ -100,6 +101,7 @@ class DataImage:
         ds = self.data_splitted[split.lower()]
         if ds is not None:
             ds = ds.map(self.__process_path, num_parallel_calls=AUTOTUNE)
+            ds = ds.map(self.__add_identifier, num_parallel_calls=tf.data.AUTOTUNE)
             ds = self.__configure_for_performance(ds)
         return ds
 
@@ -120,30 +122,33 @@ class DataImage:
             repr += s + "\n"
         return repr
 
-    def print_item(self, index):  # TO BE IMPLEMENTED.
-        # To be implemented
-        pass
+    def print_item(self, id):
+        int_id = tf.strings.to_number(id, out_type=tf.int32)
+        id_value = int(int_id.numpy())
+        image = Image.open(self.__identifier[id_value])
+        return image
 
 
-    def __one_hot_encode(self, image_batch, label_batch, label_mapping):
+    def __one_hot_encode(self, label_batch, label_mapping):
         one_hot_label_batch = []
         for label in label_batch:
             label_str = label.numpy() if isinstance(label, tf.Tensor) else label
             label_int = label_mapping[label_str.decode("utf-8")]
             one_hot_label = tf.one_hot(label_int, depth=len(self.labels))
             one_hot_label_batch.append(one_hot_label)
-        return image_batch, tf.stack(one_hot_label_batch)
+        return tf.stack(one_hot_label_batch)
 
     @tf.autograph.experimental.do_not_convert
     def apply_one_hot_encoding(self, ds):
         label_mapping = {label: idx for idx, label in enumerate(self.labels)}
 
         def one_hot_encode_wrapper(image_batch, label_batch):
-            return tf.py_function(
-                func=lambda imgs, lbls: self.__one_hot_encode(imgs, lbls, label_mapping),
-                inp=[image_batch, label_batch],
-                Tout=(tf.float32, tf.float32)  # Adjust the output data types as needed
+            label_encoded_batch =  tf.py_function(
+                func=lambda lbls: self.__one_hot_encode(lbls, label_mapping),
+                inp=[label_batch],
+                Tout=(tf.float32)  # Adjust the output data types as needed
             )
+            return image_batch, label_encoded_batch
 
         ds = ds.map(one_hot_encode_wrapper, num_parallel_calls=tf.data.AUTOTUNE)
         return ds
@@ -218,7 +223,14 @@ class DataImage:
         if self.normalize:
             mean, std = self.norms
         img = self.__decode_img(img, (height, width), (mean, std), file_path)
-        return img, label
+        return img, label, file_path
+
+    @tf.autograph.experimental.do_not_convert
+    def __add_identifier(self, img, label, filepath):
+        conditions = tf.equal(self.__identifier, filepath)
+        id = tf.where(conditions)
+        id = tf.strings.as_string(tf.squeeze(id))
+        return {'data': img, 'print_object': id}, label
 
     def __set_channels_parameters(self, param):
         n_channels = {"RGB": 3, "Grayscale": 1, "RGBA": 4}

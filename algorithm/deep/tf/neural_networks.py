@@ -19,7 +19,7 @@ class ResNetBlock(keras.layers.Layer):
 
 
 class ResNet1(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
         super(ResNet1, self).__init__()
         self.conv_1 = keras.layers.Conv2D(32, 3, activation="relu", input_shape=input_shape)
         self.conv_2 = keras.layers.Conv2D(64, 3, activation="relu")
@@ -32,8 +32,10 @@ class ResNet1(keras.Model):
         self.do = keras.layers.Dropout(0.5)
         self.dense_2 = keras.layers.Dense(n_classes)
 
+        self.field = field
+
     def call(self, inputs):
-        x = self.conv_1(inputs)
+        x = self.conv_1(inputs[self.field])
         x = self.conv_2(x)
         x = self.maxpool(x)
         x = self.block_1(x)
@@ -49,7 +51,7 @@ class ResNet1(keras.Model):
 
 
 class ResNet2__0(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
         super(ResNet2__0, self).__init__()
         self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
         self.flatten = keras.layers.Flatten()
@@ -62,15 +64,17 @@ class ResNet2__0(keras.Model):
 
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
+        self.field = field
+
 
     def call(self, inputs):
-        return self.model(inputs)
+        return self.model(inputs[self.field])
 
 
 
 
 class ResNet2__1(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3)):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
         super(ResNet2__1, self).__init__()
         self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
         for layer in self.base_model.layers:
@@ -85,16 +89,18 @@ class ResNet2__1(keras.Model):
 
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
+        self.field = field
+
 
     def call(self, inputs):
-        return self.model(inputs)
+        return self.model(inputs[self.field])
 
 
 
 
 class ResNet2__0__1(ResNet2__0):
-    def __init__(self, n_classes, input_shape=(128, 128, 3)):
-        super(ResNet2__0__1, self).__init__(n_classes=n_classes, input_shape=input_shape)
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
+        super(ResNet2__0__1, self).__init__(n_classes=n_classes, input_shape=input_shape, field=field)
         # To be implemented:
         #       Even after two epochs, validation accuracy arrives near 90%. After 40 epochs the model
         #       comfortably converges. It is possible to reach up to higher accuracies by adding a couple of more fully
@@ -103,14 +109,14 @@ class ResNet2__0__1(ResNet2__0):
         #       contain fairly distant image samples.
 
     def call(self, inputs):
-        return self.model(inputs)
+        return self.model(inputs[self.field])
 
 
 
 
 class ResNet2__1__1(ResNet2__0):
-    def __init__(self, n_classes, input_shape=(128, 128, 3)):
-        super(ResNet2__1__1, self).__init__(n_classes=n_classes, input_shape=input_shape)
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
+        super(ResNet2__1__1, self).__init__(n_classes=n_classes, input_shape=input_shape, field=field)
         # To be implemented:
         #       Even after two epochs, validation accuracy arrives near 90%. After 40 epochs the model
         #       comfortably converges. It is possible to reach up to higher accuracies by adding a couple of more fully
@@ -119,4 +125,4 @@ class ResNet2__1__1(ResNet2__0):
         #       contain fairly distant image samples.
 
     def call(self, inputs):
-        return self.model(inputs)
+        return self.model(inputs[self.field])
