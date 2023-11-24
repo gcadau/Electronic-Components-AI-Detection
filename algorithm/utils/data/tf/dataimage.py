@@ -8,7 +8,7 @@ from algorithm.utils.data.exceptions import *
 
 
 class DataImage:
-    def __init__(self, data_path="./data", split=1, transform=None, normalize=False, mean=None, std=None,
+    def __init__(self, data_path="./data", split=0, transform=None, normalize=False, mean=None, std=None,
                  resize=False, height=None, width=None, one_hot_encoding=False, name=None, format=None, buffer_size=500, batch_size=32):
 
         self.__SEPARATOR = "_"
@@ -18,7 +18,7 @@ class DataImage:
         self.dataset_name = name
         self.data_path = data_path
 
-        default_split, only_train_split = 0.2, 1
+        default_split, only_train_split = 0.2, 0
 
         if os.path.exists(self.data_path):
             self.data = tf.data.Dataset.list_files(f"{self.data_path}/*", shuffle=False)
@@ -31,20 +31,22 @@ class DataImage:
         if isinstance(self.split, str):
             if self.split.lower() == 'auto':
                 self.split = default_split
+            if self.split.lower() == 'train only':
+                self.split = only_train_split
         else:
             if not isinstance(self.split, int) and not isinstance(self.split, float):
                 raise NotCorrectSplitException(self.split, "no number")
-            if self.split <= 0 or self.split > 1:
+            if self.split < 0 or self.split >= 1:
                 raise NotCorrectSplitException(self.split, "wrong number")
         self.data = self.data.shuffle(len(self.data), reshuffle_each_iteration=False)
         train_data = self.data.skip(int(len(self.data) * self.split))
-        if self.split != 1:
+        if self.split != 0:
             val_data = self.data.take(int(len(self.data) * self.split))
         else:
             val_data = None
         self.data_splitted = {"train": train_data, "validation": val_data}
 
-        self.labels = self.__get_class_names(self.data)
+        self.labels = sorted(self.__get_class_names(self.data))
 
         self.resize = resize
         self.dims = height, width
@@ -79,7 +81,13 @@ class DataImage:
         self.one_hot_encoding = one_hot_encoding # to be implemented
 
         self.buffer_size = buffer_size
+
         self.batch_size = batch_size
+        if isinstance(self.batch_size, str):
+            if self.batch_size.lower() == 'no batches':
+                self.batch_size = 0
+            else:
+                raise NotCorrectBatchException(self.batch_size)
 
         self.__format = Image.open(next(iter(self.data.take(1))).numpy()).mode
 
@@ -90,8 +98,9 @@ class DataImage:
 
     def get_set(self, split="train"):
         ds = self.data_splitted[split.lower()]
-        ds = ds.map(self.__process_path, num_parallel_calls=AUTOTUNE)
-        ds = self.__configure_for_performance(ds)
+        if ds is not None:
+            ds = ds.map(self.__process_path, num_parallel_calls=AUTOTUNE)
+            ds = self.__configure_for_performance(ds)
         return ds
 
     def __repr__(self):
@@ -225,6 +234,7 @@ class DataImage:
             if self.buffer_size == 'auto':
                 size = ds[1].shape[0]
         ds = ds.shuffle(size)
-        ds = ds.batch(self.batch_size)
+        if self.batch_size!=0:
+            ds = ds.batch(self.batch_size)
         ds = ds.prefetch(buffer_size=AUTOTUNE)
         return ds

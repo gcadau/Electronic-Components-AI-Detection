@@ -20,6 +20,14 @@ class NotCorrectSplitException(Exception):
         super().__init__(self.message)
 
 
+class NotCorrectBatchException(Exception):
+    def __init__(self, batch):
+        self.batch = batch
+        self.message = (f"Invalid batch size. {self.batch} is not a valid option. You can only choose a number (int) "
+                        f"or 'no batches' (string) if no batches are desired.")
+        super().__init__(self.message)
+
+
 class NotCorrectNormalizationException(Exception):
     def __init__(self):
         self.message = f"Mean and/or standard deviation has to be specified."
