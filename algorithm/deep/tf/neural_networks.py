@@ -68,7 +68,10 @@ class ResNet2__0(keras.Model):
 
 
     def call(self, inputs):
-        data = inputs[self.field]
+        try:
+            data = inputs[self.field]
+        except KeyError:
+            data = inputs
         base_model_output = self.base_model(data)
         x = self.flatten(base_model_output)
         x = self.dense1(x)
@@ -98,7 +101,10 @@ class ResNet2__1(keras.Model):
 
 
     def call(self, inputs):
-        data = inputs[self.field]
+        try:
+            data = inputs[self.field]
+        except KeyError:
+            data = inputs
         base_model_output = self.base_model(data)
         x = self.flatten(base_model_output)
         x = self.dense1(x)
