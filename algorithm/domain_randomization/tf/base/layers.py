@@ -18,4 +18,4 @@ class RandomInvert(keras.layers.Layer):
         return x_tf
 
     def call(self, x):
-        return self.__random_invert_img(x)
+        return self.__random_invert_img(x, self.factor)
