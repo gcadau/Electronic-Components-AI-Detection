@@ -8,13 +8,14 @@ class RandomInvert(keras.layers.Layer):
         super().__init__(**kwargs)
         self.factor = factor
 
-    def call(self, x):
-        return self.__random_invert_img(x)
 
-
+    @staticmethod
     def __random_invert_img(x, p=0.5):
         if tf.random.uniform([]) < p:
             x_tf = (255 - x)
         else:
             x_tf = x
         return x_tf
+
+    def call(self, x):
+        return self.__random_invert_img(x)

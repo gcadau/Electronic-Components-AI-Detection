@@ -1,4 +1,5 @@
 from tensorflow import keras
+from algorithm.domain_randomization.tf import base
 
 
 
@@ -51,7 +52,7 @@ class ResNet1(keras.Model):
 
 
 class ResNet2__0(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=False):
         super(ResNet2__0, self).__init__()
         self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
         self.flatten = keras.layers.Flatten()
@@ -64,6 +65,9 @@ class ResNet2__0(keras.Model):
 
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
+        self.domain_randomization = domain_randomization
+        self.dr = base.layers.RandomInvert()
+
         self.field = field
 
 
@@ -72,6 +76,8 @@ class ResNet2__0(keras.Model):
             data = inputs[self.field]
         except KeyError:
             data = inputs
+        if self.domain_randomization:
+            data = self.dr(data)
         base_model_output = self.base_model(data)
         x = self.flatten(base_model_output)
         x = self.dense1(x)
@@ -82,7 +88,7 @@ class ResNet2__0(keras.Model):
 
 
 class ResNet2__1(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=False):
         super(ResNet2__1, self).__init__()
         self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
         for layer in self.base_model.layers:
@@ -97,6 +103,9 @@ class ResNet2__1(keras.Model):
 
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
+        self.domain_randomization = domain_randomization
+        self.dr = base.layers.RandomInvert()
+
         self.field = field
 
 
@@ -105,6 +114,8 @@ class ResNet2__1(keras.Model):
             data = inputs[self.field]
         except KeyError:
             data = inputs
+        if self.domain_randomization:
+            data = self.dr(data)
         base_model_output = self.base_model(data)
         x = self.flatten(base_model_output)
         x = self.dense1(x)
