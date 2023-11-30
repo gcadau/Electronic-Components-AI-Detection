@@ -1,5 +1,5 @@
 from tensorflow import keras
-from algorithm.domain_randomization.tf import base
+from algorithm.domain_randomization.tf import r_unif
 
 
 
@@ -66,7 +66,7 @@ class ResNet2__0(keras.Model):
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
         self.domain_randomization = domain_randomization
-        self.dr = base.layers.RandomInvert()
+        self.dr = r_unif.layers.RandomInvert()
 
         self.field = field
 
@@ -104,7 +104,7 @@ class ResNet2__1(keras.Model):
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
         self.domain_randomization = domain_randomization
-        self.dr = base.layers.RandomInvert()
+        self.dr = r_unif.layers.RandomInvert()
 
         self.field = field
 
