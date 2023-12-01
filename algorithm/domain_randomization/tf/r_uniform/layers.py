@@ -31,9 +31,12 @@ class RandomInvert(keras.layers.Layer):
 
 
 class RandomBrightness(keras.layers.Layer):
-    def __init__(self, max_delta=0.2, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=-0.2, upper=0.2, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): lower=-{max_delta}, upper={max_delta} (-> delta sampled from [-delta, delta],
+        # with delta value to be applyed to brightness)
         super().__init__(**kwargs)
-        self.max_delta = max_delta
+        self.lower = lower
+        self.upper = upper
         self.seed = seed
         self.factor = factor
 
@@ -41,16 +44,16 @@ class RandomBrightness(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                delta = tf.random.uniform(shape=[], minval=-self.max_delta, maxval=self.max_delta, seed=self.seed)
+                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                delta = tf.random.uniform(shape=[], minval=-self.max_delta, maxval=self.max_delta)
+                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
             return tf.image.adjust_brightness(x, delta)
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'max_delta': self.max_delta, 'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config
 
 
@@ -75,7 +78,7 @@ class RandomContrast(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'low and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config
 
 
@@ -83,8 +86,12 @@ class RandomContrast(keras.layers.Layer):
 
 
 class RandomHorizontallyFlip(keras.layers.Layer):
-    def __init__(self, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=0, upper=1, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): lower=0, upper=1 -> same probability to get
+        # a value greater/lower than 0.5 (-> threshold between flip/don't flip)
         super().__init__(**kwargs)
+        self.lower = lower
+        self.upper = upper
         self.seed = seed
         self.factor = factor
 
@@ -93,9 +100,9 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         if (training) and (tf.random.uniform([]) <= self.factor):
             prob = -1
             if self.seed is not None:
-                prob = tf.random.uniform(shape=[], minval=0, maxval=1, seed=self.seed)
+                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                prob = tf.random.uniform(shape=[], minval=0, maxval=1)
+                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
             if prob < 0.5:
                 return tf.image.flip_left_right(x)
             else:
@@ -105,13 +112,17 @@ class RandomHorizontallyFlip(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config
 
 
 class RandomVerticallyFlip(keras.layers.Layer):
-    def __init__(self, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=0, upper=1, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): lower=0, upper=1 -> same probability to get
+        # a value greater/lower than 0.5 (-> threshold between flip/don't flip)
         super().__init__(**kwargs)
+        self.lower = lower
+        self.upper = upper
         self.seed = seed
         self.factor = factor
 
@@ -120,9 +131,9 @@ class RandomVerticallyFlip(keras.layers.Layer):
         if (training) and (tf.random.uniform([]) <= self.factor):
             prob = -1
             if self.seed is not None:
-                prob = tf.random.uniform(shape=[], minval=0, maxval=1, seed=self.seed)
+                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                prob = tf.random.uniform(shape=[], minval=0, maxval=1)
+                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
             if prob < 0.5:
                 return tf.image.flip_up_down(x)
             else:
@@ -132,14 +143,17 @@ class RandomVerticallyFlip(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config
 
 
 class RandomHue(keras.layers.Layer):
-    def __init__(self, max_delta=0.2, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=-0.2, upper=0.2, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): lower=-{max_delta}, upper={max_delta} (-> delta sampled from [-delta, delta],
+        # with delta value to be applyed to hue)
         super().__init__(**kwargs)
-        self.max_delta = max_delta
+        self.lower = lower
+        self.upper = upper
         self.seed = seed
         self.factor = factor
 
@@ -147,16 +161,16 @@ class RandomHue(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                delta = tf.random.uniform(shape=[], minval=-self.max_delta, maxval=self.max_delta, seed=self.seed)
+                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                delta = tf.random.uniform(shape=[], minval=-self.max_delta, maxval=self.max_delta)
+                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
             return tf.image.adjust_hue(x, delta)
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'max_delta': self.max_delta, 'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config
 
 
@@ -181,7 +195,7 @@ class RandomJpegQuality(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'low and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config
 
 
@@ -206,5 +220,5 @@ class RandomSaturation(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'low and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
         return config

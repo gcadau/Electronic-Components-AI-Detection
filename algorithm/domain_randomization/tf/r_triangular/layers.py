@@ -32,14 +32,18 @@ class RandomInvert(keras.layers.Layer):
 
 
 class RandomBrightness(keras.layers.Layer):
-    def __init__(self, max_delta=0.2, mode=None, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=-0.2, mode=0, upper=0.2, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): lower=-{max_delta}, upper={max_delta} (-> delta sampled from
+        # Tr[-delta, 0, delta], with delta value to be applyed to brightness)
         super().__init__(**kwargs)
-        self.max_delta = max_delta
+        self.lower = lower
+        self.mode = mode
+        self.upper = upper
         self.seed = seed
         self.factor = factor
         self.mode = mode
         if self.mode is None:
-            self.mode = 0
+            self.mode = (self.upper-self.lower)/2
 
 
     def call(self, x, training=None):
@@ -47,16 +51,16 @@ class RandomBrightness(keras.layers.Layer):
             if self.seed is not None:
                 tf.random.set_seed(self.seed)
                 rng = np.random.default_rng(seed=self.seed)
-                delta = rng.triangular(-self.max_delta, self.mode, self.max_delta)
+                delta = rng.triangular(self.lower, self.mode, self.upper)
             else:
-                delta = np.random.triangular(-self.max_delta, self.mode, self.max_delta)
+                delta = np.random.triangular(self.lower, self.mode, self.upper)
             return tf.image.adjust_brightness(x, delta)
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'max_delta': self.max_delta, 'mode': self.mode, 'factor': self.factor})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config
 
 
@@ -64,10 +68,10 @@ class RandomContrast(keras.layers.Layer):
     def __init__(self, lower=0, upper=2.5, mode=None, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.lower = lower
+        self.mode = mode
         self.upper = upper
         self.seed = seed
         self.factor = factor
-        self.mode = mode
         if self.mode is None:
             self.mode = (self.upper-self.lower)/2
 
@@ -86,7 +90,7 @@ class RandomContrast(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'low and upper': (self.lower, self.upper),  'mode': self.mode, 'factor': self.factor})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config
 
 
@@ -94,11 +98,15 @@ class RandomContrast(keras.layers.Layer):
 
 
 class RandomHorizontallyFlip(keras.layers.Layer):
-    def __init__(self, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=0, upper=1, mode=0.5, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
+        self.lower = lower
+        self.mode = mode
+        self.upper = upper
         self.seed = seed
         self.factor = factor
-        self.mode = 0.5
+        if self.mode is None:
+            self.mode = (self.upper-self.lower)/2
 
 
     def call(self, x, training=None):
@@ -107,9 +115,9 @@ class RandomHorizontallyFlip(keras.layers.Layer):
             if self.seed is not None:
                 tf.random.set_seed(self.seed)
                 rng = np.random.default_rng(seed=self.seed)
-                prob = rng.triangular(0, self.mode, 1)
+                prob = rng.triangular(self.lower, self.mode, self.upper)
             else:
-                prob = np.random.triangular(0, self.mode, 1)
+                prob = np.random.triangular(self.lower, self.mode, self.upper)
             if prob < 0.5:
                 return tf.image.flip_left_right(x)
             else:
@@ -119,16 +127,20 @@ class RandomHorizontallyFlip(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor, 'mode': self.mode})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config
 
 
 class RandomVerticallyFlip(keras.layers.Layer):
-    def __init__(self, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=0, upper=1, mode=0.5, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
+        self.lower = lower
+        self.mode = mode
+        self.upper = upper
         self.seed = seed
         self.factor = factor
-        self.mode = 0.5
+        if self.mode is None:
+            self.mode = (self.upper-self.lower)/2
 
 
     def call(self, x, training=None):
@@ -137,9 +149,9 @@ class RandomVerticallyFlip(keras.layers.Layer):
             if self.seed is not None:
                 tf.random.set_seed(self.seed)
                 rng = np.random.default_rng(seed=self.seed)
-                prob = rng.triangular(0, self.mode, 1)
+                prob = rng.triangular(self.lower, self.mode, self.upper)
             else:
-                prob = np.random.triangular(0, self.mode, 1)
+                prob = np.random.triangular(self.lower, self.mode, self.upper)
             if prob < 0.5:
                 return tf.image.flip_up_down(x)
             else:
@@ -149,19 +161,23 @@ class RandomVerticallyFlip(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor, 'mode': self.mode})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config
 
 
 class RandomHue(keras.layers.Layer):
-    def __init__(self, max_delta=0.2, mode=None, seed=None, factor=0.9, **kwargs):
+    def __init__(self, lower=-0.2, mode=0, upper=0.2, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): lower=-{max_delta}, upper={max_delta} (-> delta sampled from
+        # Tr[-delta, 0, delta], with delta value to be applyed to hue)
         super().__init__(**kwargs)
-        self.max_delta = max_delta
+        self.lower = lower
+        self.mode = mode
+        self.upper = upper
         self.seed = seed
         self.factor = factor
         self.mode = mode
         if self.mode is None:
-            self.mode = 0
+            self.mode = (self.upper-self.lower)/2
 
 
     def call(self, x, training=None):
@@ -169,16 +185,16 @@ class RandomHue(keras.layers.Layer):
             if self.seed is not None:
                 tf.random.set_seed(self.seed)
                 rng = np.random.default_rng(seed=self.seed)
-                delta = rng.triangular(-self.max_delta, self.mode, self.max_delta)
+                delta = rng.triangular(self.lower, self.mode, self.upper)
             else:
-                delta = np.random.triangular(-self.max_delta, self.mode, self.max_delta)
+                delta = np.random.triangular(self.lower, self.mode, self.upper)
             return tf.image.adjust_hue(x, delta)
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'max_delta': self.max_delta, 'factor': self.factor, 'mode': self.mode})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config
 
 
@@ -186,6 +202,7 @@ class RandomJpegQuality(keras.layers.Layer):
     def __init__(self, lower=20, upper=100, mode=None, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.lower = lower
+        self.mode = mode
         self.upper = upper
         self.seed = seed
         self.factor = factor
@@ -208,7 +225,7 @@ class RandomJpegQuality(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'low and upper': (self.lower, self.upper), 'factor': self.factor, 'mode': self.mode})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config
 
 
@@ -216,6 +233,7 @@ class RandomSaturation(keras.layers.Layer):
     def __init__(self, lower=0, upper=2, mode=None, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.lower = lower
+        self.mode = mode
         self.upper = upper
         self.seed = seed
         self.factor = factor
@@ -238,5 +256,5 @@ class RandomSaturation(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'low and upper': (self.lower, self.upper), 'factor': self.factor, 'mode': self.mode})
+        config.update({'lower, mode, upper': (self.lower, self.mode, self.upper), 'factor': self.factor})
         return config

@@ -31,9 +31,12 @@ class RandomInvert(keras.layers.Layer):
 
 
 class RandomBrightness(keras.layers.Layer):
-    def __init__(self, sigma_delta=0.15, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=0.0, variance=0.15, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): mean=-{0}, variance={sigma_delta} (-> delta sampled from N(0, sigma_delta),
+        # with delta value to be applyed to brightness)
         super().__init__(**kwargs)
-        self.sigma_delta = sigma_delta
+        self.mean = mean
+        self.variance = variance
         self.seed = seed
         self.factor = factor
 
@@ -41,10 +44,10 @@ class RandomBrightness(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                delta = tf.random.normal(shape=[], mean=0.0, stddev=self.sigma_delta, seed=self.seed)
+                delta = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
                 delta = tf.clip_by_value(delta, -1, 1)
             else:
-                delta = tf.random.normal(shape=[], mean=0.0, stddev=self.sigma_delta)
+                delta = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
                 delta = tf.clip_by_value(delta, -1, 1)
             return tf.image.adjust_brightness(x, delta)
         else:
@@ -52,15 +55,15 @@ class RandomBrightness(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'sigma_delta': self.sigma_delta, 'factor': self.factor})
+        config.update({'mean and variance': (self.mean, self.variance), 'factor': self.factor})
         return config
 
 
 class RandomContrast(keras.layers.Layer):
-    def __init__(self, mean=1.25, sigma=1, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=1.25, variance=1, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.mean = mean
-        self.sigma = sigma
+        self.variance = variance
         self.seed = seed
         self.factor = factor
 
@@ -68,9 +71,9 @@ class RandomContrast(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                contrast_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma, seed=self.seed)
+                contrast_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
             else:
-                contrast_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma)
+                contrast_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
             return tf.image.adjust_contrast(x, contrast_factor)
         else:
             return x
@@ -85,10 +88,10 @@ class RandomContrast(keras.layers.Layer):
 
 
 class RandomHorizontallyFlip(keras.layers.Layer):
-    def __init__(self, mean=0.5, sigma=0.1, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=0.5, variance=0.1, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.mean = mean
-        self.sigma = sigma
+        self.variance = variance
         self.seed = seed
         self.factor = factor
 
@@ -97,9 +100,9 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         if (training) and (tf.random.uniform([]) <= self.factor):
             prob = -1
             if self.seed is not None:
-                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma, seed=self.seed)
+                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
             else:
-                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma)
+                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
             if prob < 0.5:
                 return tf.image.flip_left_right(x)
             else:
@@ -114,10 +117,10 @@ class RandomHorizontallyFlip(keras.layers.Layer):
 
 
 class RandomVerticallyFlip(keras.layers.Layer):
-    def __init__(self, mean=0.5, sigma=0.1, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=0.5, variance=0.1, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.mean = mean
-        self.sigma = sigma
+        self.variance = variance
         self.seed = seed
         self.factor = factor
 
@@ -126,9 +129,9 @@ class RandomVerticallyFlip(keras.layers.Layer):
         if (training) and (tf.random.uniform([]) <= self.factor):
             prob = -1
             if self.seed is not None:
-                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma, seed=self.seed)
+                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
             else:
-                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma)
+                prob = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
             if prob < 0.5:
                 return tf.image.flip_up_down(x)
             else:
@@ -143,9 +146,12 @@ class RandomVerticallyFlip(keras.layers.Layer):
 
 
 class RandomHue(keras.layers.Layer):
-    def __init__(self, sigma_delta=0.15, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=0.0, variance=0.15, seed=None, factor=0.9, **kwargs):
+        # usual behaviour (not mandatory): mean=-{0}, variance={sigma_delta} (-> delta sampled from N(0, sigma_delta),
+        # with delta value to be applyed to hue)
         super().__init__(**kwargs)
-        self.sigma_delta = sigma_delta
+        self.mean = mean
+        self.variance = variance
         self.seed = seed
         self.factor = factor
 
@@ -153,10 +159,10 @@ class RandomHue(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                delta = tf.random.normal(shape=[], mean=0.0, stddev=self.sigma_delta, seed=self.seed)
+                delta = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
                 delta = tf.clip_by_value(delta, -1, 1)
             else:
-                delta = tf.random.normal(shape=[], mean=0.0, stddev=self.sigma_delta)
+                delta = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
                 delta = tf.clip_by_value(delta, -1, 1)
             return tf.image.adjust_hue(x, delta)
         else:
@@ -164,15 +170,15 @@ class RandomHue(keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config.update({'sigma_delta': self.sigma_delta, 'factor': self.factor})
+        config.update({'mean and variance': (self.mean, self.variance), 'factor': self.factor})
         return config
 
 
 class RandomJpegQuality(keras.layers.Layer):
-    def __init__(self, mean=60, sigma=25, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=60, variance=25, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.mean = mean
-        self.sigma = sigma
+        self.sigma = variance
         self.seed = seed
         self.factor = factor
 
@@ -180,10 +186,10 @@ class RandomJpegQuality(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                jpeg_quality = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma, seed=self.seed)
+                jpeg_quality = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
                 jpeg_quality = tf.clip_by_value(jpeg_quality, 0, 100)
             else:
-                jpeg_quality = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma)
+                jpeg_quality = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
                 jpeg_quality = tf.clip_by_value(jpeg_quality, 0, 100)
             return tf.image.adjust_jpeg_quality(x, jpeg_quality)
         else:
@@ -196,10 +202,10 @@ class RandomJpegQuality(keras.layers.Layer):
 
 
 class RandomSaturation(keras.layers.Layer):
-    def __init__(self, mean=1.25, sigma=1.125, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=1.25, variance=1.125, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.mean = mean
-        self.sigma = sigma
+        self.sigma = variance
         self.seed = seed
         self.factor = factor
 
@@ -207,10 +213,10 @@ class RandomSaturation(keras.layers.Layer):
     def call(self, x, training=None):
         if (training) and (tf.random.uniform([]) <= self.factor):
             if self.seed is not None:
-                saturation_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma, seed=self.seed)
+                saturation_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance, seed=self.seed)
                 saturation_factor = tf.clip_by_value(saturation_factor, 0, float('inf'))
             else:
-                saturation_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.sigma)
+                saturation_factor = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
                 saturation_factor = tf.clip_by_value(saturation_factor, 0, float('inf'))
             return tf.image.adjust_saturation(x, saturation_factor)
         else:
