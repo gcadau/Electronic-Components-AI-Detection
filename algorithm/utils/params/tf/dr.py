@@ -15,12 +15,12 @@ class DomainRandomization_parameters():
         self.factors = factors
 
     def set_multivariatenormal_params(self, mean_vector, variancecovariance_matrix):
-        self.mode = "multivariate_normal"
+        self.mode = "multivariate normal"
         self.mean_vector = mean_vector
         self.variancecovariance_matrix = variancecovariance_matrix
 
     def set_univariatenormal_params(self, means, variances):
-        self.mode = "univariate_normal"
+        self.mode = "univariate normal"
         self.means = means
         self.variances = variances
 
