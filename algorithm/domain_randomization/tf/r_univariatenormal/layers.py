@@ -169,7 +169,7 @@ class RandomHue(keras.layers.Layer):
 
 
 class RandomJpegQuality(keras.layers.Layer):
-    def __init__(self, mean=60, sigma=0.25, seed=None, factor=0.9, **kwargs):
+    def __init__(self, mean=60, sigma=25, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
         self.mean = mean
         self.sigma = sigma
