@@ -1,11 +1,25 @@
+from algorithm.utils.params.exceptions import *
+
 class DomainRandomization_parameters():
-    def __init__(self, mode="multivariate_normal", seed=None, factors=None, params=None):
+    def __init__(self, mode="multivariate normal", seed=None, factors=None, params=None):
         self.mode = mode
+        if self.mode not in ["multivariate normal", "univariate normal", "uniform", "triangular"]:
+            raise NotFoundDomainRandomizationModeException(self.mode)
         self.seed = seed
-        if factors is None:
-            factors = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
         self.factors = factors
-        self.params = params
+        if self.mode=="multivariate normal":
+            self.mean_vector = params[0]
+            self.variancecovariance_matrix = params[1]
+        if self.mode=="univariate normal":
+            self.means = params[0]
+            self.variances = params[1]
+        if self.mode=="uniform":
+            self.lowers = params[0]
+            self.uppers = params[1]
+        if self.mode=="triangular":
+            self.lowers = params[0]
+            self.modes = params[1]
+            self.uppers = params[2]
 
 
     def set_seed(self, seed):
@@ -34,3 +48,7 @@ class DomainRandomization_parameters():
         self.lowers = lowers
         self.modes = modes
         self.uppers = uppers
+
+
+    def get_parameters_list(self):
+        return ['brightness', 'contrast', 'horizontally flip', 'vertically flip', 'hue', 'jpeg quality', 'saturation']
