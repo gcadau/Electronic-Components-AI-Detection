@@ -1,1 +1,1 @@
-from ..r_uniform.layers import *
+from ..r_univariatenormal.layers import *
