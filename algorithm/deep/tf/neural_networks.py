@@ -20,7 +20,7 @@ class ResNetBlock(keras.layers.Layer):
 
 
 class ResNet1(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet1, self).__init__()
         self.conv_1 = keras.layers.Conv2D(32, 3, activation="relu", input_shape=input_shape)
         self.conv_2 = keras.layers.Conv2D(64, 3, activation="relu")
@@ -33,10 +33,85 @@ class ResNet1(keras.Model):
         self.do = keras.layers.Dropout(0.5)
         self.dense_2 = keras.layers.Dense(n_classes)
 
+        if domain_randomization is not None:
+            self.domain_randomization = True
+            parameters_name = domain_randomization.get_parameters_list()
+            if domain_randomization.mode == "uniform":
+                params = {option: {} for option in parameters_name}
+                for option in parameters_name:
+                    if domain_randomization.lowers is not None:
+                        params[option]["lower"] = domain_randomization.lowers[parameters_name.index(option)]
+                    if domain_randomization.uppers is not None:
+                        params[option]["upper"] = domain_randomization.uppers[parameters_name.index(option)]
+                    if domain_randomization.factors is not None:
+                        params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                self.random_brightness = r_uniform.layers.RandomBrightness(**(params["brightness"]))
+                self.random_contrast = r_uniform.layers.RandomContrast(**(params["contrast"]))
+                self.random_horizontally_flip = r_uniform.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
+                self.random_vertically_flip = r_uniform.layers.RandomVerticallyFlip(**(params["vertically flip"]))
+                self.random_hue = r_uniform.layers.RandomHue(**(params["hue"]))
+                self.random_jpeg_quality = r_uniform.layers.RandomJpegQuality(**(params["jpeg quality"]))
+                self.random_saturation = r_uniform.layers.RandomSaturation(**(params["saturation"]))
+            elif domain_randomization.mode == "triangular":
+                params = {option: {} for option in parameters_name}
+                for option in parameters_name:
+                    if domain_randomization.lowers is not None:
+                        params[option]["lower"] = domain_randomization.lowers[parameters_name.index(option)]
+                    if domain_randomization.modes is not None:
+                        params[option]["mode"] = domain_randomization.modes[parameters_name.index(option)]
+                    if domain_randomization.uppers is not None:
+                        params[option]["upper"] = domain_randomization.uppers[parameters_name.index(option)]
+                    if domain_randomization.factors is not None:
+                        params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                self.random_brightness = r_triangular.layers.RandomBrightness(**(params["brightness"]))
+                self.random_contrast = r_triangular.layers.RandomContrast(**(params["contrast"]))
+                self.random_horizontally_flip = r_triangular.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
+                self.random_vertically_flip = r_triangular.layers.RandomVerticallyFlip(**(params["vertically flip"]))
+                self.random_hue = r_triangular.layers.RandomHue(**(params["hue"]))
+                self.random_jpeg_quality = r_triangular.layers.RandomJpegQuality(**(params["jpeg quality"]))
+                self.random_saturation = r_triangular.layers.RandomSaturation(**(params["saturation"]))
+            elif domain_randomization.mode == "univariate normal":
+                params = {option: {} for option in parameters_name}
+                for option in parameters_name:
+                    if domain_randomization.means is not None:
+                        params[option]["mean"] = domain_randomization.means[parameters_name.index(option)]
+                    if domain_randomization.variances is not None:
+                        params[option]["variance"] = domain_randomization.variances[parameters_name.index(option)]
+                    if domain_randomization.factors is not None:
+                        params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                self.random_brightness = r_univariatenormal.layers.RandomBrightness(**(params["brightness"]))
+                self.random_contrast = r_univariatenormal.layers.RandomContrast(**(params["contrast"]))
+                self.random_horizontally_flip = r_univariatenormal.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
+                self.random_vertically_flip = r_univariatenormal.layers.RandomVerticallyFlip(**(params["vertically flip"]))
+                self.random_hue = r_univariatenormal.layers.RandomHue(**(params["hue"]))
+                self.random_jpeg_quality = r_univariatenormal.layers.RandomJpegQuality(**(params["jpeg quality"]))
+                self.random_saturation = r_univariatenormal.layers.RandomSaturation(**(params["saturation"]))
+            elif domain_randomization.mode == "multivariate normal":
+                params = {}
+                params["mean_vector"] = domain_randomization.mean_vector
+                params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
+                params["factor"] = domain_randomization.factors
+                self.random_parameters = r_multivariatenormal.layers.RandomParameters(**params)
+        else:
+            self.domain_randomization = False
+
         self.field = field
 
     def call(self, inputs):
-        x = self.conv_1(inputs[self.field])
+        data = inputs[self.field]
+        if self.domain_randomization:
+            try:
+                dr = self.random_parameters
+                data = dr(data)
+            except AttributeError:
+                data = self.random_brightness(data)
+                data = self.random_contrast(data)
+                data = self.random_horizontally_flip(data)
+                data = self.random_vertically_flip(data)
+                data = self.random_hue(data)
+                data = self.random_jpeg_quality(data)
+                data = self.random_saturation(data)
+        x = self.conv_1(data)
         x = self.conv_2(x)
         x = self.maxpool(x)
         x = self.block_1(x)
@@ -157,7 +232,7 @@ class ResNet2__0(keras.Model):
 
 
 class ResNet2__1(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=False):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet2__1, self).__init__()
         self.base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
         for layer in self.base_model.layers:
@@ -172,8 +247,67 @@ class ResNet2__1(keras.Model):
 
         self.model = keras.Model(inputs=self.base_model.input, outputs=self.y)
 
-        self.domain_randomization = domain_randomization
-        self.dr = r_uniform.layers.RandomInvert()
+        if domain_randomization is not None:
+            self.domain_randomization = True
+            parameters_name = domain_randomization.get_parameters_list()
+            if domain_randomization.mode == "uniform":
+                params = {option: {} for option in parameters_name}
+                for option in parameters_name:
+                    if domain_randomization.lowers is not None:
+                        params[option]["lower"] = domain_randomization.lowers[parameters_name.index(option)]
+                    if domain_randomization.uppers is not None:
+                        params[option]["upper"] = domain_randomization.uppers[parameters_name.index(option)]
+                    if domain_randomization.factors is not None:
+                        params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                self.random_brightness = r_uniform.layers.RandomBrightness(**(params["brightness"]))
+                self.random_contrast = r_uniform.layers.RandomContrast(**(params["contrast"]))
+                self.random_horizontally_flip = r_uniform.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
+                self.random_vertically_flip = r_uniform.layers.RandomVerticallyFlip(**(params["vertically flip"]))
+                self.random_hue = r_uniform.layers.RandomHue(**(params["hue"]))
+                self.random_jpeg_quality = r_uniform.layers.RandomJpegQuality(**(params["jpeg quality"]))
+                self.random_saturation = r_uniform.layers.RandomSaturation(**(params["saturation"]))
+            elif domain_randomization.mode == "triangular":
+                params = {option: {} for option in parameters_name}
+                for option in parameters_name:
+                    if domain_randomization.lowers is not None:
+                        params[option]["lower"] = domain_randomization.lowers[parameters_name.index(option)]
+                    if domain_randomization.modes is not None:
+                        params[option]["mode"] = domain_randomization.modes[parameters_name.index(option)]
+                    if domain_randomization.uppers is not None:
+                        params[option]["upper"] = domain_randomization.uppers[parameters_name.index(option)]
+                    if domain_randomization.factors is not None:
+                        params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                self.random_brightness = r_triangular.layers.RandomBrightness(**(params["brightness"]))
+                self.random_contrast = r_triangular.layers.RandomContrast(**(params["contrast"]))
+                self.random_horizontally_flip = r_triangular.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
+                self.random_vertically_flip = r_triangular.layers.RandomVerticallyFlip(**(params["vertically flip"]))
+                self.random_hue = r_triangular.layers.RandomHue(**(params["hue"]))
+                self.random_jpeg_quality = r_triangular.layers.RandomJpegQuality(**(params["jpeg quality"]))
+                self.random_saturation = r_triangular.layers.RandomSaturation(**(params["saturation"]))
+            elif domain_randomization.mode == "univariate normal":
+                params = {option: {} for option in parameters_name}
+                for option in parameters_name:
+                    if domain_randomization.means is not None:
+                        params[option]["mean"] = domain_randomization.means[parameters_name.index(option)]
+                    if domain_randomization.variances is not None:
+                        params[option]["variance"] = domain_randomization.variances[parameters_name.index(option)]
+                    if domain_randomization.factors is not None:
+                        params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                self.random_brightness = r_univariatenormal.layers.RandomBrightness(**(params["brightness"]))
+                self.random_contrast = r_univariatenormal.layers.RandomContrast(**(params["contrast"]))
+                self.random_horizontally_flip = r_univariatenormal.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
+                self.random_vertically_flip = r_univariatenormal.layers.RandomVerticallyFlip(**(params["vertically flip"]))
+                self.random_hue = r_univariatenormal.layers.RandomHue(**(params["hue"]))
+                self.random_jpeg_quality = r_univariatenormal.layers.RandomJpegQuality(**(params["jpeg quality"]))
+                self.random_saturation = r_univariatenormal.layers.RandomSaturation(**(params["saturation"]))
+            elif domain_randomization.mode == "multivariate normal":
+                params = {}
+                params["mean_vector"] = domain_randomization.mean_vector
+                params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
+                params["factor"] = domain_randomization.factors
+                self.random_parameters = r_multivariatenormal.layers.RandomParameters(**params)
+        else:
+            self.domain_randomization = False
 
         self.field = field
 
@@ -184,7 +318,17 @@ class ResNet2__1(keras.Model):
         except KeyError:
             data = inputs
         if self.domain_randomization:
-            data = self.dr(data)
+            try:
+                dr = self.random_parameters
+                data = dr(data)
+            except AttributeError:
+                data = self.random_brightness(data)
+                data = self.random_contrast(data)
+                data = self.random_horizontally_flip(data)
+                data = self.random_vertically_flip(data)
+                data = self.random_hue(data)
+                data = self.random_jpeg_quality(data)
+                data = self.random_saturation(data)
         base_model_output = self.base_model(data)
         x = self.flatten(base_model_output)
         x = self.dense1(x)
