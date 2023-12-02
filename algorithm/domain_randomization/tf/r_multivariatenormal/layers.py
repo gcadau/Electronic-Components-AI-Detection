@@ -188,7 +188,7 @@ class RandomParameters(keras.layers.Layer):
         super().__init__(**kwargs)
 
         if factors is None:
-            factors = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
+            factors = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
         if mean_vector is None:
             mean_vector = [0, 1.25, 0.5, 0.5, 0, 60, 1.25]
         if variancecovariance_matrix is None:
