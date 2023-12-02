@@ -197,7 +197,7 @@ class ResNet2__0(keras.Model):
                 params = {}
                 params["mean_vector"] = domain_randomization.mean_vector
                 params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
-                params["factor"] = domain_randomization.factors
+                params["factors"] = domain_randomization.factors
                 self.random_parameters = r_multivariatenormal.layers.RandomParameters(**params)
         else:
             self.domain_randomization = False
