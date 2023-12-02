@@ -212,7 +212,7 @@ class RandomParameters(keras.layers.Layer):
         if training:
             self.randoms = []
             self.do = []
-            for f in self.factor:
+            for f in range(len(self.factor)):
                 if tf.random.uniform([]) > f:
                     self.variance[:,f] = 0
                     self.variance[f,:] = 0
