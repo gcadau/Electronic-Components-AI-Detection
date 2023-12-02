@@ -8,18 +8,35 @@ class DomainRandomization_parameters():
         self.seed = seed
         self.factors = factors
         if self.mode=="multivariate normal":
-            self.mean_vector = params[0]
-            self.variancecovariance_matrix = params[1]
+            if params is not None:
+                self.mean_vector = params[0]
+                self.variancecovariance_matrix = params[1]
+            else:
+                self.mean_vector = None
+                self.variancecovariance_matrix = None
         if self.mode=="univariate normal":
-            self.means = params[0]
-            self.variances = params[1]
+            if params is not None:
+                self.means = params[0]
+                self.variances = params[1]
+            else:
+                self.means = None
+                self.variances = None
         if self.mode=="uniform":
-            self.lowers = params[0]
-            self.uppers = params[1]
+            if params is not None:
+                self.lowers = params[0]
+                self.uppers = params[1]
+            else:
+                self.lowers = None
+                self.uppers = None
         if self.mode=="triangular":
-            self.lowers = params[0]
-            self.modes = params[1]
-            self.uppers = params[2]
+            if params is not None:
+                self.lowers = params[0]
+                self.modes = params[1]
+                self.uppers = params[2]
+            else:
+                self.lowers = None
+                self.modes = None
+                self.uppers = None
 
 
     def set_seed(self, seed):
