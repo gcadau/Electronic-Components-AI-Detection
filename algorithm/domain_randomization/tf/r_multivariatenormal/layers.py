@@ -150,9 +150,13 @@ class JpegQuality(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            return tf.image.adjust_jpeg_quality(x, self.jpeg_quality)
-        else:
-            return x
+            if tf.reduce_max(x) <= 1.0:
+                x_nn = tf.cast(x * 255, tf.uint8)
+                x_nn = tf.image.adjust_jpeg_quality(x_nn, self.jpeg_quality)
+                x = x_nn / 255.0
+            else:
+                x = tf.image.adjust_jpeg_quality(x, self.jpeg_quality)
+        return x
 
     def get_config(self):
         config = super().get_config()

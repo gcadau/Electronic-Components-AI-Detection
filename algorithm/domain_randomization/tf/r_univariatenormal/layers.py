@@ -191,7 +191,13 @@ class RandomJpegQuality(keras.layers.Layer):
             else:
                 jpeg_quality = tf.random.normal(shape=[], mean=self.mean, stddev=self.variance)
                 jpeg_quality = tf.clip_by_value(jpeg_quality, 0, 100)
-            return tf.image.adjust_jpeg_quality(x, jpeg_quality)
+            if tf.reduce_max(x) <= 1.0:
+                x_nn = tf.cast(x * 255, tf.uint8)
+                x_nn = tf.image.adjust_jpeg_quality(x_nn, jpeg_quality)
+                x = x_nn / 255.0
+            else:
+                x = tf.image.adjust_jpeg_quality(x, jpeg_quality)
+            return x
         else:
             return x
 
