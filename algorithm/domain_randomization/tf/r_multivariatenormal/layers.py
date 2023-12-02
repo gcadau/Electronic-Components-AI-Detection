@@ -150,12 +150,12 @@ class JpegQuality(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            if tf.reduce_max(x) <= 1.0:
-                x_nn = tf.cast(x * 255, tf.uint8)
-                x_nn = tf.image.adjust_jpeg_quality(x_nn, self.jpeg_quality)
-                x = x_nn / 255.0
-            else:
-                x = tf.image.adjust_jpeg_quality(x, self.jpeg_quality)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                im = tf.image.adjust_jpeg_quality(im, self.jpeg_quality)
+                ims.append(im)
+            x = tf.stack(ims)
         return x
 
     def get_config(self):
@@ -278,7 +278,7 @@ class RandomParameters(keras.layers.Layer):
                 if ran is not None:
                     x = ran(x, training=True)
 
-            return x
+        return x
 
     def get_config(self):
         config = super().get_config()
