@@ -263,6 +263,7 @@ class ResNet2__1(keras.Model):
                         params[option]["upper"] = domain_randomization.uppers[parameters_name.index(option)]
                     if domain_randomization.factors is not None:
                         params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                    params[option]["seed"] = domain_randomization.seed
                 self.random_brightness = r_uniform.layers.RandomBrightness(**(params["brightness"]))
                 self.random_contrast = r_uniform.layers.RandomContrast(**(params["contrast"]))
                 self.random_horizontally_flip = r_uniform.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
@@ -281,6 +282,7 @@ class ResNet2__1(keras.Model):
                         params[option]["upper"] = domain_randomization.uppers[parameters_name.index(option)]
                     if domain_randomization.factors is not None:
                         params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                    params[option]["seed"] = domain_randomization.seed
                 self.random_brightness = r_triangular.layers.RandomBrightness(**(params["brightness"]))
                 self.random_contrast = r_triangular.layers.RandomContrast(**(params["contrast"]))
                 self.random_horizontally_flip = r_triangular.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
@@ -297,6 +299,7 @@ class ResNet2__1(keras.Model):
                         params[option]["variance"] = domain_randomization.variances[parameters_name.index(option)]
                     if domain_randomization.factors is not None:
                         params[option]["factor"] = domain_randomization.factors[parameters_name.index(option)]
+                    params[option]["seed"] = domain_randomization.seed
                 self.random_brightness = r_univariatenormal.layers.RandomBrightness(**(params["brightness"]))
                 self.random_contrast = r_univariatenormal.layers.RandomContrast(**(params["contrast"]))
                 self.random_horizontally_flip = r_univariatenormal.layers.RandomHorizontallyFlip(**(params["horizontally flip"]))
@@ -308,7 +311,8 @@ class ResNet2__1(keras.Model):
                 params = {}
                 params["mean_vector"] = domain_randomization.mean_vector
                 params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
-                params["factor"] = domain_randomization.factors
+                params["factors"] = domain_randomization.factors
+                params["seed"] = domain_randomization.seed
                 self.random_parameters = r_multivariatenormal.layers.RandomParameters(**params)
         else:
             self.domain_randomization = False
