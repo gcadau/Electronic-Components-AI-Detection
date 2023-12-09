@@ -26,7 +26,6 @@ def set_parameters__ranges(mode, param):
                 [0, 100],
                 # element: 6
                 [0, float('inf')]]
-
         if param == "variancecovariance_matrix":
             return [
                 # element: 0,0
@@ -86,6 +85,121 @@ def set_parameters__ranges(mode, param):
                 # element: 6,6
                 [0, 10]
             ]
+    if mode == "uniform":
+        if param == "lowers":
+            return [
+                # element: 0
+                [-1, 1],
+                # element: 1
+                [float('-inf'), float('inf')],
+                # element: 2
+                [float('-inf'), float('inf')],
+                # element: 3
+                [float('-inf'), float('inf')],
+                # element: 4
+                [-1, 1],
+                # element: 5
+                [0, 100],
+                # element: 6
+                [0, float('inf')]]
+        if param == "uppers":
+            return [
+                # element: 0
+                [-1, 1],
+                # element: 1
+                [float('-inf'), float('inf')],
+                # element: 2
+                [float('-inf'), float('inf')],
+                # element: 3
+                [float('-inf'), float('inf')],
+                # element: 4
+                [-1, 1],
+                # element: 5
+                [0, 100],
+                # element: 6
+                [0, float('inf')]]
+    if mode == "triangular":
+        if param == "lowers":
+            return [
+                # element: 0
+                [-1, 1],
+                # element: 1
+                [float('-inf'), float('inf')],
+                # element: 2
+                [float('-inf'), float('inf')],
+                # element: 3
+                [float('-inf'), float('inf')],
+                # element: 4
+                [-1, 1],
+                # element: 5
+                [0, 100],
+                # element: 6
+                [0, float('inf')]]
+        if param == "modes":
+            return [
+                # element: 0
+                [-1, 1],
+                # element: 1
+                [float('-inf'), float('inf')],
+                # element: 2
+                [float('-inf'), float('inf')],
+                # element: 3
+                [float('-inf'), float('inf')],
+                # element: 4
+                [-1, 1],
+                # element: 5
+                [0, 100],
+                # element: 6
+                [0, float('inf')]]
+        if param == "uppers":
+            return [
+                # element: 0
+                [-1, 1],
+                # element: 1
+                [float('-inf'), float('inf')],
+                # element: 2
+                [float('-inf'), float('inf')],
+                # element: 3
+                [float('-inf'), float('inf')],
+                # element: 4
+                [-1, 1],
+                # element: 5
+                [0, 100],
+                # element: 6
+                [0, float('inf')]]
+    if mode == "univariatenormal":
+        if param == "means":
+            return [
+                # element: 0
+                [-1, 1],
+                # element: 1
+                [float('-inf'), float('inf')],
+                # element: 2
+                [float('-inf'), float('inf')],
+                # element: 3
+                [float('-inf'), float('inf')],
+                # element: 4
+                [-1, 1],
+                # element: 5
+                [0, 100],
+                # element: 6
+                [0, float('inf')]]
+        if param == "variances":
+            return [
+                # element: 0
+                [0, 0.4],
+                # element: 1
+                [0, 10],
+                # element: 2
+                [0, 10],
+                # element: 3
+                [0, 10],
+                # element: 4
+                [0, 0.4],
+                # element: 5
+                [0, 25],
+                # element: 6
+                [0, 10]]
 
 
 def fill_matrix(flat_m):
