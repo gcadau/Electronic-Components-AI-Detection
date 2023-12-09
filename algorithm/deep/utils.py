@@ -1,3 +1,7 @@
+import math
+import numpy as np
+
+
 class NotFoundOptimizerException(Exception):
     def __init__(self):
         self.message = f"Optimizers not initialized."
@@ -82,3 +86,18 @@ def set_parameters__ranges(mode, param):
                 # element: 6,6
                 [0, 10]
             ]
+
+
+def fill_matrix(flat_m):
+    size = int(0.5*(math.sqrt(1+8*flat_m.shape[0])-1))
+    m = np.zeros((size,size))
+    i_f = 0
+    for i_c in range(size):
+        for i_r in range(i_c+1):
+            m[i_c,i_r] = flat_m[i_f]
+            i_f += 1
+    for i_r in range(size):
+        for i_c in range(i_r,size):
+            m[i_r,i_c] = m[i_c,i_r]
+            i_f += 1
+    return m
