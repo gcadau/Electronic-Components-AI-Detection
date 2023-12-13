@@ -259,6 +259,9 @@ class ResNet1(keras.Model):
 
         self.field = field
 
+        if self.optimize:
+            print("2 optimizers needed when calling 'model.compile'")
+
 
     def call(self, inputs):
         try:
@@ -279,7 +282,7 @@ class ResNet1(keras.Model):
                 try:
                     dr = self.branch1_random_parameters
                     mean_vector = np.array(y1)
-                    variancecovariance_matrix = fill_matrix(np.array(y2))
+                    variancecovariance_matrix = np.array(fill_matrix(np.array(y2)))
                     data = dr(data, mean_vector, variancecovariance_matrix)
                 except AttributeError:
                     p1 = np.array(y1)
@@ -330,7 +333,7 @@ class ResNet1(keras.Model):
 
     def train_step(self, data):
         imgs, labs = data
-        with (tf.GradientTape() as tape):
+        with tf.GradientTape(persistent=True) as tape:
             predictions = self(imgs, training=True)
             loss = self.compiled_loss(labs, predictions)
             if self.domain_randomization and self.optimize:
@@ -383,11 +386,12 @@ class ResNet1(keras.Model):
             gradients_branch2 = tape.gradient(loss, self.model_branch2.trainable_variables)
             if self.model_branch2.optimizer is None:
                 self.model_branch2.optimizer = self.optimizer[1]
-        if self.optimizer_model is None or ((self.domain_randomization and self.optimize) and self.optimizer_distribution is None):
+        if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         self.model_branch1.optimizer.apply_gradients(zip(gradients_branch1, self.model_branch1.trainable_variables))
         if self.domain_randomization and self.optimize:
             self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.trainable_variables))
+        del tape
         return {"loss": loss}
 
 
@@ -609,6 +613,9 @@ class ResNet2__0(keras.Model):
 
         self.field = field
 
+        if self.optimize:
+            print("2 optimizers needed when calling 'model.compile'")
+
 
     def call(self, inputs, training=False):
         try:
@@ -629,7 +636,7 @@ class ResNet2__0(keras.Model):
                 try:
                     dr = self.branch1_random_parameters
                     mean_vector = np.array(y1)
-                    variancecovariance_matrix = fill_matrix(np.array(y2))
+                    variancecovariance_matrix = np.array(fill_matrix(np.array(y2)))
                     data = dr(data, mean_vector, variancecovariance_matrix)
                 except AttributeError:
                     p1 = np.array(y1)
@@ -674,7 +681,7 @@ class ResNet2__0(keras.Model):
 
     def train_step(self, data):
         imgs, labs = data
-        with (tf.GradientTape() as tape):
+        with tf.GradientTape(persistent=True) as tape:
             predictions = self(imgs, training=True)
             loss = self.compiled_loss(labs, predictions)
             if self.domain_randomization and self.optimize:
@@ -727,11 +734,12 @@ class ResNet2__0(keras.Model):
             gradients_branch2 = tape.gradient(loss, self.model_branch2.trainable_variables)
             if self.model_branch2.optimizer is None:
                 self.model_branch2.optimizer = self.optimizer[1]
-        if self.optimizer_model is None or ((self.domain_randomization and self.optimize) and self.optimizer_distribution is None):
+        if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         self.model_branch1.optimizer.apply_gradients(zip(gradients_branch1, self.model_branch1.trainable_variables))
         if self.domain_randomization and self.optimize:
             self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.trainable_variables))
+        del tape
         return {"loss": loss}
 
 
@@ -955,6 +963,9 @@ class ResNet2__1(keras.Model):
 
         self.field = field
 
+        if self.optimize:
+            print("2 optimizers needed when calling 'model.compile'")
+
 
     def call(self, inputs, training=False):
         try:
@@ -975,7 +986,7 @@ class ResNet2__1(keras.Model):
                 try:
                     dr = self.branch1_random_parameters
                     mean_vector = np.array(y1)
-                    variancecovariance_matrix = fill_matrix(np.array(y2))
+                    variancecovariance_matrix = np.array(fill_matrix(np.array(y2)))
                     data = dr(data, mean_vector, variancecovariance_matrix)
                 except AttributeError:
                     p1 = np.array(y1)
@@ -1020,7 +1031,7 @@ class ResNet2__1(keras.Model):
 
     def train_step(self, data):
         imgs, labs = data
-        with (tf.GradientTape() as tape):
+        with tf.GradientTape(persistent=True) as tape:
             predictions = self(imgs, training=True)
             loss = self.compiled_loss(labs, predictions)
             if self.domain_randomization and self.optimize:
@@ -1073,11 +1084,12 @@ class ResNet2__1(keras.Model):
             gradients_branch2 = tape.gradient(loss, self.model_branch2.trainable_variables)
             if self.model_branch2.optimizer is None:
                 self.model_branch2.optimizer = self.optimizer[1]
-        if self.optimizer_model is None or ((self.domain_randomization and self.optimize) and self.optimizer_distribution is None):
+        if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         self.model_branch1.optimizer.apply_gradients(zip(gradients_branch1, self.model_branch1.trainable_variables))
         if self.domain_randomization and self.optimize:
             self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.trainable_variables))
+            del tape
         return {"loss": loss}
 
 
