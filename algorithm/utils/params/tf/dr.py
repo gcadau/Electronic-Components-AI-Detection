@@ -1,7 +1,7 @@
 from algorithm.utils.params.exceptions import NotFoundDomainRandomizationModeException
 
 class DomainRandomization_parameters():
-    def __init__(self, mode="multivariate normal", seed=None, factors=None, params=None, optimize=True, ranges=None):
+    def __init__(self, mode="multivariate normal", seed=None, factors=None, params=None, optimize=True, ranges=None, initials=None):
         self.mode = mode
         if self.mode not in ["multivariate normal", "univariate normal", "uniform", "triangular"]:
             raise NotFoundDomainRandomizationModeException(self.mode)
@@ -20,6 +20,12 @@ class DomainRandomization_parameters():
             else:
                 self.mean_vector__ranges = None
                 self.variancecovariance_matrix__ranges = None
+            if initials is not None:
+                self.mean_vector__initials = initials[0]
+                self.variancecovariance_matrix__initials = initials[1]
+            else:
+                self.mean_vector__initials = None
+                self.variancecovariance_matrix__initials = None
         if self.mode=="univariate normal":
             if params is not None:
                 self.means = params[0]
@@ -33,6 +39,12 @@ class DomainRandomization_parameters():
             else:
                 self.means__ranges = None
                 self.variances__ranges = None
+            if initials is not None:
+                self.means__initials = initials[0]
+                self.variances__initials = initials[1]
+            else:
+                self.means__initials = None
+                self.variances__initials = None
         if self.mode=="uniform":
             if params is not None:
                 self.lowers = params[0]
@@ -46,6 +58,12 @@ class DomainRandomization_parameters():
             else:
                 self.lowers__ranges = None
                 self.uppers__ranges = None
+            if initials is not None:
+                self.lowers__initials = initials[0]
+                self.uppers__initials = initials[1]
+            else:
+                self.lowers__initials = None
+                self.uppers__initials = None
         if self.mode=="triangular":
             if params is not None:
                 self.lowers = params[0]
@@ -63,6 +81,14 @@ class DomainRandomization_parameters():
                 self.lowers__ranges = None
                 self.modes__ranges = None
                 self.uppers__ranges = None
+            if initials is not None:
+                self.lowers__initials = initials[0]
+                self.modes__initials = initials[1]
+                self.uppers__initials = initials[2]
+            else:
+                self.lowers__initials = None
+                self.modes__initials = None
+                self.uppers__initials = None
         self.optimize = optimize
 
 
@@ -113,6 +139,27 @@ class DomainRandomization_parameters():
         self.lowers__ranges = lowers
         self.modes__ranges = modes
         self.uppers__ranges = uppers
+
+    def set_multivariatenormal_initials(self, mean_vector, variancecovariance_matrix):
+        self.mode = "multivariate normal"
+        self.mean_vector__initials = mean_vector
+        self.variancecovariance_matrix__initials = variancecovariance_matrix
+
+    def set_univariatenormal_initials(self, means, variances):
+        self.mode = "univariate normal"
+        self.means__initials = means
+        self.variances__initials = variances
+
+    def set_uniform__initials(self, lowers, uppers):
+        self.mode = "uniform"
+        self.lowers__initials = lowers
+        self.uppers__initials = uppers
+
+    def set_triangular__initials(self, lowers, modes, uppers):
+        self.mode = "triangular"
+        self.lowers__initials = lowers
+        self.modes__initials = modes
+        self.uppers__initials = uppers
 
 
     def get_parameters_list(self):
