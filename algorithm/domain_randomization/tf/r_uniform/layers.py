@@ -42,12 +42,18 @@ class RandomBrightness(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
+        if training:
             if self.seed is not None:
-                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
-            return tf.image.adjust_brightness(x, delta)
+                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                if tf.random.uniform([]) > self.factor:
+                    im = tf.image.adjust_brightness(im, delta[i])
+                ims.append(im)
+            return tf.stack(ims)
         else:
             return x
 
@@ -67,12 +73,18 @@ class RandomContrast(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
+        if training:
             if self.seed is not None:
-                contrast_factor = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                contrast_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                contrast_factor = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
-            return tf.image.adjust_contrast(x, contrast_factor)
+                contrast_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                if tf.random.uniform([]) > self.factor:
+                    im = tf.image.adjust_contrast(im, contrast_factor[i])
+                ims.append(im)
+            return tf.stack(ims)
         else:
             return x
 
@@ -97,16 +109,19 @@ class RandomHorizontallyFlip(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            prob = -1
+        if training:
+            prob = None
             if self.seed is not None:
-                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
-            if prob < 0.5:
-                return tf.image.flip_left_right(x)
-            else:
-                return x
+                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                if tf.random.uniform([]) > self.factor and prob[i] < 0.5:
+                    im = tf.image.flip_left_right(im)
+                ims.append(im)
+            return tf.stack(ims)
         else:
             return x
 
@@ -128,16 +143,19 @@ class RandomVerticallyFlip(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            prob = -1
+        if training:
+            prob = None
             if self.seed is not None:
-                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                prob = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
-            if prob < 0.5:
-                return tf.image.flip_up_down(x)
-            else:
-                return x
+                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                if tf.random.uniform([]) > self.factor and prob[i] < 0.5:
+                    im = tf.image.flip_up_down(im)
+                ims.append(im)
+            return tf.stack(ims)
         else:
             return x
 
@@ -159,12 +177,18 @@ class RandomHue(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
+        if training:
             if self.seed is not None:
-                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                delta = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
-            return tf.image.adjust_hue(x, delta)
+                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                if tf.random.uniform([]) > self.factor:
+                    im = tf.image.adjust_hue(im, delta[i])
+                ims.append(im)
+            return tf.stack(ims)
         else:
             return x
 
@@ -184,18 +208,18 @@ class RandomJpegQuality(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
+        if training:
             if self.seed is not None:
-                jpeg_quality = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                jpeg_quality = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                jpeg_quality = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
+                jpeg_quality = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
+                if tf.random.uniform([]) > self.factor:
+                    im = tf.image.adjust_jpeg_quality(im, jpeg_quality[i])
                 ims.append(im)
-            x = tf.stack(ims)
-            return x
+            return tf.stack(ims)
         else:
             return x
 
@@ -215,12 +239,18 @@ class RandomSaturation(keras.layers.Layer):
 
 
     def call(self, x, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
+        if training:
             if self.seed is not None:
-                saturation_factor = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper, seed=self.seed)
+                saturation_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
             else:
-                saturation_factor = tf.random.uniform(shape=[], minval=self.lower, maxval=self.upper)
-            return tf.image.adjust_saturation(x, saturation_factor)
+                saturation_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+            ims = []
+            for i in range(x.shape[0]):
+                im = x[i,:,:,:]
+                if tf.random.uniform([]) > self.factor:
+                    im = tf.image.adjust_saturation(im, saturation_factor[i])
+                ims.append(im)
+            return tf.stack(ims)
         else:
             return x
 
