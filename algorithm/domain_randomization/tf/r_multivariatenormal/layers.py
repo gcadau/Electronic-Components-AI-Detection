@@ -215,7 +215,6 @@ class RandomParameters(keras.layers.Layer):
     def call(self, x, training=None):
         if training:
             self.randoms = []
-            self.do = []
             if self.seed is not None:
                 tf.random.set_seed(self.seed)
                 rng = np.random.default_rng(seed=self.seed)
