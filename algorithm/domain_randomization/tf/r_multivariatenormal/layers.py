@@ -224,7 +224,7 @@ class RandomParameters(keras.layers.Layer):
 
             random_brightness = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[0]:
+                if tf.random.uniform([]) <= self.factor[0]:
                     params = {'par': random_parameters[i][0]}
                     random_brightness.append(Brightness(**params))
                 else:
@@ -232,7 +232,7 @@ class RandomParameters(keras.layers.Layer):
             self.randoms.append(random_brightness)
             random_contrast = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[1]:
+                if tf.random.uniform([]) <= self.factor[1]:
                     params = {'par': random_parameters[i][1]}
                     random_contrast.append(Contrast(**params))
                 else:
@@ -240,7 +240,7 @@ class RandomParameters(keras.layers.Layer):
             self.randoms.append(random_contrast)
             random_horizontallyFlip = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[2]:
+                if tf.random.uniform([]) <= self.factor[2]:
                     params = {'par': random_parameters[i][2]}
                     random_horizontallyFlip.append(HorizontallyFlip(**params))
                 else:
@@ -248,7 +248,7 @@ class RandomParameters(keras.layers.Layer):
             self.randoms.append(random_horizontallyFlip)
             random_verticallyFlip = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[3]:
+                if tf.random.uniform([]) <= self.factor[3]:
                     params = {'par': random_parameters[i][3]}
                     random_verticallyFlip.append(VerticallyFlip(**params))
                 else:
@@ -256,7 +256,7 @@ class RandomParameters(keras.layers.Layer):
             self.randoms.append(random_verticallyFlip)
             random_hue = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[4]:
+                if tf.random.uniform([]) <= self.factor[4]:
                     params = {'par': random_parameters[i][4]}
                     random_hue.append(Hue(**params))
                 else:
@@ -264,7 +264,7 @@ class RandomParameters(keras.layers.Layer):
             self.randoms.append(random_hue)
             random_jpegQuality = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[5]:
+                if tf.random.uniform([]) <= self.factor[5]:
                     params = {'par': random_parameters[i][5]}
                     random_jpegQuality.append(JpegQuality(**params))
                 else:
@@ -272,7 +272,7 @@ class RandomParameters(keras.layers.Layer):
             self.randoms.append(random_jpegQuality)
             random_saturation = []
             for i in range(x.shape[0]):
-                if tf.random.uniform([]) > self.factor[6]:
+                if tf.random.uniform([]) <= self.factor[6]:
                     params = {'par': random_parameters[i][6]}
                     random_saturation.append(Saturation(**params))
                 else:
