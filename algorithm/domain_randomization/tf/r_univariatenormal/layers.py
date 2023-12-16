@@ -50,7 +50,7 @@ class RandomBrightness(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor:
+                if tf.random.uniform([]) <= self.factor:
                     d = tf.clip_by_value(delta[i], -1, 1)
                     im = tf.image.adjust_brightness(im, d)
                 ims.append(im)
@@ -82,7 +82,7 @@ class RandomContrast(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor:
+                if tf.random.uniform([]) <= self.factor:
                     im = tf.image.adjust_contrast(im, contrast_factor[i])
                 ims.append(im)
             return tf.stack(ims)
@@ -117,7 +117,7 @@ class RandomHorizontallyFlip(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor and prob[i] < 0.5:
+                if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
                     im = tf.image.flip_left_right(im)
                 ims.append(im)
             return tf.stack(ims)
@@ -149,7 +149,7 @@ class RandomVerticallyFlip(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor and prob[i] < 0.5:
+                if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
                     im = tf.image.flip_up_down(im)
                 ims.append(im)
             return tf.stack(ims)
@@ -182,7 +182,7 @@ class RandomHue(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor:
+                if tf.random.uniform([]) <= self.factor:
                     d = tf.clip_by_value(delta[i], -1, 1)
                     im = tf.image.adjust_hue(im, d)
                 ims.append(im)
@@ -214,7 +214,7 @@ class RandomJpegQuality(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor:
+                if tf.random.uniform([]) <= self.factor:
                     j = tf.clip_by_value(jpeg_quality[i], 0, 100)
                     im = tf.image.adjust_jpeg_quality(im, j)
                 ims.append(im)
@@ -246,7 +246,7 @@ class RandomSaturation(keras.layers.Layer):
             ims = []
             for i in range(x.shape[0]):
                 im = x[i,:,:,:]
-                if tf.random.uniform([]) > self.factor:
+                if tf.random.uniform([]) <= self.factor:
                     s = tf.clip_by_value(saturation_factor[i], 0, float('inf'))
                     im = tf.image.adjust_saturation(im, s)
                 ims.append(im)
