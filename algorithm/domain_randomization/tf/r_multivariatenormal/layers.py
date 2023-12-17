@@ -304,5 +304,5 @@ class NoneTransformation():
     def __int__(self):
         pass
 
-    def call(self, x):
+    def __call__(self, x):
         return x
