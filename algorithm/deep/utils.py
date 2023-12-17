@@ -1,11 +1,9 @@
 import math
 import numpy as np
+import tensorflow as tf
+import tensorflow_probability as tfp
+from .exceptions import WrongVarianceCovarianceMatrixException
 
-
-class NotFoundOptimizerException(Exception):
-    def __init__(self):
-        self.message = f"Optimizers not initialized."
-        super().__init__(self.message)
 
 
 def set_parameters__ranges(mode, param):
@@ -202,6 +200,32 @@ def set_parameters__ranges(mode, param):
                 [0, 10]]
 
 
+def set_parameters__initials(mode, param, ranges):
+# possible to implement other strategies.
+    if mode == "multivariatenormal":
+        if param == "mean vector":
+            return [(r[1]+r[0])/2 for r in ranges]
+        if param == "variancecovariance_matrix":
+            return [(r[1]+r[0])/2 for r in ranges]
+    if mode == "uniform":
+        if param == "lowers":
+            return [(r[1]+r[0])/2 for r in ranges]
+        if param == "uppers":
+            return [(r[1]+r[0])/2 for r in ranges]
+    if mode == "triangular":
+        if param == "lowers":
+            return [(r[1]+r[0])/2 for r in ranges]
+        if param == "modes":
+            return [(r[1]+r[0])/2 for r in ranges]
+        if param == "uppers":
+            return [(r[1]+r[0])/2 for r in ranges]
+    if mode == "univariatenormal":
+        if param == "means":
+            return [(r[1]+r[0])/2 for r in ranges]
+        if param == "variances":
+            return [(r[1]+r[0])/2 for r in ranges]
+
+
 def fill_matrix(flat_ms):
     ms = []
     for i in range(flat_ms.shape[0]):
@@ -219,3 +243,76 @@ def fill_matrix(flat_ms):
                 i_f += 1
         ms.append(m)
     return ms
+
+
+def scaleAndFlat_matrix(flat_m, dtype=np.float32):
+    size = int(0.5*(math.sqrt(1+8*flat_m.shape[0])-1))
+    m = np.zeros((size,size), dtype=dtype)
+    i_f = 0
+    for i_c in range(size):
+        for i_r in range(i_c+1):
+            m[i_c,i_r] = flat_m[i_f]
+            i_f += 1
+    for i_r in range(size):
+        for i_c in range(i_r,size):
+            m[i_r,i_c] = m[i_c,i_r]
+            i_f += 1
+    if not __is_valid_matrix(m):
+        raise WrongVarianceCovarianceMatrixException(m)
+    chol_factorization = tf.linalg.cholesky(m)
+    flat_chol_factorized_matrix = tfp.math.fill_triangular_inverse(chol_factorization)
+    return flat_chol_factorized_matrix.numpy()
+
+
+def spiral_flat_from_progressive(shape):
+    # flat spiral representation from (flat) progressive representation
+    size = int(0.5*(math.sqrt(1+8*shape)-1))
+    low = int(math.ceil(size/2))
+    up = size-low
+    flat_spiral_indexes = []
+    end = False
+    c = 0
+    l_index, u_index = None, None
+    while not end:
+        if c<low:
+            l_index = (size-1)-c
+            fl = ((l_index+1) * ((l_index+1) + 1)) // 2 -1
+            for i in range(l_index, -1, -1):
+                flat_spiral_indexes.append(fl+i-l_index)
+        else:
+            end = True
+        if c<up:
+            u_index = c
+            fl = ((u_index+1) * ((u_index+1) + 1)) // 2 -1
+            for i in range(0, u_index+1, +1):
+                flat_spiral_indexes.append(fl-u_index+i)
+        c+=1
+    return flat_spiral_indexes
+
+
+def __is_valid_matrix(matrix):
+    if __is_positive_definite(matrix) and __is_symmetric(matrix):
+        return True
+    return False
+
+def __is_positive_definite(matrix):
+    return all(np.linalg.eigvals(matrix) > 0)
+
+def __is_symmetric(matrix):
+    return (matrix == matrix.T).all()
+
+
+class Triangular(tf.Module):
+    def __init__(self, low, mode, high):
+        super(Triangular, self).__init__()
+        self.low = low
+        self.mode = mode
+        self.high = high
+        self.uniform1 = tfp.distributions.Uniform(self.low, self.mode)
+        self.uniform2 = tfp.distributions.Uniform(self.mode, self.high)
+
+    def sample(self, sample_shape=()):
+        p = tf.random.uniform(sample_shape)
+        return tf.where(p < (self.mode - self.low) / (self.high - self.low),
+                        self.uniform1.sample(sample_shape),
+                        self.uniform2.sample(sample_shape))

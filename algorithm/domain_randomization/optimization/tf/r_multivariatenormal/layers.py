@@ -198,76 +198,164 @@ class RandomParameters(keras.layers.Layer):
         self.seed = seed
 
 
-    def call(self, x, mean, variance, training=None):
+    def call(self, x, mean=None, variance=None, values=None, training=None, rand=True):
         if training:
-            self.randoms = []
-            self.do = []
-            for f in range(len(self.factor)):
-                if tf.random.uniform([]) > self.factor[f]:
-                    self.do.append(False)
+            if rand:
+                self.randoms = []
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    random_parameters = rng.multivariate_normal(mean, variance, size=x.shape[0])
                 else:
-                    self.do.append(True)
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                random_parameters = rng.multivariate_normal(mean, variance)
-            else:
-                random_parameters = np.random.multivariate_normal(mean, variance)
+                    random_parameters = np.random.multivariate_normal(mean, variance, size=x.shape[0])
 
-            if self.do[0]:
-                params = {'par': random_parameters[0]}
-                random_brightness = Brightness(**params)
-            else:
-                random_brightness = None
-            self.randoms.append(random_brightness)
-            if self.do[1]:
-                params = {'par': random_parameters[1]}
-                random_contrast = Contrast(**params)
-            else:
-                random_contrast = None
-            self.randoms.append(random_contrast)
-            if self.do[2]:
-                params = {'par': random_parameters[2]}
-                random_horizontallyFlip = HorizontallyFlip(**params)
-            else:
-                random_horizontallyFlip = None
-            self.randoms.append(random_horizontallyFlip)
-            if self.do[3]:
-                params = {'par': random_parameters[3]}
-                random_verticallyFlip = VerticallyFlip(**params)
-            else:
-                random_verticallyFlip = None
-            self.randoms.append(random_verticallyFlip)
-            if self.do[4]:
-                params = {'par': random_parameters[4]}
-                random_hue = Hue(**params)
-            else:
-                random_hue = None
-            self.randoms.append(random_hue)
-            if self.do[5]:
-                params = {'par': random_parameters[5]}
-                random_jpegQuality = JpegQuality(**params)
-            else:
-                random_jpegQuality = None
-            self.randoms.append(random_jpegQuality)
-            if self.do[6]:
-                params = {'par': random_parameters[6]}
-                random_saturation = Saturation(**params)
-            else:
-                random_saturation = None
-            self.randoms.append(random_saturation)
+                random_brightness = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[0]:
+                        params = {'par': random_parameters[i][0]}
+                        random_brightness.append(Brightness(**params))
+                    else:
+                        random_brightness.append(NoneTransformation())
+                self.randoms.append(random_brightness)
+                random_contrast = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[1]:
+                        params = {'par': random_parameters[i][1]}
+                        random_contrast.append(Contrast(**params))
+                    else:
+                        random_contrast.append(NoneTransformation())
+                self.randoms.append(random_contrast)
+                random_horizontallyFlip = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[2]:
+                        params = {'par': random_parameters[i][2]}
+                        random_horizontallyFlip.append(HorizontallyFlip(**params))
+                    else:
+                        random_horizontallyFlip.append(NoneTransformation())
+                self.randoms.append(random_horizontallyFlip)
+                random_verticallyFlip = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[3]:
+                        params = {'par': random_parameters[i][3]}
+                        random_verticallyFlip.append(VerticallyFlip(**params))
+                    else:
+                        random_verticallyFlip.append(NoneTransformation())
+                self.randoms.append(random_verticallyFlip)
+                random_hue = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[4]:
+                        params = {'par': random_parameters[i][4]}
+                        random_hue.append(Hue(**params))
+                    else:
+                        random_hue.append(NoneTransformation())
+                self.randoms.append(random_hue)
+                random_jpegQuality = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[5]:
+                        params = {'par': random_parameters[i][5]}
+                        random_jpegQuality.append(JpegQuality(**params))
+                    else:
+                        random_jpegQuality.append(NoneTransformation())
+                self.randoms.append(random_jpegQuality)
+                random_saturation = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[6]:
+                        params = {'par': random_parameters[i][6]}
+                        random_saturation.append(Saturation(**params))
+                    else:
+                        random_saturation.append(NoneTransformation())
+                self.randoms.append(random_saturation)
 
-            for i in range(len(self.factor)):
-                ran = self.randoms[i]
-                if ran is not None:
-                    x = ran(x, training=True)
+                for i in range(len(self.factor)):
+                    ran = self.randoms[i]
+                    ims = []
+                    for j in range(x.shape[0]):
+                        im = x[j,:,:,:]
+                        im = ran[j](im, training=True)
+                        ims.append(im)
+                    x = tf.stack(ims)
+            else:
+                self.randoms = []
+                random_brightness = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[0]:
+                        params = {'par': values[i][0]}
+                        random_brightness.append(Brightness(**params))
+                    else:
+                        random_brightness.append(NoneTransformation())
+                random_contrast = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[1]:
+                        params = {'par': values[i][1]}
+                        random_contrast.append(Contrast(**params))
+                    else:
+                        random_contrast.append(NoneTransformation())
+                self.randoms.append(random_contrast)
+                random_horizontallyFlip = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[2]:
+                        params = {'par': values[i][2]}
+                        random_horizontallyFlip.append(HorizontallyFlip(**params))
+                    else:
+                        random_horizontallyFlip.append(NoneTransformation())
+                self.randoms.append(random_horizontallyFlip)
+                random_verticallyFlip = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[3]:
+                        params = {'par': values[i][3]}
+                        random_verticallyFlip.append(VerticallyFlip(**params))
+                    else:
+                        random_verticallyFlip.append(NoneTransformation())
+                self.randoms.append(random_verticallyFlip)
+                random_hue = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[4]:
+                        params = {'par': values[i][4]}
+                        random_hue.append(Hue(**params))
+                    else:
+                        random_hue.append(NoneTransformation())
+                self.randoms.append(random_hue)
+                random_jpegQuality = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[5]:
+                        params = {'par': values[i][5]}
+                        random_jpegQuality.append(JpegQuality(**params))
+                    else:
+                        random_jpegQuality.append(NoneTransformation())
+                self.randoms.append(random_jpegQuality)
+                random_saturation = []
+                for i in range(x.shape[0]):
+                    if tf.random.uniform([]) <= self.factor[6]:
+                        params = {'par': values[i][6]}
+                        random_saturation.append(Saturation(**params))
+                    else:
+                        random_saturation.append(NoneTransformation())
+                self.randoms.append(random_saturation)
+
+                for i in range(len(self.factor)):
+                    ran = self.randoms[i]
+                    ims = []
+                    for j in range(x.shape[0]):
+                        im = x[j,:,:,:]
+                        im = ran[j](im, training=True)
+                        ims.append(im)
+                    x = tf.stack(ims)
 
         return x
 
     def get_config(self):
         config = super().get_config()
         keys = ['brightness', 'contrast', 'horizontallyFlip', 'verticallyFlip', 'hue', 'jpegQuality', 'saturation']
-        values = [self.randoms[i].get_config() if self.randoms[i] is not None else '-' for i in range(7)]
+        values = [[r.get_config if r is not None else '-' for r in self.randoms[i]] for i in range(7)]
         config_dict = {'random_{}_params'.format(key): value for key, value in zip(keys, values)}
         config.update(config_dict)
         return config
+
+
+
+class NoneTransformation():
+    def __int__(self):
+        pass
+
+    def call(self, x):
+        return x

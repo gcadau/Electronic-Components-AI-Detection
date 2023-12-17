@@ -39,17 +39,35 @@ class RandomBrightness(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=0.0, variance=0.15, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                delta = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
-                delta = tf.clip_by_value(delta, -1, 1)
+    def call(self, x, training=None, mean=0.0, variance=0.15, value=None, rand=True):
+        if rand:
+            if training:
+                if self.seed is not None:
+                    delta = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    delta = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        d = tf.clip_by_value(delta[i], -1, 1)
+                        im = tf.image.adjust_brightness(im, d)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                delta = tf.random.normal(shape=[], mean=mean, stddev=variance)
-                delta = tf.clip_by_value(delta, -1, 1)
-            return tf.image.adjust_brightness(x, delta)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        delta = value[i]
+                        im = tf.image.adjust_brightness(im, delta)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -64,15 +82,34 @@ class RandomContrast(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=1.25, variance=1, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                contrast_factor = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
+    def call(self, x, training=None, mean=1.25, variance=1, value=None, rand=True):
+        if rand:
+            if training:
+                if self.seed is not None:
+                    contrast_factor = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    contrast_factor = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_contrast(im, contrast_factor[i])
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                contrast_factor = tf.random.normal(shape=[], mean=mean, stddev=variance)
-            return tf.image.adjust_contrast(x, contrast_factor)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        contrast_factor = value[i]
+                        im = tf.image.adjust_contrast(im, contrast_factor)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -90,19 +127,35 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=0.5, variance=0.1, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            prob = -1
-            if self.seed is not None:
-                prob = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
-            else:
-                prob = tf.random.normal(shape=[], mean=mean, stddev=variance)
-            if prob < 0.5:
-                return tf.image.flip_left_right(x)
+    def call(self, x, training=None, mean=0.5, variance=0.1, value=None, rand=True):
+        if rand:
+            if training:
+                prob = None
+                if self.seed is not None:
+                    prob = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    prob = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                        im = tf.image.flip_left_right(im)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
                 return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    prob = value[i]
+                    if tf.random.uniform([]) <= self.factor and prob < 0.5:
+                        im = tf.image.flip_left_right(im)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -117,19 +170,35 @@ class RandomVerticallyFlip(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=0.5, variance=0.1, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            prob = -1
-            if self.seed is not None:
-                prob = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
-            else:
-                prob = tf.random.normal(shape=[], mean=mean, stddev=variance)
-            if prob < 0.5:
-                return tf.image.flip_up_down(x)
+    def call(self, x, training=None, mean=0.5, variance=0.1, value=None, rand=True):
+        if rand:
+            if training:
+                prob = None
+                if self.seed is not None:
+                    prob = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    prob = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                        im = tf.image.flip_up_down(im)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
                 return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    prob = value[i]
+                    if tf.random.uniform([]) <= self.factor and prob < 0.5:
+                        im = tf.image.flip_up_down(im)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -146,17 +215,35 @@ class RandomHue(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=0.0, variance=0.15, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                delta = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
-                delta = tf.clip_by_value(delta, -1, 1)
+    def call(self, x, training=None, mean=0.0, variance=0.15, value=None, rand=True):
+        if rand:
+            if training:
+                if self.seed is not None:
+                    delta = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    delta = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        d = tf.clip_by_value(delta[i], -1, 1)
+                        im = tf.image.adjust_hue(im, d)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                delta = tf.random.normal(shape=[], mean=mean, stddev=variance)
-                delta = tf.clip_by_value(delta, -1, 1)
-            return tf.image.adjust_hue(x, delta)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    delta = value[i]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_hue(im, delta)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -171,23 +258,35 @@ class RandomJpegQuality(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=60, variance=25, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                jpeg_quality = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
-                jpeg_quality = tf.clip_by_value(jpeg_quality, 0, 100)
+    def call(self, x, training=None, mean=60, variance=25, value=None, rand=True):
+        if rand:
+            if training:
+                if self.seed is not None:
+                    jpeg_quality = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    jpeg_quality = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        j = tf.clip_by_value(jpeg_quality[i], 0, 100)
+                        im = tf.image.adjust_jpeg_quality(im, j)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                jpeg_quality = tf.random.normal(shape=[], mean=mean, stddev=variance)
-                jpeg_quality = tf.clip_by_value(jpeg_quality, 0, 100)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
-                ims.append(im)
-            x = tf.stack(ims)
-            return x
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    jpeg_quality = value[i]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -202,17 +301,35 @@ class RandomSaturation(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, mean=1.25, variance=1.125, training=None):
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                saturation_factor = tf.random.normal(shape=[], mean=mean, stddev=variance, seed=self.seed)
-                saturation_factor = tf.clip_by_value(saturation_factor, 0, float('inf'))
+    def call(self, x, training=None, mean=1.25, variance=1.125, value=None, rand=True):
+        if rand:
+            if training:
+                if self.seed is not None:
+                    saturation_factor = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance, seed=self.seed)
+                else:
+                    saturation_factor = tf.random.normal(shape=[x.shape[0]], mean=mean, stddev=variance)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        s = tf.clip_by_value(saturation_factor[i], 0, float('inf'))
+                        im = tf.image.adjust_saturation(im, s)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                saturation_factor = tf.random.normal(shape=[], mean=mean, stddev=variance)
-                saturation_factor = tf.clip_by_value(saturation_factor, 0, float('inf'))
-            return tf.image.adjust_saturation(x, saturation_factor)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    saturation_factor = value[i]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_saturation(im, saturation_factor)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()

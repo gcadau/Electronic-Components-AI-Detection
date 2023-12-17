@@ -40,19 +40,38 @@ class RandomBrightness(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=-0.2, mode=0, upper=0.2, training=None):
+    def call(self, x, training=None, lower=-0.2, mode=0, upper=0.2, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                delta = rng.triangular(lower, mode, upper)
+        if rand:
+            if training:
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    delta = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    delta = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_brightness(im, delta[i])
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                delta = np.random.triangular(lower, mode, upper)
-            return tf.image.adjust_brightness(x, delta)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        delta = value[i]
+                        im = tf.image.adjust_brightness(im, delta)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -67,19 +86,38 @@ class RandomContrast(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=0, upper=2.5, mode=None, training=None):
+    def call(self, x, training=None, lower=0, upper=2.5, mode=None, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                contrast_factor = rng.triangular(lower, mode, upper)
+        if rand:
+            if training:
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    contrast_factor = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    contrast_factor = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_contrast(im, contrast_factor[i])
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                contrast_factor = np.random.triangular(lower, mode, upper)
-            return tf.image.adjust_contrast(x, contrast_factor)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        contrast_factor = value[i]
+                        im = tf.image.adjust_contrast(im, contrast_factor)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -97,23 +135,39 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=0, upper=1, mode=0.5, training=None):
+    def call(self, x, training=None, lower=0, upper=1, mode=0.5, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            prob = -1
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                prob = rng.triangular(lower, mode, upper)
-            else:
-                prob = np.random.triangular(lower, mode, upper)
-            if prob < 0.5:
-                return tf.image.flip_left_right(x)
+        if rand:
+            if training:
+                prob = None
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    prob = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    prob = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                        im = tf.image.flip_left_right(im)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
                 return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    prob = value[i]
+                    if tf.random.uniform([]) <= self.factor and prob < 0.5:
+                        im = tf.image.flip_left_right(im)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -128,23 +182,39 @@ class RandomVerticallyFlip(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=0, upper=1, mode=0.5, training=None):
+    def call(self, x, training=None, lower=0, upper=1, mode=0.5, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            prob = -1
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                prob = rng.triangular(lower, mode, upper)
-            else:
-                prob = np.random.triangular(lower, mode, upper)
-            if prob < 0.5:
-                return tf.image.flip_up_down(x)
+        if rand:
+            if training:
+                prob = None
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    prob = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    prob = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                        im = tf.image.flip_up_down(im)
+                    ims.append(im)
+                return tf.stack(ims)
             else:
                 return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    prob = value[i]
+                    if tf.random.uniform([]) <= self.factor and prob < 0.5:
+                        im = tf.image.flip_up_down(im)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -161,19 +231,38 @@ class RandomHue(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=-0.2, mode=0, upper=0.2, training=None):
+    def call(self, x, training=None, lower=-0.2, mode=0, upper=0.2, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                delta = rng.triangular(lower, mode, upper)
+        if rand:
+            if training:
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    delta = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    delta = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_hue(im, delta[i])
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                delta = np.random.triangular(lower, mode, upper)
-            return tf.image.adjust_hue(x, delta)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    delta = value[i]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_hue(im, delta)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -188,25 +277,38 @@ class RandomJpegQuality(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=20, upper=100, mode=None, training=None):
+    def call(self, x, training=None, lower=20, upper=100, mode=None, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                jpeg_quality = rng.triangular(lower, mode, upper)
+        if rand:
+            if training:
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    jpeg_quality = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    jpeg_quality = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_jpeg_quality(im, jpeg_quality[i])
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                jpeg_quality = np.random.triangular(lower, mode, upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
-                ims.append(im)
-            x = tf.stack(ims)
-            return x
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    jpeg_quality = value[i]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
 
     def get_config(self):
         config = super().get_config()
@@ -221,19 +323,39 @@ class RandomSaturation(keras.layers.Layer):
         self.factor = factor
 
 
-    def call(self, x, lower=0, upper=2, mode=None, training=None):
+    def call(self, x, training=None, lower=0, upper=2, mode=None, value=None, rand=True):
         if mode is None:
             mode = (upper-lower)/2
-        if (training) and (tf.random.uniform([]) <= self.factor):
-            if self.seed is not None:
-                tf.random.set_seed(self.seed)
-                rng = np.random.default_rng(seed=self.seed)
-                saturation_factor = rng.triangular(lower, mode, upper)
+        if rand:
+            if training:
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    saturation_factor = rng.triangular(lower, mode, upper, size=x.shape[0])
+                else:
+                    saturation_factor = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_saturation(im, saturation_factor[i])
+                    ims.append(im)
+                return tf.stack(ims)
             else:
-                saturation_factor = np.random.triangular(lower, mode, upper)
-            return tf.image.adjust_saturation(x, saturation_factor)
+                return x
         else:
-            return x
+            if training:
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    saturation_factor = value[i]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_saturation(im, saturation_factor)
+                    ims.append(im)
+                return tf.stack(ims)
+            else:
+                return x
+
 
     def get_config(self):
         config = super().get_config()
