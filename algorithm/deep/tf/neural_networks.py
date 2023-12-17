@@ -3,7 +3,11 @@ from tensorflow import keras
 import tensorflow_probability as tfp
 from keras import backend as K
 import numpy as np
-from algorithm.deep.utils import NotFoundOptimizerException, set_parameters__ranges, fill_matrix
+from collections.abc import Iterable
+from algorithm.deep.exceptions import NotFoundOptimizerException
+from algorithm.deep.utils import (set_parameters__ranges, set_parameters__initials,
+                                  fill_matrix, scaleAndFlat_matrix, spiral_flat_from_progressive,
+                                  Triangular)
 from algorithm.domain_randomization.optimization.tf import (
     r_uniform as r_uniform_opt,
     r_triangular as r_triangular_opt,
@@ -65,9 +69,7 @@ class ResNet1(keras.Model):
             if domain_randomization.optimize:
                 self.optimize = True
 
-                self.branch2_flatten = keras.layers.Flatten()
-                self.branch2_dense1 = keras.layers.Dense(128, activation='relu')
-                self.branch2_dense2 = keras.layers.Dense(64, activation='relu')
+                self.model_branch2 = Branch(name="Random Distribution parameters branch")
 
                 if domain_randomization.mode == "uniform":
                     if domain_randomization.lowers__ranges is None:
@@ -78,10 +80,144 @@ class ResNet1(keras.Model):
                         self.uppers__ranges = set_parameters__ranges("uniform", "uppers")
                     else:
                         self.uppers__ranges = domain_randomization.uppers__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.lowers__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.uppers__ranges))
+                    if domain_randomization.lowers__initials is None:
+                        self.lowers__initials = set_parameters__initials("uniform", "lowers", self.lowers__ranges)
+                    else:
+                        self.lowers__initials = domain_randomization.lowers__initials
+                    if domain_randomization.uppers__initials is None:
+                        self.uppers__initials = set_parameters__initials("uniform", "uppers", self.uppers__ranges)
+                    else:
+                        self.uppers__initials = domain_randomization.uppers__initials
+
+                    self.branch2_lowerA = tf.Variable(
+                        initial_value=self.lowers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[0][0],
+                            max_value=self.lowers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_lowerB = tf.Variable(
+                        initial_value=self.lowers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[1][0],
+                            max_value=self.lowers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_lowerC = tf.Variable(
+                        initial_value=self.lowers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[2][0],
+                            max_value=self.lowers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_lowerD = tf.Variable(
+                        initial_value=self.lowers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[3][0],
+                            max_value=self.lowers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_lowerE = tf.Variable(
+                        initial_value=self.lowers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[4][0],
+                            max_value=self.lowers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_lowerF = tf.Variable(
+                        initial_value=self.lowers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[5][0],
+                            max_value=self.lowers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_lowerG = tf.Variable(
+                        initial_value=self.lowers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[6][0],
+                            max_value=self.lowers__ranges[6][1]
+                        )
+                    )
+                    self.branch2_upperA = tf.Variable(
+                        initial_value=self.uppers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[0][0],
+                            max_value=self.uppers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_upperB = tf.Variable(
+                        initial_value=self.uppers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[1][0],
+                            max_value=self.uppers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_upperC = tf.Variable(
+                        initial_value=self.uppers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[2][0],
+                            max_value=self.uppers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_upperD = tf.Variable(
+                        initial_value=self.uppers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[3][0],
+                            max_value=self.uppers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_upperE = tf.Variable(
+                        initial_value=self.uppers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[4][0],
+                            max_value=self.uppers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_upperF = tf.Variable(
+                        initial_value=self.uppers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[5][0],
+                            max_value=self.uppers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_upperG = tf.Variable(
+                        initial_value=self.uppers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[6][0],
+                            max_value=self.uppers__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_lowerA,
+                        self.branch2_lowerB,
+                        self.branch2_lowerC,
+                        self.branch2_lowerD,
+                        self.branch2_lowerE,
+                        self.branch2_lowerF,
+                        self.branch2_lowerG
+                    ]+[
+                        self.branch2_upperA,
+                        self.branch2_upperB,
+                        self.branch2_upperC,
+                        self.branch2_upperD,
+                        self.branch2_upperE,
+                        self.branch2_upperF,
+                        self.branch2_upperG
+                    ])
                 elif domain_randomization.mode == "triangular":
                     if domain_randomization.lowers__ranges is None:
                         self.lowers__ranges = set_parameters__ranges("triangular", "lowers")
@@ -95,12 +231,212 @@ class ResNet1(keras.Model):
                         self.uppers__ranges = set_parameters__ranges("triangular", "uppers")
                     else:
                         self.uppers__ranges = domain_randomization.uppers__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.lowers__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.modes__ranges))
-                    self.branch2_dense3c = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.uppers__ranges))
+                    if domain_randomization.lowers__initials is None:
+                        self.lowers__initials = set_parameters__initials("triangular", "lowers", self.lowers__ranges)
+                    else:
+                        self.lowers__initials = domain_randomization.lowers__initials
+                    if domain_randomization.modes__initials is None:
+                        self.modes__initials = set_parameters__initials("triangular", "modes", self.modes__ranges)
+                    else:
+                        self.modes__initials = domain_randomization.modes__initials
+                    if domain_randomization.uppers__initials is None:
+                        self.uppers__initials = set_parameters__initials("triangular", "uppers", self.uppers__ranges)
+                    else:
+                        self.uppers__initials = domain_randomization.uppers__initials
+
+                    self.branch2_lowerA = tf.Variable(
+                        initial_value=self.lowers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[0][0],
+                            max_value=self.lowers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_lowerB = tf.Variable(
+                        initial_value=self.lowers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[1][0],
+                            max_value=self.lowers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_lowerC = tf.Variable(
+                        initial_value=self.lowers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[2][0],
+                            max_value=self.lowers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_lowerD = tf.Variable(
+                        initial_value=self.lowers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[3][0],
+                            max_value=self.lowers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_lowerE = tf.Variable(
+                        initial_value=self.lowers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[4][0],
+                            max_value=self.lowers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_lowerF = tf.Variable(
+                        initial_value=self.lowers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[5][0],
+                            max_value=self.lowers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_lowerG = tf.Variable(
+                        initial_value=self.lowers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[6][0],
+                            max_value=self.lowers__ranges[6][1]
+                        )
+                    )
+                    self.branch2_modeA = tf.Variable(
+                        initial_value=self.modes__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[0][0],
+                            max_value=self.modes__ranges[0][1]
+                        )
+                    )
+                    self.branch2_modeB = tf.Variable(
+                        initial_value=self.modes__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[1][0],
+                            max_value=self.modes__ranges[1][1]
+                        )
+                    )
+                    self.branch2_modeC = tf.Variable(
+                        initial_value=self.modes__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[2][0],
+                            max_value=self.modes__ranges[2][1]
+                        )
+                    )
+                    self.branch2_modeD = tf.Variable(
+                        initial_value=self.modes__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[3][0],
+                            max_value=self.modes__ranges[3][1]
+                        )
+                    )
+                    self.branch2_modeE = tf.Variable(
+                        initial_value=self.modes__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[4][0],
+                            max_value=self.modes__ranges[4][1]
+                        )
+                    )
+                    self.branch2_modeF = tf.Variable(
+                        initial_value=self.modes__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[5][0],
+                            max_value=self.modes__ranges[5][1]
+                        )
+                    )
+                    self.branch2_modeG = tf.Variable(
+                        initial_value=self.modes__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[6][0],
+                            max_value=self.modes__ranges[6][1]
+                        )
+                    )
+                    self.branch2_upperA = tf.Variable(
+                        initial_value=self.uppers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[0][0],
+                            max_value=self.uppers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_upperB = tf.Variable(
+                        initial_value=self.uppers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[1][0],
+                            max_value=self.uppers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_upperC = tf.Variable(
+                        initial_value=self.uppers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[2][0],
+                            max_value=self.uppers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_upperD = tf.Variable(
+                        initial_value=self.uppers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[3][0],
+                            max_value=self.uppers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_upperE = tf.Variable(
+                        initial_value=self.uppers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[4][0],
+                            max_value=self.uppers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_upperF = tf.Variable(
+                        initial_value=self.uppers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[5][0],
+                            max_value=self.uppers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_upperG = tf.Variable(
+                        initial_value=self.uppers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[6][0],
+                            max_value=self.uppers__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_lowerA,
+                        self.branch2_lowerB,
+                        self.branch2_lowerC,
+                        self.branch2_lowerD,
+                        self.branch2_lowerE,
+                        self.branch2_lowerF,
+                        self.branch2_lowerG
+                    ]+[
+                        self.branch2_modeA,
+                        self.branch2_modeB,
+                        self.branch2_modeC,
+                        self.branch2_modeD,
+                        self.branch2_modeE,
+                        self.branch2_modeF,
+                        self.branch2_modeG
+                    ]+[
+                        self.branch2_upperA,
+                        self.branch2_upperB,
+                        self.branch2_upperC,
+                        self.branch2_upperD,
+                        self.branch2_upperE,
+                        self.branch2_upperF,
+                        self.branch2_upperG
+                    ])
                 elif domain_randomization.mode == "univariate normal":
                     if domain_randomization.means__ranges is None:
                         self.means__ranges = set_parameters__ranges("univariatenormal", "means")
@@ -110,10 +446,144 @@ class ResNet1(keras.Model):
                         self.variances__ranges = set_parameters__ranges("univariatenormal", "variances")
                     else:
                         self.variances__ranges = domain_randomization.variances__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.means__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.variances__ranges))
+                    if domain_randomization.means__initials is None:
+                        self.means__initials = set_parameters__initials("univariatenormal", "means", self.means__ranges)
+                    else:
+                        self.means__initials = domain_randomization.means__initials
+                    if domain_randomization.variances__initials is None:
+                        self.variances__initials = set_parameters__initials("univariatenormal", "variances", self.variances__ranges)
+                    else:
+                        self.variances__initials = domain_randomization.variances__initials
+
+                    self.branch2_meanA = tf.Variable(
+                        initial_value=self.means__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[0][0],
+                            max_value=self.means__ranges[0][1]
+                        )
+                    )
+                    self.branch2_meanB = tf.Variable(
+                        initial_value=self.means__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[1][0],
+                            max_value=self.means__ranges[1][1]
+                        )
+                    )
+                    self.branch2_meanC = tf.Variable(
+                        initial_value=self.means__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[2][0],
+                            max_value=self.means__ranges[2][1]
+                        )
+                    )
+                    self.branch2_meanD = tf.Variable(
+                        initial_value=self.means__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[3][0],
+                            max_value=self.means__ranges[3][1]
+                        )
+                    )
+                    self.branch2_meanE = tf.Variable(
+                        initial_value=self.means__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[4][0],
+                            max_value=self.means__ranges[4][1]
+                        )
+                    )
+                    self.branch2_meanF = tf.Variable(
+                        initial_value=self.means__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[5][0],
+                            max_value=self.means__ranges[5][1]
+                        )
+                    )
+                    self.branch2_meanG = tf.Variable(
+                        initial_value=self.means__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[6][0],
+                            max_value=self.means__ranges[6][1]
+                        )
+                    )
+                    self.branch2_varianceA = tf.Variable(
+                        initial_value=self.variances__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[0][0],
+                            max_value=self.variances__ranges[0][1]
+                        )
+                    )
+                    self.branch2_varianceB = tf.Variable(
+                        initial_value=self.variances__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[1][0],
+                            max_value=self.variances__ranges[1][1]
+                        )
+                    )
+                    self.branch2_varianceC = tf.Variable(
+                        initial_value=self.variances__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[2][0],
+                            max_value=self.variances__ranges[2][1]
+                        )
+                    )
+                    self.branch2_varianceD = tf.Variable(
+                        initial_value=self.variances__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[3][0],
+                            max_value=self.variances__ranges[3][1]
+                        )
+                    )
+                    self.branch2_varianceE = tf.Variable(
+                        initial_value=self.variances__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[4][0],
+                            max_value=self.variances__ranges[4][1]
+                        )
+                    )
+                    self.branch2_varianceF = tf.Variable(
+                        initial_value=self.variances__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[5][0],
+                            max_value=self.variances__ranges[5][1]
+                        )
+                    )
+                    self.branch2_varianceG = tf.Variable(
+                        initial_value=self.variances__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[6][0],
+                            max_value=self.variances__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                                                         self.branch2_meanA,
+                                                         self.branch2_meanB,
+                                                         self.branch2_meanC,
+                                                         self.branch2_meanD,
+                                                         self.branch2_meanE,
+                                                         self.branch2_meanF,
+                                                         self.branch2_meanG
+                                                     ]+[
+                                                         self.branch2_varianceA,
+                                                         self.branch2_varianceB,
+                                                         self.branch2_varianceC,
+                                                         self.branch2_varianceD,
+                                                         self.branch2_varianceE,
+                                                         self.branch2_varianceF,
+                                                         self.branch2_varianceG
+                                                     ])
                 elif domain_randomization.mode == "multivariate normal":
                     if domain_randomization.mean_vector__ranges is None:
                         self.mean_vector__ranges = set_parameters__ranges("multivariatenormal", "mean vector")
@@ -127,24 +597,47 @@ class ResNet1(keras.Model):
                     # [self.variancecovariance_matrix__ranges[k] for k in [i * (i + 1) // 2 + j for i in range(len(parameters_name)) for j in range(i + 1) if i==j]]
                     #self.variancecovariance_matrix__ranges___offDiagonal =
                     # [el for k, el in enumerate(self.variancecovariance_matrix__ranges) if k not in [i * (i + 1) // 2 + j for i in range(len(parameters_name)) for j in range(i + 1) if i==j]]
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.mean_vector__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=int(0.5*(len(domain_randomization.get_parameters_list())*(len(domain_randomization.get_parameters_list())-1)))+len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.variancecovariance_matrix__ranges))
+                    if domain_randomization.mean_vector__initials is None:
+                        self.mean_vector__initials = set_parameters__initials("multivariatenormal", "mean vector", self.mean_vector__ranges)
+                    else:
+                        self.mean_vector__initials = domain_randomization.mean_vector__initials
+                    if domain_randomization.variancecovariance_matrix__initials is None:
+                        self.variancecovariance_matrix__initials = set_parameters__initials("multivariatenormal", "variancecovariance_matrix", self.variancecovariance_matrix__ranges)
+                    else:
+                        self.variancecovariance_matrix__initials = domain_randomization.variancecovariance_matrix__initials
+                    self.branch2_mean_vector = tf.Variable(
+                        initial_value=self.mean_vector__initials,
+                        dtype=tf.float32,
+                        constraint = [
+                            keras.constraints.MinMaxNorm(
+                                min_value=self.mean_vector__ranges[i][0],
+                                max_value=self.mean_vector__ranges[i][1]
+                            )
+                            for i in range(len(self.mean_vector__initials))
+                        ]
+                    )
+                    self.branch2_variancecovariance_matrix = tfp.math.fill_triangular(
+                        tf.Variable(
+                            initial_value=scaleAndFlat_matrix(
+                                np.array(self.variancecovariance_matrix__initials)
+                                # cholesky factorization of the matrix and flatten (spiral) version
+                            ),
+                            dtype=tf.float32,
+                            constraint = [
+                                keras.constraints.MinMaxNorm(
+                                    min_value=self.mean_vector__ranges[i][0],
+                                    max_value=self.mean_vector__ranges[i][1]
+                                )
+                                for i in spiral_flat_from_progressive(range(len(self.variancecovariance_matrix__initials)))
+                                # mapping of indexes from progressive (flat) representation to spiral flat representation
+                            ]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_mean_vector,
+                        self.branch2_variancecovariance_matrix,
+                    ])
 
-                inputs = keras.layers.Input(shape=input_shape)
-                x = self.branch2_flatten(inputs)
-                x = self.branch2_dense1(x)
-                x = self.branch2_dense2(x)
-                self.branch2_y1 = self.branch2_dense3a(x)
-                self.branch2_y2 = self.branch2_dense3b(x)
-                if domain_randomization.mode == "triangular":
-                    self.branch2_y3 = self.branch2_dense3c(x)
-
-                if domain_randomization.mode != "triangular":
-                    self.model_branch2 = Branch(inputs=inputs, outputs=[self.branch2_y1, self.branch2_y2], name="Random Distribution parameters branch")
-                else:
-                    self.model_branch2 = Branch(inputs=inputs, outputs=[self.branch2_y1, self.branch2_y2, self.branch2_y3], name="Random Distribution parameters branch")
                 self.model_branch2.optimizer = None
 
 
@@ -161,7 +654,7 @@ class ResNet1(keras.Model):
                     self.branch1_random_jpeg_quality = r_uniform_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_uniform_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.lowers is not None:
@@ -191,7 +684,7 @@ class ResNet1(keras.Model):
                     self.branch1_random_jpeg_quality = r_triangular_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_triangular_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.lowers is not None:
@@ -223,7 +716,7 @@ class ResNet1(keras.Model):
                     self.branch1_random_jpeg_quality = r_univariatenormal_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_univariatenormal_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.means is not None:
@@ -247,7 +740,7 @@ class ResNet1(keras.Model):
                     params["seed"] = domain_randomization.seed
                     self.branch1_random_parameters = r_multivariatenormal_opt.layers.RandomParameters(**params)
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params["mean_vector"] = domain_randomization.mean_vector
                     params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
                     params["factors"] = domain_randomization.factors
@@ -263,50 +756,122 @@ class ResNet1(keras.Model):
             print("2 optimizers needed when calling 'model.compile'")
 
 
-    def call(self, inputs):
+    def call(self, inputs, training=False):
         try:
             data = inputs[self.field]
         except KeyError:
             data = inputs
         if self.domain_randomization:
             if self.optimize and training:
-                x = self.branch2_flatten(data)
-                x = self.branch2_dense1(x)
-                x = self.branch2_dense2(x)
-                y1 = self.branch2_dense3a(x)
-                y2 = self.branch2_dense3b(x)
-                try:
-                    y3 = self.branch2_dense3c(x)
-                except AttributeError:
-                    y3 = None
-                try:
+                try: # self.domain_randomization__mode == "multivariate normal"
                     dr = self.branch1_random_parameters
-                    mean_vector = np.array(y1)
-                    variancecovariance_matrix = np.array(fill_matrix(np.array(y2)))
-                    data = dr(data, mean_vector, variancecovariance_matrix)
+                    sampled_params = tfp.distributions.MultivariateNormalTriL(
+                        loc=self.branch2_mean_vector,
+                        scale_tril=self.branch2_variancecovariance_matrix
+                    ).sample(sample_shape=(data.shape[0],)).numpy()
+                    data = dr(data, values=sampled_params, rand=False)
                 except AttributeError:
-                    p1 = np.array(y1)
-                    p2 = np.array(y2)
-                    if y3 is not None:
-                        p3 = np.array(y3)
-                    else:
-                        p3 = None
-                    if p3 is None:
-                        data = self.branch1_random_brightness(data, p1, p2)
-                        data = self.branch1_random_contrast(data, p1, p2)
-                        data = self.branch1_random_horizontally_flip(data, p1, p2)
-                        data = self.branch1_random_vertically_flip(data, p1, p2)
-                        data = self.branch1_random_hue(data, p1, p2)
-                        data = self.branch1_random_jpeg_quality(data, p1, p2)
-                        data = self.branch1_random_saturation(data, p1, p2)
-                    else:
-                        data = self.branch1_random_brightness(data, p1, p2, p3)
-                        data = self.branch1_random_contrast(data, p1, p2, p3)
-                        data = self.branch1_random_horizontally_flip(data, p1, p2, p3)
-                        data = self.branch1_random_vertically_flip(data, p1, p2, p3)
-                        data = self.branch1_random_hue(data, p1, p2, p3)
-                        data = self.branch1_random_jpeg_quality(data, p1, p2, p3)
-                        data = self.branch1_random_saturation(data, p1, p2, p3)
+                    if self.domain_randomization__mode == "uniform":
+                        sampled_paramA = tfp.distributions.Uniform(
+                            low=self.branch2_lowerA,
+                            high=self.branch2_upperA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = tfp.distributions.Uniform(
+                            low=self.branch2_lowerB,
+                            high=self.branch2_upperB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = tfp.distributions.Uniform(
+                            low=self.branch2_lowerC,
+                            high=self.branch2_upperC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = tfp.distributions.Uniform(
+                            low=self.branch2_lowerD,
+                            high=self.branch2_upperD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = tfp.distributions.Uniform(
+                            low=self.branch2_lowerE,
+                            high=self.branch2_upperE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = tfp.distributions.Uniform(
+                            low=self.branch2_lowerF,
+                            high=self.branch2_upperF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = tfp.distributions.Uniform(
+                            low=self.branch2_lowerG,
+                            high=self.branch2_upperG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    if self.domain_randomization__mode == "triangular":
+                        sampled_paramA = Triangular(
+                            low=self.branch2_lowerA,
+                            mode=self.branch2_modeA,
+                            high=self.branch2_upperA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = Triangular(
+                            low=self.branch2_lowerB,
+                            mode=self.branch2_modeB,
+                            high=self.branch2_upperB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = Triangular(
+                            low=self.branch2_lowerC,
+                            mode=self.branch2_modeC,
+                            high=self.branch2_upperC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = Triangular(
+                            low=self.branch2_lowerD,
+                            mode=self.branch2_modeD,
+                            high=self.branch2_upperD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = Triangular(
+                            low=self.branch2_lowerE,
+                            mode=self.branch2_modeE,
+                            high=self.branch2_upperE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = Triangular(
+                            low=self.branch2_lowerF,
+                            mode=self.branch2_modeF,
+                            high=self.branch2_upperF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = Triangular(
+                            low=self.branch2_lowerG,
+                            mode=self.branch2_modeG,
+                            high=self.branch2_upperG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    if self.domain_randomization__mode == "univariate normal":
+                        sampled_paramA = tfp.distributions.Normal(
+                            loc=self.branch2_meanA,
+                            scale=self.branch2_varianceA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = tfp.distributions.Normal(
+                            loc=self.branch2_meanB,
+                            scale=self.branch2_varianceB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = tfp.distributions.Normal(
+                            loc=self.branch2_meanC,
+                            scale=self.branch2_varianceC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = tfp.distributions.Normal(
+                            loc=self.branch2_meanD,
+                            scale=self.branch2_varianceD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = tfp.distributions.Normal(
+                            loc=self.branch2_meanE,
+                            scale=self.branch2_varianceE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = tfp.distributions.Normal(
+                            loc=self.branch2_meanF,
+                            scale=self.branch2_varianceF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = tfp.distributions.Normal(
+                            loc=self.branch2_meanG,
+                            scale=self.branch2_varianceG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False)
+                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False)
+                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False)
+                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False)
+                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False)
+                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False)
+                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False)
             else:
                 try:
                     dr = self.branch1_random_parameters
@@ -319,16 +884,16 @@ class ResNet1(keras.Model):
                     data = self.branch1_random_hue(data)
                     data = self.branch1_random_jpeg_quality(data)
                     data = self.branch1_random_saturation(data)
-        x = self.conv_1(data)
-        x = self.conv_2(x)
-        x = self.maxpool(x)
-        x = self.block_1(x)
-        x = self.block_2(x)
-        x = self.conv_3(x)
-        x = self.glopool(x)
-        x = self.dense_1(x)
-        x = self.do(x)
-        x = self.dense_2(x)
+        x = self.branch1_conv_1(data)
+        x = self.branch1_conv_2(x)
+        x = self.branch1_maxpool(x)
+        x = self.branch1_block_1(x)
+        x = self.branch1_block_2(x)
+        x = self.branch1_conv_3(x)
+        x = self.branch1_glopool(x)
+        x = self.branch1_dense_1(x)
+        x = self.branch1_do(x)
+        x = self.branch1_dense_2(x)
         return x
 
     def train_step(self, data):
@@ -343,16 +908,23 @@ class ResNet1(keras.Model):
                         data = imgs[self.field]
                     except KeyError:
                         data = imgs
-                    p = self.model_branch2(data)
-                    p1 = p[0]
-                    p2 = p[1]
+                    p = [[self.branch2_lowerA, self.branch2_upperA],
+                         [self.branch2_lowerB, self.branch2_upperB],
+                         [self.branch2_lowerC, self.branch2_upperC],
+                         [self.branch2_lowerD, self.branch2_upperD],
+                         [self.branch2_lowerE, self.branch2_upperE],
+                         [self.branch2_lowerF, self.branch2_upperF],
+                         [self.branch2_lowerG, self.branch2_upperG]
+                         ]
                     epsilon = 0.001
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.lowers__ranges, self.uppers__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p1 - p2 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[0]-pi[1]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss = loss+penalty
                 if self.domain_randomization__mode == "triangular":
                     # constraints: lowers<=modes, modes<=uppers
@@ -360,37 +932,48 @@ class ResNet1(keras.Model):
                         data = imgs[self.field]
                     except KeyError:
                         data = imgs
-                    p = self.model_branch2(data)
-                    p1 = p[0]
-                    p2 = p[1]
-                    p3 = p[2]
+                    p = [[self.branch2_lowerA, self.branch2_modeA, self.branch2_upperA],
+                         [self.branch2_lowerB, self.branch2_modeB, self.branch2_upperA],
+                         [self.branch2_lowerC, self.branch2_modeC, self.branch2_upperA],
+                         [self.branch2_lowerD, self.branch2_modeD, self.branch2_upperA],
+                         [self.branch2_lowerE, self.branch2_modeE, self.branch2_upperA],
+                         [self.branch2_lowerF, self.branch2_modeF, self.branch2_upperA],
+                         [self.branch2_lowerG, self.branch2_modeG, self.branch2_upperA]
+                         ]
                     epsilon = 0.001
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.lowers__ranges, self.modes__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p1 - p2 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[0]-pi[1]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss += penalty
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.modes__ranges, self.uppers__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p2 - p3 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[1]-pi[2]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss += penalty
         gradients_branch1 = tape.gradient(loss, self.model_branch1.trainable_variables)
         if self.model_branch1.optimizer is None:
-            self.model_branch1.optimizer = self.optimizer[0]
+            try:
+                self.model_branch1.optimizer = self.optimizer[0]
+            except TypeError:
+                self.model_branch1.optimizer = self.optimizer
         if self.domain_randomization and self.optimize:
-            gradients_branch2 = tape.gradient(loss, self.model_branch2.trainable_variables)
+            gradients_branch2 = tape.gradient(loss, self.model_branch2.get_trainable_variables())
             if self.model_branch2.optimizer is None:
                 self.model_branch2.optimizer = self.optimizer[1]
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         self.model_branch1.optimizer.apply_gradients(zip(gradients_branch1, self.model_branch1.trainable_variables))
         if self.domain_randomization and self.optimize:
-            self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.trainable_variables))
+            self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.get_trainable_variables()))
         del tape
         return {"loss": loss}
 
@@ -419,9 +1002,7 @@ class ResNet2__0(keras.Model):
             if domain_randomization.optimize:
                 self.optimize = True
 
-                self.branch2_flatten = keras.layers.Flatten()
-                self.branch2_dense1 = keras.layers.Dense(128, activation='relu')
-                self.branch2_dense2 = keras.layers.Dense(64, activation='relu')
+                self.model_branch2 = Branch(name="Random Distribution parameters branch")
 
                 if domain_randomization.mode == "uniform":
                     if domain_randomization.lowers__ranges is None:
@@ -432,10 +1013,144 @@ class ResNet2__0(keras.Model):
                         self.uppers__ranges = set_parameters__ranges("uniform", "uppers")
                     else:
                         self.uppers__ranges = domain_randomization.uppers__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.lowers__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.uppers__ranges))
+                    if domain_randomization.lowers__initials is None:
+                        self.lowers__initials = set_parameters__initials("uniform", "lowers", self.lowers__ranges)
+                    else:
+                        self.lowers__initials = domain_randomization.lowers__initials
+                    if domain_randomization.uppers__initials is None:
+                        self.uppers__initials = set_parameters__initials("uniform", "uppers", self.uppers__ranges)
+                    else:
+                        self.uppers__initials = domain_randomization.uppers__initials
+
+                    self.branch2_lowerA = tf.Variable(
+                        initial_value=self.lowers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[0][0],
+                            max_value=self.lowers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_lowerB = tf.Variable(
+                        initial_value=self.lowers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[1][0],
+                            max_value=self.lowers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_lowerC = tf.Variable(
+                        initial_value=self.lowers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[2][0],
+                            max_value=self.lowers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_lowerD = tf.Variable(
+                        initial_value=self.lowers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[3][0],
+                            max_value=self.lowers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_lowerE = tf.Variable(
+                        initial_value=self.lowers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[4][0],
+                            max_value=self.lowers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_lowerF = tf.Variable(
+                        initial_value=self.lowers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[5][0],
+                            max_value=self.lowers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_lowerG = tf.Variable(
+                        initial_value=self.lowers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[6][0],
+                            max_value=self.lowers__ranges[6][1]
+                        )
+                    )
+                    self.branch2_upperA = tf.Variable(
+                        initial_value=self.uppers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[0][0],
+                            max_value=self.uppers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_upperB = tf.Variable(
+                        initial_value=self.uppers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[1][0],
+                            max_value=self.uppers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_upperC = tf.Variable(
+                        initial_value=self.uppers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[2][0],
+                            max_value=self.uppers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_upperD = tf.Variable(
+                        initial_value=self.uppers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[3][0],
+                            max_value=self.uppers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_upperE = tf.Variable(
+                        initial_value=self.uppers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[4][0],
+                            max_value=self.uppers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_upperF = tf.Variable(
+                        initial_value=self.uppers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[5][0],
+                            max_value=self.uppers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_upperG = tf.Variable(
+                        initial_value=self.uppers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[6][0],
+                            max_value=self.uppers__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_lowerA,
+                        self.branch2_lowerB,
+                        self.branch2_lowerC,
+                        self.branch2_lowerD,
+                        self.branch2_lowerE,
+                        self.branch2_lowerF,
+                        self.branch2_lowerG
+                    ]+[
+                        self.branch2_upperA,
+                        self.branch2_upperB,
+                        self.branch2_upperC,
+                        self.branch2_upperD,
+                        self.branch2_upperE,
+                        self.branch2_upperF,
+                        self.branch2_upperG
+                    ])
                 elif domain_randomization.mode == "triangular":
                     if domain_randomization.lowers__ranges is None:
                         self.lowers__ranges = set_parameters__ranges("triangular", "lowers")
@@ -449,12 +1164,212 @@ class ResNet2__0(keras.Model):
                         self.uppers__ranges = set_parameters__ranges("triangular", "uppers")
                     else:
                         self.uppers__ranges = domain_randomization.uppers__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.lowers__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.modes__ranges))
-                    self.branch2_dense3c = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.uppers__ranges))
+                    if domain_randomization.lowers__initials is None:
+                        self.lowers__initials = set_parameters__initials("triangular", "lowers", self.lowers__ranges)
+                    else:
+                        self.lowers__initials = domain_randomization.lowers__initials
+                    if domain_randomization.modes__initials is None:
+                        self.modes__initials = set_parameters__initials("triangular", "modes", self.modes__ranges)
+                    else:
+                        self.modes__initials = domain_randomization.modes__initials
+                    if domain_randomization.uppers__initials is None:
+                        self.uppers__initials = set_parameters__initials("triangular", "uppers", self.uppers__ranges)
+                    else:
+                        self.uppers__initials = domain_randomization.uppers__initials
+
+                    self.branch2_lowerA = tf.Variable(
+                        initial_value=self.lowers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[0][0],
+                            max_value=self.lowers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_lowerB = tf.Variable(
+                        initial_value=self.lowers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[1][0],
+                            max_value=self.lowers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_lowerC = tf.Variable(
+                        initial_value=self.lowers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[2][0],
+                            max_value=self.lowers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_lowerD = tf.Variable(
+                        initial_value=self.lowers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[3][0],
+                            max_value=self.lowers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_lowerE = tf.Variable(
+                        initial_value=self.lowers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[4][0],
+                            max_value=self.lowers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_lowerF = tf.Variable(
+                        initial_value=self.lowers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[5][0],
+                            max_value=self.lowers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_lowerG = tf.Variable(
+                        initial_value=self.lowers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[6][0],
+                            max_value=self.lowers__ranges[6][1]
+                        )
+                    )
+                    self.branch2_modeA = tf.Variable(
+                        initial_value=self.modes__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[0][0],
+                            max_value=self.modes__ranges[0][1]
+                        )
+                    )
+                    self.branch2_modeB = tf.Variable(
+                        initial_value=self.modes__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[1][0],
+                            max_value=self.modes__ranges[1][1]
+                        )
+                    )
+                    self.branch2_modeC = tf.Variable(
+                        initial_value=self.modes__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[2][0],
+                            max_value=self.modes__ranges[2][1]
+                        )
+                    )
+                    self.branch2_modeD = tf.Variable(
+                        initial_value=self.modes__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[3][0],
+                            max_value=self.modes__ranges[3][1]
+                        )
+                    )
+                    self.branch2_modeE = tf.Variable(
+                        initial_value=self.modes__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[4][0],
+                            max_value=self.modes__ranges[4][1]
+                        )
+                    )
+                    self.branch2_modeF = tf.Variable(
+                        initial_value=self.modes__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[5][0],
+                            max_value=self.modes__ranges[5][1]
+                        )
+                    )
+                    self.branch2_modeG = tf.Variable(
+                        initial_value=self.modes__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[6][0],
+                            max_value=self.modes__ranges[6][1]
+                        )
+                    )
+                    self.branch2_upperA = tf.Variable(
+                        initial_value=self.uppers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[0][0],
+                            max_value=self.uppers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_upperB = tf.Variable(
+                        initial_value=self.uppers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[1][0],
+                            max_value=self.uppers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_upperC = tf.Variable(
+                        initial_value=self.uppers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[2][0],
+                            max_value=self.uppers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_upperD = tf.Variable(
+                        initial_value=self.uppers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[3][0],
+                            max_value=self.uppers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_upperE = tf.Variable(
+                        initial_value=self.uppers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[4][0],
+                            max_value=self.uppers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_upperF = tf.Variable(
+                        initial_value=self.uppers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[5][0],
+                            max_value=self.uppers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_upperG = tf.Variable(
+                        initial_value=self.uppers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[6][0],
+                            max_value=self.uppers__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_lowerA,
+                        self.branch2_lowerB,
+                        self.branch2_lowerC,
+                        self.branch2_lowerD,
+                        self.branch2_lowerE,
+                        self.branch2_lowerF,
+                        self.branch2_lowerG
+                    ]+[
+                        self.branch2_modeA,
+                        self.branch2_modeB,
+                        self.branch2_modeC,
+                        self.branch2_modeD,
+                        self.branch2_modeE,
+                        self.branch2_modeF,
+                        self.branch2_modeG
+                    ]+[
+                        self.branch2_upperA,
+                        self.branch2_upperB,
+                        self.branch2_upperC,
+                        self.branch2_upperD,
+                        self.branch2_upperE,
+                        self.branch2_upperF,
+                        self.branch2_upperG
+                    ])
                 elif domain_randomization.mode == "univariate normal":
                     if domain_randomization.means__ranges is None:
                         self.means__ranges = set_parameters__ranges("univariatenormal", "means")
@@ -464,10 +1379,144 @@ class ResNet2__0(keras.Model):
                         self.variances__ranges = set_parameters__ranges("univariatenormal", "variances")
                     else:
                         self.variances__ranges = domain_randomization.variances__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.means__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.variances__ranges))
+                    if domain_randomization.means__initials is None:
+                        self.means__initials = set_parameters__initials("univariatenormal", "means", self.means__ranges)
+                    else:
+                        self.means__initials = domain_randomization.means__initials
+                    if domain_randomization.variances__initials is None:
+                        self.variances__initials = set_parameters__initials("univariatenormal", "variances", self.variances__ranges)
+                    else:
+                        self.variances__initials = domain_randomization.variances__initials
+
+                    self.branch2_meanA = tf.Variable(
+                        initial_value=self.means__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[0][0],
+                            max_value=self.means__ranges[0][1]
+                        )
+                    )
+                    self.branch2_meanB = tf.Variable(
+                        initial_value=self.means__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[1][0],
+                            max_value=self.means__ranges[1][1]
+                        )
+                    )
+                    self.branch2_meanC = tf.Variable(
+                        initial_value=self.means__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[2][0],
+                            max_value=self.means__ranges[2][1]
+                        )
+                    )
+                    self.branch2_meanD = tf.Variable(
+                        initial_value=self.means__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[3][0],
+                            max_value=self.means__ranges[3][1]
+                        )
+                    )
+                    self.branch2_meanE = tf.Variable(
+                        initial_value=self.means__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[4][0],
+                            max_value=self.means__ranges[4][1]
+                        )
+                    )
+                    self.branch2_meanF = tf.Variable(
+                        initial_value=self.means__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[5][0],
+                            max_value=self.means__ranges[5][1]
+                        )
+                    )
+                    self.branch2_meanG = tf.Variable(
+                        initial_value=self.means__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[6][0],
+                            max_value=self.means__ranges[6][1]
+                        )
+                    )
+                    self.branch2_varianceA = tf.Variable(
+                        initial_value=self.variances__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[0][0],
+                            max_value=self.variances__ranges[0][1]
+                        )
+                    )
+                    self.branch2_varianceB = tf.Variable(
+                        initial_value=self.variances__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[1][0],
+                            max_value=self.variances__ranges[1][1]
+                        )
+                    )
+                    self.branch2_varianceC = tf.Variable(
+                        initial_value=self.variances__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[2][0],
+                            max_value=self.variances__ranges[2][1]
+                        )
+                    )
+                    self.branch2_varianceD = tf.Variable(
+                        initial_value=self.variances__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[3][0],
+                            max_value=self.variances__ranges[3][1]
+                        )
+                    )
+                    self.branch2_varianceE = tf.Variable(
+                        initial_value=self.variances__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[4][0],
+                            max_value=self.variances__ranges[4][1]
+                        )
+                    )
+                    self.branch2_varianceF = tf.Variable(
+                        initial_value=self.variances__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[5][0],
+                            max_value=self.variances__ranges[5][1]
+                        )
+                    )
+                    self.branch2_varianceG = tf.Variable(
+                        initial_value=self.variances__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[6][0],
+                            max_value=self.variances__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_meanA,
+                        self.branch2_meanB,
+                        self.branch2_meanC,
+                        self.branch2_meanD,
+                        self.branch2_meanE,
+                        self.branch2_meanF,
+                        self.branch2_meanG
+                    ]+[
+                        self.branch2_varianceA,
+                        self.branch2_varianceB,
+                        self.branch2_varianceC,
+                        self.branch2_varianceD,
+                        self.branch2_varianceE,
+                        self.branch2_varianceF,
+                        self.branch2_varianceG
+                    ])
                 elif domain_randomization.mode == "multivariate normal":
                     if domain_randomization.mean_vector__ranges is None:
                         self.mean_vector__ranges = set_parameters__ranges("multivariatenormal", "mean vector")
@@ -481,24 +1530,47 @@ class ResNet2__0(keras.Model):
                     # [self.variancecovariance_matrix__ranges[k] for k in [i * (i + 1) // 2 + j for i in range(len(parameters_name)) for j in range(i + 1) if i==j]]
                     #self.variancecovariance_matrix__ranges___offDiagonal =
                     # [el for k, el in enumerate(self.variancecovariance_matrix__ranges) if k not in [i * (i + 1) // 2 + j for i in range(len(parameters_name)) for j in range(i + 1) if i==j]]
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.mean_vector__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=int(0.5*(len(domain_randomization.get_parameters_list())*(len(domain_randomization.get_parameters_list())-1)))+len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.variancecovariance_matrix__ranges))
+                    if domain_randomization.mean_vector__initials is None:
+                        self.mean_vector__initials = set_parameters__initials("multivariatenormal", "mean vector", self.mean_vector__ranges)
+                    else:
+                        self.mean_vector__initials = domain_randomization.mean_vector__initials
+                    if domain_randomization.variancecovariance_matrix__initials is None:
+                        self.variancecovariance_matrix__initials = set_parameters__initials("multivariatenormal", "variancecovariance_matrix", self.variancecovariance_matrix__ranges)
+                    else:
+                        self.variancecovariance_matrix__initials = domain_randomization.variancecovariance_matrix__initials
+                    self.branch2_mean_vector = tf.Variable(
+                        initial_value=self.mean_vector__initials,
+                        dtype=tf.float32,
+                        constraint = [
+                            keras.constraints.MinMaxNorm(
+                                min_value=self.mean_vector__ranges[i][0],
+                                max_value=self.mean_vector__ranges[i][1]
+                            )
+                            for i in range(len(self.mean_vector__initials))
+                        ]
+                    )
+                    self.branch2_variancecovariance_matrix = tfp.math.fill_triangular(
+                        tf.Variable(
+                            initial_value=scaleAndFlat_matrix(
+                                np.array(self.variancecovariance_matrix__initials)
+                                # cholesky factorization of the matrix and flatten (spiral) version
+                            ),
+                            dtype=tf.float32,
+                            constraint = [
+                                keras.constraints.MinMaxNorm(
+                                    min_value=self.mean_vector__ranges[i][0],
+                                    max_value=self.mean_vector__ranges[i][1]
+                                )
+                                for i in spiral_flat_from_progressive(range(len(self.variancecovariance_matrix__initials)))
+                                # mapping of indexes from progressive (flat) representation to spiral flat representation
+                            ]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_mean_vector,
+                        self.branch2_variancecovariance_matrix,
+                    ])
 
-                inputs = keras.layers.Input(shape=input_shape)
-                x = self.branch2_flatten(inputs)
-                x = self.branch2_dense1(x)
-                x = self.branch2_dense2(x)
-                self.branch2_y1 = self.branch2_dense3a(x)
-                self.branch2_y2 = self.branch2_dense3b(x)
-                if domain_randomization.mode == "triangular":
-                    self.branch2_y3 = self.branch2_dense3c(x)
-
-                if domain_randomization.mode != "triangular":
-                    self.model_branch2 = Branch(inputs=inputs, outputs=[self.branch2_y1, self.branch2_y2], name="Random Distribution parameters branch")
-                else:
-                    self.model_branch2 = Branch(inputs=inputs, outputs=[self.branch2_y1, self.branch2_y2, self.branch2_y3], name="Random Distribution parameters branch")
                 self.model_branch2.optimizer = None
 
 
@@ -515,7 +1587,7 @@ class ResNet2__0(keras.Model):
                     self.branch1_random_jpeg_quality = r_uniform_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_uniform_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.lowers is not None:
@@ -545,7 +1617,7 @@ class ResNet2__0(keras.Model):
                     self.branch1_random_jpeg_quality = r_triangular_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_triangular_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.lowers is not None:
@@ -577,7 +1649,7 @@ class ResNet2__0(keras.Model):
                     self.branch1_random_jpeg_quality = r_univariatenormal_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_univariatenormal_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.means is not None:
@@ -601,7 +1673,7 @@ class ResNet2__0(keras.Model):
                     params["seed"] = domain_randomization.seed
                     self.branch1_random_parameters = r_multivariatenormal_opt.layers.RandomParameters(**params)
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params["mean_vector"] = domain_randomization.mean_vector
                     params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
                     params["factors"] = domain_randomization.factors
@@ -624,43 +1696,115 @@ class ResNet2__0(keras.Model):
             data = inputs
         if self.domain_randomization:
             if self.optimize and training:
-                x = self.branch2_flatten(data)
-                x = self.branch2_dense1(x)
-                x = self.branch2_dense2(x)
-                y1 = self.branch2_dense3a(x)
-                y2 = self.branch2_dense3b(x)
-                try:
-                    y3 = self.branch2_dense3c(x)
-                except AttributeError:
-                    y3 = None
-                try:
+                try: # self.domain_randomization__mode == "multivariate normal"
                     dr = self.branch1_random_parameters
-                    mean_vector = np.array(y1)
-                    variancecovariance_matrix = np.array(fill_matrix(np.array(y2)))
-                    data = dr(data, mean_vector, variancecovariance_matrix)
+                    sampled_params = tfp.distributions.MultivariateNormalTriL(
+                        loc=self.branch2_mean_vector,
+                        scale_tril=self.branch2_variancecovariance_matrix
+                    ).sample(sample_shape=(data.shape[0],)).numpy()
+                    data = dr(data, values=sampled_params, rand=False)
                 except AttributeError:
-                    p1 = np.array(y1)
-                    p2 = np.array(y2)
-                    if y3 is not None:
-                        p3 = np.array(y3)
-                    else:
-                        p3 = None
-                    if p3 is None:
-                        data = self.branch1_random_brightness(data, p1, p2)
-                        data = self.branch1_random_contrast(data, p1, p2)
-                        data = self.branch1_random_horizontally_flip(data, p1, p2)
-                        data = self.branch1_random_vertically_flip(data, p1, p2)
-                        data = self.branch1_random_hue(data, p1, p2)
-                        data = self.branch1_random_jpeg_quality(data, p1, p2)
-                        data = self.branch1_random_saturation(data, p1, p2)
-                    else:
-                        data = self.branch1_random_brightness(data, p1, p2, p3)
-                        data = self.branch1_random_contrast(data, p1, p2, p3)
-                        data = self.branch1_random_horizontally_flip(data, p1, p2, p3)
-                        data = self.branch1_random_vertically_flip(data, p1, p2, p3)
-                        data = self.branch1_random_hue(data, p1, p2, p3)
-                        data = self.branch1_random_jpeg_quality(data, p1, p2, p3)
-                        data = self.branch1_random_saturation(data, p1, p2, p3)
+                    if self.domain_randomization__mode == "uniform":
+                        sampled_paramA = tfp.distributions.Uniform(
+                            low=self.branch2_lowerA,
+                            high=self.branch2_upperA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = tfp.distributions.Uniform(
+                            low=self.branch2_lowerB,
+                            high=self.branch2_upperB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = tfp.distributions.Uniform(
+                            low=self.branch2_lowerC,
+                            high=self.branch2_upperC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = tfp.distributions.Uniform(
+                            low=self.branch2_lowerD,
+                            high=self.branch2_upperD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = tfp.distributions.Uniform(
+                            low=self.branch2_lowerE,
+                            high=self.branch2_upperE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = tfp.distributions.Uniform(
+                            low=self.branch2_lowerF,
+                            high=self.branch2_upperF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = tfp.distributions.Uniform(
+                            low=self.branch2_lowerG,
+                            high=self.branch2_upperG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    if self.domain_randomization__mode == "triangular":
+                        sampled_paramA = Triangular(
+                            low=self.branch2_lowerA,
+                            mode=self.branch2_modeA,
+                            high=self.branch2_upperA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = Triangular(
+                            low=self.branch2_lowerB,
+                            mode=self.branch2_modeB,
+                            high=self.branch2_upperB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = Triangular(
+                            low=self.branch2_lowerC,
+                            mode=self.branch2_modeC,
+                            high=self.branch2_upperC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = Triangular(
+                            low=self.branch2_lowerD,
+                            mode=self.branch2_modeD,
+                            high=self.branch2_upperD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = Triangular(
+                            low=self.branch2_lowerE,
+                            mode=self.branch2_modeE,
+                            high=self.branch2_upperE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = Triangular(
+                            low=self.branch2_lowerF,
+                            mode=self.branch2_modeF,
+                            high=self.branch2_upperF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = Triangular(
+                            low=self.branch2_lowerG,
+                            mode=self.branch2_modeG,
+                            high=self.branch2_upperG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    if self.domain_randomization__mode == "univariate normal":
+                        sampled_paramA = tfp.distributions.Normal(
+                            loc=self.branch2_meanA,
+                            scale=self.branch2_varianceA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = tfp.distributions.Normal(
+                            loc=self.branch2_meanB,
+                            scale=self.branch2_varianceB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = tfp.distributions.Normal(
+                            loc=self.branch2_meanC,
+                            scale=self.branch2_varianceC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = tfp.distributions.Normal(
+                            loc=self.branch2_meanD,
+                            scale=self.branch2_varianceD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = tfp.distributions.Normal(
+                            loc=self.branch2_meanE,
+                            scale=self.branch2_varianceE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = tfp.distributions.Normal(
+                            loc=self.branch2_meanF,
+                            scale=self.branch2_varianceF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = tfp.distributions.Normal(
+                            loc=self.branch2_meanG,
+                            scale=self.branch2_varianceG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False)
+                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False)
+                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False)
+                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False)
+                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False)
+                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False)
+                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False)
             else:
                 try:
                     dr = self.branch1_random_parameters
@@ -691,16 +1835,23 @@ class ResNet2__0(keras.Model):
                         data = imgs[self.field]
                     except KeyError:
                         data = imgs
-                    p = self.model_branch2(data)
-                    p1 = p[0]
-                    p2 = p[1]
+                    p = [[self.branch2_lowerA, self.branch2_upperA],
+                         [self.branch2_lowerB, self.branch2_upperB],
+                         [self.branch2_lowerC, self.branch2_upperC],
+                         [self.branch2_lowerD, self.branch2_upperD],
+                         [self.branch2_lowerE, self.branch2_upperE],
+                         [self.branch2_lowerF, self.branch2_upperF],
+                         [self.branch2_lowerG, self.branch2_upperG]
+                         ]
                     epsilon = 0.001
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.lowers__ranges, self.uppers__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p1 - p2 + epsilon),
-                                             axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[0]-pi[1]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss = loss+penalty
                 if self.domain_randomization__mode == "triangular":
                     # constraints: lowers<=modes, modes<=uppers
@@ -708,37 +1859,48 @@ class ResNet2__0(keras.Model):
                         data = imgs[self.field]
                     except KeyError:
                         data = imgs
-                    p = self.model_branch2(data)
-                    p1 = p[0]
-                    p2 = p[1]
-                    p3 = p[2]
+                    p = [[self.branch2_lowerA, self.branch2_modeA, self.branch2_upperA],
+                         [self.branch2_lowerB, self.branch2_modeB, self.branch2_upperA],
+                         [self.branch2_lowerC, self.branch2_modeC, self.branch2_upperA],
+                         [self.branch2_lowerD, self.branch2_modeD, self.branch2_upperA],
+                         [self.branch2_lowerE, self.branch2_modeE, self.branch2_upperA],
+                         [self.branch2_lowerF, self.branch2_modeF, self.branch2_upperA],
+                         [self.branch2_lowerG, self.branch2_modeG, self.branch2_upperA]
+                         ]
                     epsilon = 0.001
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.lowers__ranges, self.modes__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p1 - p2 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[0]-pi[1]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss += penalty
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.modes__ranges, self.uppers__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p2 - p3 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[1]-pi[2]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss += penalty
         gradients_branch1 = tape.gradient(loss, self.model_branch1.trainable_variables)
         if self.model_branch1.optimizer is None:
-            self.model_branch1.optimizer = self.optimizer[0]
+            try:
+                self.model_branch1.optimizer = self.optimizer[0]
+            except TypeError:
+                self.model_branch1.optimizer = self.optimizer
         if self.domain_randomization and self.optimize:
-            gradients_branch2 = tape.gradient(loss, self.model_branch2.trainable_variables)
+            gradients_branch2 = tape.gradient(loss, self.model_branch2.get_trainable_variables())
             if self.model_branch2.optimizer is None:
                 self.model_branch2.optimizer = self.optimizer[1]
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         self.model_branch1.optimizer.apply_gradients(zip(gradients_branch1, self.model_branch1.trainable_variables))
         if self.domain_randomization and self.optimize:
-            self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.trainable_variables))
+            self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.get_trainable_variables()))
         del tape
         return {"loss": loss}
 
@@ -769,9 +1931,7 @@ class ResNet2__1(keras.Model):
             if domain_randomization.optimize:
                 self.optimize = True
 
-                self.branch2_flatten = keras.layers.Flatten()
-                self.branch2_dense1 = keras.layers.Dense(128, activation='relu')
-                self.branch2_dense2 = keras.layers.Dense(64, activation='relu')
+                self.model_branch2 = Branch(name="Random Distribution parameters branch")
 
                 if domain_randomization.mode == "uniform":
                     if domain_randomization.lowers__ranges is None:
@@ -782,10 +1942,144 @@ class ResNet2__1(keras.Model):
                         self.uppers__ranges = set_parameters__ranges("uniform", "uppers")
                     else:
                         self.uppers__ranges = domain_randomization.uppers__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.lowers__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.uppers__ranges))
+                    if domain_randomization.lowers__initials is None:
+                        self.lowers__initials = set_parameters__initials("uniform", "lowers", self.lowers__ranges)
+                    else:
+                        self.lowers__initials = domain_randomization.lowers__initials
+                    if domain_randomization.uppers__initials is None:
+                        self.uppers__initials = set_parameters__initials("uniform", "uppers", self.uppers__ranges)
+                    else:
+                        self.uppers__initials = domain_randomization.uppers__initials
+
+                    self.branch2_lowerA = tf.Variable(
+                        initial_value=self.lowers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[0][0],
+                            max_value=self.lowers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_lowerB = tf.Variable(
+                        initial_value=self.lowers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[1][0],
+                            max_value=self.lowers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_lowerC = tf.Variable(
+                        initial_value=self.lowers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[2][0],
+                            max_value=self.lowers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_lowerD = tf.Variable(
+                        initial_value=self.lowers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[3][0],
+                            max_value=self.lowers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_lowerE = tf.Variable(
+                        initial_value=self.lowers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[4][0],
+                            max_value=self.lowers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_lowerF = tf.Variable(
+                        initial_value=self.lowers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[5][0],
+                            max_value=self.lowers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_lowerG = tf.Variable(
+                        initial_value=self.lowers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[6][0],
+                            max_value=self.lowers__ranges[6][1]
+                        )
+                    )
+                    self.branch2_upperA = tf.Variable(
+                        initial_value=self.uppers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[0][0],
+                            max_value=self.uppers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_upperB = tf.Variable(
+                        initial_value=self.uppers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[1][0],
+                            max_value=self.uppers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_upperC = tf.Variable(
+                        initial_value=self.uppers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[2][0],
+                            max_value=self.uppers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_upperD = tf.Variable(
+                        initial_value=self.uppers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[3][0],
+                            max_value=self.uppers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_upperE = tf.Variable(
+                        initial_value=self.uppers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[4][0],
+                            max_value=self.uppers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_upperF = tf.Variable(
+                        initial_value=self.uppers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[5][0],
+                            max_value=self.uppers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_upperG = tf.Variable(
+                        initial_value=self.uppers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[6][0],
+                            max_value=self.uppers__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                                                         self.branch2_lowerA,
+                                                         self.branch2_lowerB,
+                                                         self.branch2_lowerC,
+                                                         self.branch2_lowerD,
+                                                         self.branch2_lowerE,
+                                                         self.branch2_lowerF,
+                                                         self.branch2_lowerG
+                                                     ]+[
+                                                         self.branch2_upperA,
+                                                         self.branch2_upperB,
+                                                         self.branch2_upperC,
+                                                         self.branch2_upperD,
+                                                         self.branch2_upperE,
+                                                         self.branch2_upperF,
+                                                         self.branch2_upperG
+                                                     ])
                 elif domain_randomization.mode == "triangular":
                     if domain_randomization.lowers__ranges is None:
                         self.lowers__ranges = set_parameters__ranges("triangular", "lowers")
@@ -799,12 +2093,212 @@ class ResNet2__1(keras.Model):
                         self.uppers__ranges = set_parameters__ranges("triangular", "uppers")
                     else:
                         self.uppers__ranges = domain_randomization.uppers__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.lowers__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.modes__ranges))
-                    self.branch2_dense3c = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.uppers__ranges))
+                    if domain_randomization.lowers__initials is None:
+                        self.lowers__initials = set_parameters__initials("triangular", "lowers", self.lowers__ranges)
+                    else:
+                        self.lowers__initials = domain_randomization.lowers__initials
+                    if domain_randomization.modes__initials is None:
+                        self.modes__initials = set_parameters__initials("triangular", "modes", self.modes__ranges)
+                    else:
+                        self.modes__initials = domain_randomization.modes__initials
+                    if domain_randomization.uppers__initials is None:
+                        self.uppers__initials = set_parameters__initials("triangular", "uppers", self.uppers__ranges)
+                    else:
+                        self.uppers__initials = domain_randomization.uppers__initials
+
+                    self.branch2_lowerA = tf.Variable(
+                        initial_value=self.lowers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[0][0],
+                            max_value=self.lowers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_lowerB = tf.Variable(
+                        initial_value=self.lowers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[1][0],
+                            max_value=self.lowers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_lowerC = tf.Variable(
+                        initial_value=self.lowers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[2][0],
+                            max_value=self.lowers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_lowerD = tf.Variable(
+                        initial_value=self.lowers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[3][0],
+                            max_value=self.lowers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_lowerE = tf.Variable(
+                        initial_value=self.lowers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[4][0],
+                            max_value=self.lowers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_lowerF = tf.Variable(
+                        initial_value=self.lowers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[5][0],
+                            max_value=self.lowers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_lowerG = tf.Variable(
+                        initial_value=self.lowers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.lowers__ranges[6][0],
+                            max_value=self.lowers__ranges[6][1]
+                        )
+                    )
+                    self.branch2_modeA = tf.Variable(
+                        initial_value=self.modes__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[0][0],
+                            max_value=self.modes__ranges[0][1]
+                        )
+                    )
+                    self.branch2_modeB = tf.Variable(
+                        initial_value=self.modes__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[1][0],
+                            max_value=self.modes__ranges[1][1]
+                        )
+                    )
+                    self.branch2_modeC = tf.Variable(
+                        initial_value=self.modes__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[2][0],
+                            max_value=self.modes__ranges[2][1]
+                        )
+                    )
+                    self.branch2_modeD = tf.Variable(
+                        initial_value=self.modes__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[3][0],
+                            max_value=self.modes__ranges[3][1]
+                        )
+                    )
+                    self.branch2_modeE = tf.Variable(
+                        initial_value=self.modes__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[4][0],
+                            max_value=self.modes__ranges[4][1]
+                        )
+                    )
+                    self.branch2_modeF = tf.Variable(
+                        initial_value=self.modes__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[5][0],
+                            max_value=self.modes__ranges[5][1]
+                        )
+                    )
+                    self.branch2_modeG = tf.Variable(
+                        initial_value=self.modes__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.modes__ranges[6][0],
+                            max_value=self.modes__ranges[6][1]
+                        )
+                    )
+                    self.branch2_upperA = tf.Variable(
+                        initial_value=self.uppers__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[0][0],
+                            max_value=self.uppers__ranges[0][1]
+                        )
+                    )
+                    self.branch2_upperB = tf.Variable(
+                        initial_value=self.uppers__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[1][0],
+                            max_value=self.uppers__ranges[1][1]
+                        )
+                    )
+                    self.branch2_upperC = tf.Variable(
+                        initial_value=self.uppers__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[2][0],
+                            max_value=self.uppers__ranges[2][1]
+                        )
+                    )
+                    self.branch2_upperD = tf.Variable(
+                        initial_value=self.uppers__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[3][0],
+                            max_value=self.uppers__ranges[3][1]
+                        )
+                    )
+                    self.branch2_upperE = tf.Variable(
+                        initial_value=self.uppers__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[4][0],
+                            max_value=self.uppers__ranges[4][1]
+                        )
+                    )
+                    self.branch2_upperF = tf.Variable(
+                        initial_value=self.uppers__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[5][0],
+                            max_value=self.uppers__ranges[5][1]
+                        )
+                    )
+                    self.branch2_upperG = tf.Variable(
+                        initial_value=self.uppers__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.uppers__ranges[6][0],
+                            max_value=self.uppers__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                                                         self.branch2_lowerA,
+                                                         self.branch2_lowerB,
+                                                         self.branch2_lowerC,
+                                                         self.branch2_lowerD,
+                                                         self.branch2_lowerE,
+                                                         self.branch2_lowerF,
+                                                         self.branch2_lowerG
+                                                     ]+[
+                                                         self.branch2_modeA,
+                                                         self.branch2_modeB,
+                                                         self.branch2_modeC,
+                                                         self.branch2_modeD,
+                                                         self.branch2_modeE,
+                                                         self.branch2_modeF,
+                                                         self.branch2_modeG
+                                                     ]+[
+                                                         self.branch2_upperA,
+                                                         self.branch2_upperB,
+                                                         self.branch2_upperC,
+                                                         self.branch2_upperD,
+                                                         self.branch2_upperE,
+                                                         self.branch2_upperF,
+                                                         self.branch2_upperG
+                                                     ])
                 elif domain_randomization.mode == "univariate normal":
                     if domain_randomization.means__ranges is None:
                         self.means__ranges = set_parameters__ranges("univariatenormal", "means")
@@ -814,10 +2308,144 @@ class ResNet2__1(keras.Model):
                         self.variances__ranges = set_parameters__ranges("univariatenormal", "variances")
                     else:
                         self.variances__ranges = domain_randomization.variances__ranges
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.means__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.variances__ranges))
+                    if domain_randomization.means__initials is None:
+                        self.means__initials = set_parameters__initials("univariatenormal", "means", self.means__ranges)
+                    else:
+                        self.means__initials = domain_randomization.means__initials
+                    if domain_randomization.variances__initials is None:
+                        self.variances__initials = set_parameters__initials("univariatenormal", "variances", self.variances__ranges)
+                    else:
+                        self.variances__initials = domain_randomization.variances__initials
+
+                    self.branch2_meanA = tf.Variable(
+                        initial_value=self.means__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[0][0],
+                            max_value=self.means__ranges[0][1]
+                        )
+                    )
+                    self.branch2_meanB = tf.Variable(
+                        initial_value=self.means__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[1][0],
+                            max_value=self.means__ranges[1][1]
+                        )
+                    )
+                    self.branch2_meanC = tf.Variable(
+                        initial_value=self.means__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[2][0],
+                            max_value=self.means__ranges[2][1]
+                        )
+                    )
+                    self.branch2_meanD = tf.Variable(
+                        initial_value=self.means__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[3][0],
+                            max_value=self.means__ranges[3][1]
+                        )
+                    )
+                    self.branch2_meanE = tf.Variable(
+                        initial_value=self.means__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[4][0],
+                            max_value=self.means__ranges[4][1]
+                        )
+                    )
+                    self.branch2_meanF = tf.Variable(
+                        initial_value=self.means__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[5][0],
+                            max_value=self.means__ranges[5][1]
+                        )
+                    )
+                    self.branch2_meanG = tf.Variable(
+                        initial_value=self.means__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.means__ranges[6][0],
+                            max_value=self.means__ranges[6][1]
+                        )
+                    )
+                    self.branch2_varianceA = tf.Variable(
+                        initial_value=self.variances__initials[0],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[0][0],
+                            max_value=self.variances__ranges[0][1]
+                        )
+                    )
+                    self.branch2_varianceB = tf.Variable(
+                        initial_value=self.variances__initials[1],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[1][0],
+                            max_value=self.variances__ranges[1][1]
+                        )
+                    )
+                    self.branch2_varianceC = tf.Variable(
+                        initial_value=self.variances__initials[2],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[2][0],
+                            max_value=self.variances__ranges[2][1]
+                        )
+                    )
+                    self.branch2_varianceD = tf.Variable(
+                        initial_value=self.variances__initials[3],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[3][0],
+                            max_value=self.variances__ranges[3][1]
+                        )
+                    )
+                    self.branch2_varianceE = tf.Variable(
+                        initial_value=self.variances__initials[4],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[4][0],
+                            max_value=self.variances__ranges[4][1]
+                        )
+                    )
+                    self.branch2_varianceF = tf.Variable(
+                        initial_value=self.variances__initials[5],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[5][0],
+                            max_value=self.variances__ranges[5][1]
+                        )
+                    )
+                    self.branch2_varianceG = tf.Variable(
+                        initial_value=self.variances__initials[6],
+                        dtype=tf.float32,
+                        constraint=keras.constraints.MinMaxNorm(
+                            min_value=self.variances__ranges[6][0],
+                            max_value=self.variances__ranges[6][1]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                                                         self.branch2_meanA,
+                                                         self.branch2_meanB,
+                                                         self.branch2_meanC,
+                                                         self.branch2_meanD,
+                                                         self.branch2_meanE,
+                                                         self.branch2_meanF,
+                                                         self.branch2_meanG
+                                                     ]+[
+                                                         self.branch2_varianceA,
+                                                         self.branch2_varianceB,
+                                                         self.branch2_varianceC,
+                                                         self.branch2_varianceD,
+                                                         self.branch2_varianceE,
+                                                         self.branch2_varianceF,
+                                                         self.branch2_varianceG
+                                                     ])
                 elif domain_randomization.mode == "multivariate normal":
                     if domain_randomization.mean_vector__ranges is None:
                         self.mean_vector__ranges = set_parameters__ranges("multivariatenormal", "mean vector")
@@ -831,24 +2459,47 @@ class ResNet2__1(keras.Model):
                     # [self.variancecovariance_matrix__ranges[k] for k in [i * (i + 1) // 2 + j for i in range(len(parameters_name)) for j in range(i + 1) if i==j]]
                     #self.variancecovariance_matrix__ranges___offDiagonal =
                     # [el for k, el in enumerate(self.variancecovariance_matrix__ranges) if k not in [i * (i + 1) // 2 + j for i in range(len(parameters_name)) for j in range(i + 1) if i==j]]
-                    self.branch2_dense3a = keras.layers.Dense(units=len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.mean_vector__ranges))
-                    self.branch2_dense3b = keras.layers.Dense(units=int(0.5*(len(domain_randomization.get_parameters_list())*(len(domain_randomization.get_parameters_list())-1)))+len(domain_randomization.get_parameters_list()),
-                                                              activation=lambda x: sigmoid_activation__withConstraints(x, self.variancecovariance_matrix__ranges))
+                    if domain_randomization.mean_vector__initials is None:
+                        self.mean_vector__initials = set_parameters__initials("multivariatenormal", "mean vector", self.mean_vector__ranges)
+                    else:
+                        self.mean_vector__initials = domain_randomization.mean_vector__initials
+                    if domain_randomization.variancecovariance_matrix__initials is None:
+                        self.variancecovariance_matrix__initials = set_parameters__initials("multivariatenormal", "variancecovariance_matrix", self.variancecovariance_matrix__ranges)
+                    else:
+                        self.variancecovariance_matrix__initials = domain_randomization.variancecovariance_matrix__initials
+                    self.branch2_mean_vector = tf.Variable(
+                        initial_value=self.mean_vector__initials,
+                        dtype=tf.float32,
+                        constraint = [
+                            keras.constraints.MinMaxNorm(
+                                min_value=self.mean_vector__ranges[i][0],
+                                max_value=self.mean_vector__ranges[i][1]
+                            )
+                            for i in range(len(self.mean_vector__initials))
+                        ]
+                    )
+                    self.branch2_variancecovariance_matrix = tfp.math.fill_triangular(
+                        tf.Variable(
+                            initial_value=scaleAndFlat_matrix(
+                                np.array(self.variancecovariance_matrix__initials)
+                                # cholesky factorization of the matrix and flatten (spiral) version
+                            ),
+                            dtype=tf.float32,
+                            constraint = [
+                                keras.constraints.MinMaxNorm(
+                                    min_value=self.mean_vector__ranges[i][0],
+                                    max_value=self.mean_vector__ranges[i][1]
+                                )
+                                for i in spiral_flat_from_progressive(range(len(self.variancecovariance_matrix__initials)))
+                                # mapping of indexes from progressive (flat) representation to spiral flat representation
+                            ]
+                        )
+                    )
+                    self.model_branch2.add_variables([
+                        self.branch2_mean_vector,
+                        self.branch2_variancecovariance_matrix,
+                    ])
 
-                inputs = keras.layers.Input(shape=input_shape)
-                x = self.branch2_flatten(inputs)
-                x = self.branch2_dense1(x)
-                x = self.branch2_dense2(x)
-                self.branch2_y1 = self.branch2_dense3a(x)
-                self.branch2_y2 = self.branch2_dense3b(x)
-                if domain_randomization.mode == "triangular":
-                    self.branch2_y3 = self.branch2_dense3c(x)
-
-                if domain_randomization.mode != "triangular":
-                    self.model_branch2 = Branch(inputs=inputs, outputs=[self.branch2_y1, self.branch2_y2], name="Random Distribution parameters branch")
-                else:
-                    self.model_branch2 = Branch(inputs=inputs, outputs=[self.branch2_y1, self.branch2_y2, self.branch2_y3], name="Random Distribution parameters branch")
                 self.model_branch2.optimizer = None
 
 
@@ -865,7 +2516,7 @@ class ResNet2__1(keras.Model):
                     self.branch1_random_jpeg_quality = r_uniform_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_uniform_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.lowers is not None:
@@ -895,7 +2546,7 @@ class ResNet2__1(keras.Model):
                     self.branch1_random_jpeg_quality = r_triangular_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_triangular_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.lowers is not None:
@@ -927,7 +2578,7 @@ class ResNet2__1(keras.Model):
                     self.branch1_random_jpeg_quality = r_univariatenormal_opt.layers.RandomJpegQuality(**(params["jpeg quality"]))
                     self.branch1_random_saturation = r_univariatenormal_opt.layers.RandomSaturation(**(params["saturation"]))
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params = {option: {} for option in parameters_name}
                     for option in parameters_name:
                         if domain_randomization.means is not None:
@@ -951,7 +2602,7 @@ class ResNet2__1(keras.Model):
                     params["seed"] = domain_randomization.seed
                     self.branch1_random_parameters = r_multivariatenormal_opt.layers.RandomParameters(**params)
                 else:
-                    self.domain_randomization.optimize = False
+                    self.optimize = False
                     params["mean_vector"] = domain_randomization.mean_vector
                     params["variancecovariance_matrix"] = domain_randomization.variancecovariance_matrix
                     params["factors"] = domain_randomization.factors
@@ -974,43 +2625,115 @@ class ResNet2__1(keras.Model):
             data = inputs
         if self.domain_randomization:
             if self.optimize and training:
-                x = self.branch2_flatten(data)
-                x = self.branch2_dense1(x)
-                x = self.branch2_dense2(x)
-                y1 = self.branch2_dense3a(x)
-                y2 = self.branch2_dense3b(x)
-                try:
-                    y3 = self.branch2_dense3c(x)
-                except AttributeError:
-                    y3 = None
-                try:
+                try: # self.domain_randomization__mode == "multivariate normal"
                     dr = self.branch1_random_parameters
-                    mean_vector = np.array(y1)
-                    variancecovariance_matrix = np.array(fill_matrix(np.array(y2)))
-                    data = dr(data, mean_vector, variancecovariance_matrix)
+                    sampled_params = tfp.distributions.MultivariateNormalTriL(
+                        loc=self.branch2_mean_vector,
+                        scale_tril=self.branch2_variancecovariance_matrix
+                    ).sample(sample_shape=(data.shape[0],)).numpy()
+                    data = dr(data, values=sampled_params, rand=False)
                 except AttributeError:
-                    p1 = np.array(y1)
-                    p2 = np.array(y2)
-                    if y3 is not None:
-                        p3 = np.array(y3)
-                    else:
-                        p3 = None
-                    if p3 is None:
-                        data = self.branch1_random_brightness(data, p1, p2)
-                        data = self.branch1_random_contrast(data, p1, p2)
-                        data = self.branch1_random_horizontally_flip(data, p1, p2)
-                        data = self.branch1_random_vertically_flip(data, p1, p2)
-                        data = self.branch1_random_hue(data, p1, p2)
-                        data = self.branch1_random_jpeg_quality(data, p1, p2)
-                        data = self.branch1_random_saturation(data, p1, p2)
-                    else:
-                        data = self.branch1_random_brightness(data, p1, p2, p3)
-                        data = self.branch1_random_contrast(data, p1, p2, p3)
-                        data = self.branch1_random_horizontally_flip(data, p1, p2, p3)
-                        data = self.branch1_random_vertically_flip(data, p1, p2, p3)
-                        data = self.branch1_random_hue(data, p1, p2, p3)
-                        data = self.branch1_random_jpeg_quality(data, p1, p2, p3)
-                        data = self.branch1_random_saturation(data, p1, p2, p3)
+                    if self.domain_randomization__mode == "uniform":
+                        sampled_paramA = tfp.distributions.Uniform(
+                            low=self.branch2_lowerA,
+                            high=self.branch2_upperA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = tfp.distributions.Uniform(
+                            low=self.branch2_lowerB,
+                            high=self.branch2_upperB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = tfp.distributions.Uniform(
+                            low=self.branch2_lowerC,
+                            high=self.branch2_upperC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = tfp.distributions.Uniform(
+                            low=self.branch2_lowerD,
+                            high=self.branch2_upperD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = tfp.distributions.Uniform(
+                            low=self.branch2_lowerE,
+                            high=self.branch2_upperE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = tfp.distributions.Uniform(
+                            low=self.branch2_lowerF,
+                            high=self.branch2_upperF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = tfp.distributions.Uniform(
+                            low=self.branch2_lowerG,
+                            high=self.branch2_upperG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    if self.domain_randomization__mode == "triangular":
+                        sampled_paramA = Triangular(
+                            low=self.branch2_lowerA,
+                            mode=self.branch2_modeA,
+                            high=self.branch2_upperA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = Triangular(
+                            low=self.branch2_lowerB,
+                            mode=self.branch2_modeB,
+                            high=self.branch2_upperB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = Triangular(
+                            low=self.branch2_lowerC,
+                            mode=self.branch2_modeC,
+                            high=self.branch2_upperC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = Triangular(
+                            low=self.branch2_lowerD,
+                            mode=self.branch2_modeD,
+                            high=self.branch2_upperD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = Triangular(
+                            low=self.branch2_lowerE,
+                            mode=self.branch2_modeE,
+                            high=self.branch2_upperE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = Triangular(
+                            low=self.branch2_lowerF,
+                            mode=self.branch2_modeF,
+                            high=self.branch2_upperF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = Triangular(
+                            low=self.branch2_lowerG,
+                            mode=self.branch2_modeG,
+                            high=self.branch2_upperG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    if self.domain_randomization__mode == "univariate normal":
+                        sampled_paramA = tfp.distributions.Normal(
+                            loc=self.branch2_meanA,
+                            scale=self.branch2_varianceA
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramB = tfp.distributions.Normal(
+                            loc=self.branch2_meanB,
+                            scale=self.branch2_varianceB
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramC = tfp.distributions.Normal(
+                            loc=self.branch2_meanC,
+                            scale=self.branch2_varianceC
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramD = tfp.distributions.Normal(
+                            loc=self.branch2_meanD,
+                            scale=self.branch2_varianceD
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramE = tfp.distributions.Normal(
+                            loc=self.branch2_meanE,
+                            scale=self.branch2_varianceE
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramF = tfp.distributions.Normal(
+                            loc=self.branch2_meanF,
+                            scale=self.branch2_varianceF
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                        sampled_paramG = tfp.distributions.Normal(
+                            loc=self.branch2_meanG,
+                            scale=self.branch2_varianceG
+                        ).sample(sample_shape=(data.shape[0],)).numpy()
+                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False)
+                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False)
+                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False)
+                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False)
+                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False)
+                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False)
+                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False)
             else:
                 try:
                     dr = self.branch1_random_parameters
@@ -1041,16 +2764,23 @@ class ResNet2__1(keras.Model):
                         data = imgs[self.field]
                     except KeyError:
                         data = imgs
-                    p = self.model_branch2(data)
-                    p1 = p[0]
-                    p2 = p[1]
+                    p = [[self.branch2_lowerA, self.branch2_upperA],
+                         [self.branch2_lowerB, self.branch2_upperB],
+                         [self.branch2_lowerC, self.branch2_upperC],
+                         [self.branch2_lowerD, self.branch2_upperD],
+                         [self.branch2_lowerE, self.branch2_upperE],
+                         [self.branch2_lowerF, self.branch2_upperF],
+                         [self.branch2_lowerG, self.branch2_upperG]
+                         ]
                     epsilon = 0.001
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.lowers__ranges, self.uppers__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p1 - p2 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[0]-pi[1]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss = loss+penalty
                 if self.domain_randomization__mode == "triangular":
                     # constraints: lowers<=modes, modes<=uppers
@@ -1058,38 +2788,49 @@ class ResNet2__1(keras.Model):
                         data = imgs[self.field]
                     except KeyError:
                         data = imgs
-                    p = self.model_branch2(data)
-                    p1 = p[0]
-                    p2 = p[1]
-                    p3 = p[2]
+                    p = [[self.branch2_lowerA, self.branch2_modeA, self.branch2_upperA],
+                         [self.branch2_lowerB, self.branch2_modeB, self.branch2_upperA],
+                         [self.branch2_lowerC, self.branch2_modeC, self.branch2_upperA],
+                         [self.branch2_lowerD, self.branch2_modeD, self.branch2_upperA],
+                         [self.branch2_lowerE, self.branch2_modeE, self.branch2_upperA],
+                         [self.branch2_lowerF, self.branch2_modeF, self.branch2_upperA],
+                         [self.branch2_lowerG, self.branch2_modeG, self.branch2_upperA]
+                         ]
                     epsilon = 0.001
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.lowers__ranges, self.modes__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p1 - p2 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[0]-pi[1]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss += penalty
                     ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.modes__ranges, self.uppers__ranges)])
                     width = ranges[:,1]-ranges[:,0]
                     width = tf.where(tf.math.is_inf(width), 1000.0, width)
                     rescaling_factor = width/(tf.reduce_max(width))
-                    penalty = tf.reduce_mean(tf.reduce_mean(tf.maximum(tf.zeros(shape=(p1.shape[1]), dtype=tf.float32), p2 - p3 + epsilon),
-                                                            axis=0)/rescaling_factor, axis=0)
+                    penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                          pi[1]-pi[2]+epsilon)
+                                               /rescaling_factor[i]
+                                               for i, pi in enumerate(p) ])
                     loss += penalty
         gradients_branch1 = tape.gradient(loss, self.model_branch1.trainable_variables)
         if self.model_branch1.optimizer is None:
-            self.model_branch1.optimizer = self.optimizer[0]
+            try:
+                self.model_branch1.optimizer = self.optimizer[0]
+            except TypeError:
+                self.model_branch1.optimizer = self.optimizer
         if self.domain_randomization and self.optimize:
-            gradients_branch2 = tape.gradient(loss, self.model_branch2.trainable_variables)
+            gradients_branch2 = tape.gradient(loss, self.model_branch2.get_trainable_variables())
             if self.model_branch2.optimizer is None:
                 self.model_branch2.optimizer = self.optimizer[1]
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         self.model_branch1.optimizer.apply_gradients(zip(gradients_branch1, self.model_branch1.trainable_variables))
         if self.domain_randomization and self.optimize:
-            self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.trainable_variables))
-            del tape
+            self.model_branch2.optimizer.apply_gradients(zip(gradients_branch2, self.model_branch2.get_trainable_variables()))
+        del tape
         return {"loss": loss}
 
 
@@ -1125,23 +2866,36 @@ class ResNet2__1__1(ResNet2__0):
 
 
 
-class Branch(keras.Model):
-    def __init__(self, *args, name="default", **kwargs):
-        super(Branch, self).__init__(*args, **kwargs)
+class Branch():
+    def __new__(cls, *args, name="default", **kwargs):
+        if kwargs.get("inputs", None) is None or kwargs.get("outputs", None) is None:
+            return Branch_a(name)
+        else:
+            kwargs["name"] = name
+            return Branch_b(*args, **kwargs)
+
+class Branch_a():
+    def __init__(self, name="default"):
         self.__name = name
+        self.__tr_vars = []
+
+    def get_name(self):
+            return self.__name
+
+    def add_variables(self, var):
+        if isinstance(var, Iterable):
+            for v in var:
+                self.__tr_vars.append(v)
+        else:
+            self.__tr_vars.append(var)
+
+    def get_trainable_variables(self):
+        return self.__tr_vars
+
+class Branch_b(keras.Model):
+    def __init__(self, *args, **kwargs):
+        super(Branch_b, self).__init__(*args, **kwargs)
+        self.__name = kwargs["name"]
 
     def get_name(self):
         return self.__name
-
-
-
-
-
-
-def sigmoid_activation__withConstraints(x, output_constraints):
-    constrained_outputs = []
-    for i, l in enumerate(output_constraints):
-        min_val, max_val = tuple(l)
-        constrained_output = (max_val - min_val) * K.sigmoid(x[:, i]) + min_val
-        constrained_outputs.append(constrained_output)
-    return K.stack(constrained_outputs, axis=-1)
