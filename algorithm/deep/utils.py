@@ -2,6 +2,7 @@ import math
 import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
+from tensorflow import keras
 from .exceptions import WrongVarianceCovarianceMatrixException
 
 
@@ -316,3 +317,15 @@ class Triangular(tf.Module):
         return tf.where(p < (self.mode - self.low) / (self.high - self.low),
                         self.uniform1.sample(sample_shape),
                         self.uniform2.sample(sample_shape))
+
+
+class MinMaxNorm_ElementWise(keras.constraints.Constraint):
+    def __init__(self, min_values, max_values):
+        self.min_values = min_values
+        self.max_values = max_values
+
+    def __call__(self, w):
+        return tf.clip_by_value(w, self.min_values, self.max_values)
+
+    def get_config(self):
+        return {'min_values': self.min_values, 'max_values': self.max_values}

@@ -150,13 +150,9 @@ class JpegQuality(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                im = tf.image.adjust_jpeg_quality(im, self.jpeg_quality)
-                ims.append(im)
-            x = tf.stack(ims)
-        return x
+            return tf.image.adjust_jpeg_quality(x, self.jpeg_quality)
+        else:
+            return x
 
     def get_config(self):
         config = super().get_config()
@@ -304,5 +300,5 @@ class NoneTransformation():
     def __int__(self):
         pass
 
-    def call(self, x):
+    def __call__(self, x, training=None):
         return x

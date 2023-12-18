@@ -7,7 +7,8 @@ from collections.abc import Iterable
 from algorithm.deep.exceptions import NotFoundOptimizerException
 from algorithm.deep.utils import (set_parameters__ranges, set_parameters__initials,
                                   fill_matrix, scaleAndFlat_matrix, spiral_flat_from_progressive,
-                                  Triangular)
+                                  Triangular,
+                                  MinMaxNorm_ElementWise)
 from algorithm.domain_randomization.optimization.tf import (
     r_uniform as r_uniform_opt,
     r_triangular as r_triangular_opt,
@@ -608,13 +609,12 @@ class ResNet1(keras.Model):
                     self.branch2_mean_vector = tf.Variable(
                         initial_value=self.mean_vector__initials,
                         dtype=tf.float32,
-                        constraint = [
-                            keras.constraints.MinMaxNorm(
-                                min_value=self.mean_vector__ranges[i][0],
-                                max_value=self.mean_vector__ranges[i][1]
-                            )
-                            for i in range(len(self.mean_vector__initials))
-                        ]
+                        constraint=MinMaxNorm_ElementWise(
+                            min_values=[self.mean_vector__ranges[i][0]
+                                        for i in range(len(self.mean_vector__initials))],
+                            max_values=[self.mean_vector__ranges[i][1]
+                                        for i in range(len(self.mean_vector__initials))]
+                        )
                     )
                     self.branch2_variancecovariance_matrix = tfp.math.fill_triangular(
                         tf.Variable(
@@ -623,14 +623,14 @@ class ResNet1(keras.Model):
                                 # cholesky factorization of the matrix and flatten (spiral) version
                             ),
                             dtype=tf.float32,
-                            constraint = [
-                                keras.constraints.MinMaxNorm(
-                                    min_value=self.mean_vector__ranges[i][0],
-                                    max_value=self.mean_vector__ranges[i][1]
-                                )
-                                for i in spiral_flat_from_progressive(range(len(self.variancecovariance_matrix__initials)))
-                                # mapping of indexes from progressive (flat) representation to spiral flat representation
-                            ]
+                            constraint=MinMaxNorm_ElementWise(
+                                min_values=[# mapping of indexes from progressive (flat) representation to spiral flat representation
+                                            self.variancecovariance_matrix__ranges[i][0]
+                                            for i in spiral_flat_from_progressive(len(self.variancecovariance_matrix__initials))],
+                                max_values=[# mapping of indexes from progressive (flat) representation to spiral flat representation
+                                            self.variancecovariance_matrix__ranges[i][1]
+                                            for i in spiral_flat_from_progressive(range(self.variancecovariance_matrix__initials))]
+                            )
                         )
                     )
                     self.model_branch2.add_variables([
@@ -1541,13 +1541,12 @@ class ResNet2__0(keras.Model):
                     self.branch2_mean_vector = tf.Variable(
                         initial_value=self.mean_vector__initials,
                         dtype=tf.float32,
-                        constraint = [
-                            keras.constraints.MinMaxNorm(
-                                min_value=self.mean_vector__ranges[i][0],
-                                max_value=self.mean_vector__ranges[i][1]
-                            )
-                            for i in range(len(self.mean_vector__initials))
-                        ]
+                        constraint=MinMaxNorm_ElementWise(
+                            min_values=[self.mean_vector__ranges[i][0]
+                                        for i in range(len(self.mean_vector__initials))],
+                            max_values=[self.mean_vector__ranges[i][1]
+                                        for i in range(len(self.mean_vector__initials))]
+                        )
                     )
                     self.branch2_variancecovariance_matrix = tfp.math.fill_triangular(
                         tf.Variable(
@@ -1556,14 +1555,14 @@ class ResNet2__0(keras.Model):
                                 # cholesky factorization of the matrix and flatten (spiral) version
                             ),
                             dtype=tf.float32,
-                            constraint = [
-                                keras.constraints.MinMaxNorm(
-                                    min_value=self.mean_vector__ranges[i][0],
-                                    max_value=self.mean_vector__ranges[i][1]
-                                )
-                                for i in spiral_flat_from_progressive(range(len(self.variancecovariance_matrix__initials)))
-                                # mapping of indexes from progressive (flat) representation to spiral flat representation
-                            ]
+                            constraint=MinMaxNorm_ElementWise(
+                                min_values=[# mapping of indexes from progressive (flat) representation to spiral flat representation
+                                            self.variancecovariance_matrix__ranges[i][0]
+                                            for i in spiral_flat_from_progressive(len(self.variancecovariance_matrix__initials))],
+                                max_values=[# mapping of indexes from progressive (flat) representation to spiral flat representation
+                                            self.variancecovariance_matrix__ranges[i][1]
+                                            for i in spiral_flat_from_progressive(len(self.variancecovariance_matrix__initials))]
+                            )
                         )
                     )
                     self.model_branch2.add_variables([
@@ -2470,13 +2469,12 @@ class ResNet2__1(keras.Model):
                     self.branch2_mean_vector = tf.Variable(
                         initial_value=self.mean_vector__initials,
                         dtype=tf.float32,
-                        constraint = [
-                            keras.constraints.MinMaxNorm(
-                                min_value=self.mean_vector__ranges[i][0],
-                                max_value=self.mean_vector__ranges[i][1]
-                            )
-                            for i in range(len(self.mean_vector__initials))
-                        ]
+                        constraint=MinMaxNorm_ElementWise(
+                            min_values=[self.mean_vector__ranges[i][0]
+                                        for i in range(len(self.mean_vector__initials))],
+                            max_values=[self.mean_vector__ranges[i][1]
+                                        for i in range(len(self.mean_vector__initials))]
+                        )
                     )
                     self.branch2_variancecovariance_matrix = tfp.math.fill_triangular(
                         tf.Variable(
@@ -2485,14 +2483,14 @@ class ResNet2__1(keras.Model):
                                 # cholesky factorization of the matrix and flatten (spiral) version
                             ),
                             dtype=tf.float32,
-                            constraint = [
-                                keras.constraints.MinMaxNorm(
-                                    min_value=self.mean_vector__ranges[i][0],
-                                    max_value=self.mean_vector__ranges[i][1]
-                                )
-                                for i in spiral_flat_from_progressive(range(len(self.variancecovariance_matrix__initials)))
-                                # mapping of indexes from progressive (flat) representation to spiral flat representation
-                            ]
+                            constraint=MinMaxNorm_ElementWise(
+                                min_values=[# mapping of indexes from progressive (flat) representation to spiral flat representation
+                                            self.variancecovariance_matrix__ranges[i][0]
+                                            for i in spiral_flat_from_progressive(len(self.variancecovariance_matrix__initials))],
+                                max_values=[# mapping of indexes from progressive (flat) representation to spiral flat representation
+                                            self.variancecovariance_matrix__ranges[i][1]
+                                            for i in spiral_flat_from_progressive(range(self.variancecovariance_matrix__initials))]
+                            )
                         )
                     )
                     self.model_branch2.add_variables([

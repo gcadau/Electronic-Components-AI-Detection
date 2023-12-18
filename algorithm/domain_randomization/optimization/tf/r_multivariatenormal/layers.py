@@ -150,12 +150,7 @@ class JpegQuality(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                im = tf.image.adjust_jpeg_quality(im, self.jpeg_quality)
-                ims.append(im)
-            x = tf.stack(ims)
+            return tf.image.adjust_jpeg_quality(x, self.jpeg_quality)
         return x
 
     def get_config(self):
@@ -283,6 +278,7 @@ class RandomParameters(keras.layers.Layer):
                         random_brightness.append(Brightness(**params))
                     else:
                         random_brightness.append(NoneTransformation())
+                self.randoms.append(random_brightness)
                 random_contrast = []
                 for i in range(x.shape[0]):
                     if tf.random.uniform([]) <= self.factor[1]:
@@ -357,5 +353,5 @@ class NoneTransformation():
     def __int__(self):
         pass
 
-    def call(self, x):
+    def __call__(self, x, training=None):
         return x
