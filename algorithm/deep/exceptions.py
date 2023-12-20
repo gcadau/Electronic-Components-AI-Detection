@@ -4,6 +4,13 @@ class NotFoundOptimizerException(Exception):
         super().__init__(self.message)
 
 
+class NotImplementedOptimizerException(Exception):
+    def __init__(self, optimizer):
+        self.optimizer = optimizer
+        self.message = f"{self.optimizer} not supported (yet)."
+        super().__init__(self.message)
+
+
 class WrongVarianceCovarianceMatrixException(Exception):
     def __init__(self, matrix):
         self.matrix = matrix

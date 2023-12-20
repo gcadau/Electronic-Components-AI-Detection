@@ -4,6 +4,8 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow import keras
 from .exceptions import WrongVarianceCovarianceMatrixException
+from keras.optimizers import Optimizer as KerasOptimizer
+from nevergrad.optimization import Optimizer as NevergradOptimizer
 
 
 
@@ -329,3 +331,60 @@ class MinMaxNorm_ElementWise(keras.constraints.Constraint):
 
     def get_config(self):
         return {'min_values': self.min_values, 'max_values': self.max_values}
+
+
+def normalize_value(value, original_low, original_upper, normal_low, normal_upper):
+    if original_low == float('-inf'):
+        original_low = -1000
+    if original_upper == float('inf'):
+        original_upper = 1000
+    original_length = original_upper-original_low
+    normal_length = normal_upper-normal_low
+    factor = normal_length/original_length
+    original_offset = value-original_low
+    normalized_value = (original_offset)*factor+normal_low
+    return normalized_value
+
+def denormalize_value(normalized_value, original_low, original_upper, normal_low, normal_upper):
+    if original_low == float('-inf'):
+        original_low = -1000
+    if original_upper == float('inf'):
+        original_upper = 1000
+    original_length = original_upper-original_low
+    normal_length = normal_upper-normal_low
+    factor = original_length/normal_length
+    normal_offset = normalized_value-normal_low
+    value = (normal_offset)*factor+original_low
+    return value
+
+def normalize_value_log(value, original_low, original_upper, normal_low, normal_upper):
+    if original_low == float('-inf'):
+        original_low = -1000
+    if original_upper == float('inf'):
+        original_upper = 1000
+    original_length = math.log(original_upper)-math.log(original_low)
+    normal_length = normal_upper-normal_low
+    factor = normal_length/original_length
+    original_offset = math.log(value)-math.log(original_low)
+    normalized_value = (original_offset)*factor+normal_low
+    return normalized_value
+
+def denormalize_value_log(normalized_value, original_low, original_upper, normal_low, normal_upper):
+    # it's the inverse function of '__normalize_value_log', after applying properties of logarithms
+    if original_low == float('-inf'):
+        original_low = -1000
+    if original_upper == float('inf'):
+        original_upper = 1000
+    original_length = math.log(original_upper)-math.log(original_low)
+    normal_length = normal_upper-normal_low
+    factor = original_length/normal_length
+    normal_offset = normalized_value-normal_low
+    value = (normal_offset)*factor+math.log(original_low)
+    return math.exp(value)
+
+
+def is_keras_optimizer(opt):
+    return isinstance(opt, KerasOptimizer)
+
+def is_nevergrad_optimizer(opt):
+    return isinstance(opt, NevergradOptimizer)
