@@ -2480,6 +2480,16 @@ class ResNet2__0(keras.Model):
         del tape
         return {"loss": loss}
 
+    def fit(self, *args, fverbose=0, **kwargs):
+        self.fverbose = fverbose
+        if self.fverbose>0:
+            if self.fverbose_path is None:
+                self.fverbose_path = "training_parameters.txt"
+            self.fverbose_file = open(self.fverbose_path, 'w', encoding='utf8')
+        super(ResNet2__0, self).fit(*args, **kwargs)
+        if self.fverbose>0:
+            self.fverbose_file.close()
+
 
     def __update_parameters(self, optimizer, loss=None, tape=None):
         if is_nevergrad_optimizer(optimizer):
@@ -2573,12 +2583,72 @@ class ResNet2__0(keras.Model):
                 for var, new_var in zip(self.model_branch2.get_trainable_variables(), [mv, vcv]):
                     setattr(self, var, new_var)
             self.__tmp_optimizer_branch2_x = x
+            if self.fverbose==2 or self.fverbose==3:
+                self.__print_fverbose(branch=2)
         elif is_keras_optimizer(optimizer):
             if tape is not None:
                 gradients = tape.gradient(loss, self.model_branch1.trainable_variables)
                 optimizer.apply_gradients(zip(gradients, self.model_branch1.trainable_variables))
+            if self.fverbose==1 or self.fverbose==3:
+                self.__print_fverbose(branch=1)
         else:
             raise NotImplementedOptimizerException(optimizer)
+
+
+    def set_fverbose__file_path(self, filepath):
+        self.fverbose_path = filepath
+
+    def get_fverbose__file_path(self):
+        return self.fverbose_path
+
+
+    def __print_fverbose(self, branch=2):
+        if branch == 1:
+            variables = self.model_branch1.trainable_variables
+            for var in variables:
+                self.fverbose_file.write(f"{var.name}: {var.numpy()}\n")
+            self.fverbose_file.write("\n\n")
+        if branch == 2:
+            if self.domain_randomization__mode == "uniform":
+                variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
+                n_params = len(self.lowers__initials)
+                for i in range(n_params):
+                    low = variables[i]
+                    upper = variables[n_params+i]
+                    self.fverbose_file.write(f"Param {i}: U({low}, {upper})\n")
+            if self.domain_randomization__mode == "triangular":
+                variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
+                n_params = len(self.lowers__initials)
+                for i in range(n_params):
+                    low = variables[i]
+                    mode = variables[n_params+i]
+                    upper = variables[n_params+n_params+i]
+                    self.fverbose_file.write(f"Param {i}: Tr({low}, {mode}, {upper})\n")
+            if self.domain_randomization__mode == "univariate normal":
+                variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
+                n_params = len(self.means__initials)
+                for i in range(n_params):
+                    mean = variables[i]
+                    variance = variables[n_params+i]
+                    self.fverbose_file.write(f"Param {i}: N({mean}, {variance})\n")
+            if self.domain_randomization__mode == "multivariate normal":
+                variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
+                mu = np.array(variables[0])
+                sigma = tfp.math.fill_triangular(variables[1])
+                sigma = tf.linalg.matmul(sigma, sigma, transpose_b=True).numpy()
+                self.fverbose_file.write(f"Params [1,...,i,...,n]ᵀ: N(mu, SIGMA)\n")
+                self.fverbose_file.write(f"\tmu = {mu}\n")
+                self.fverbose_file.write(f"\tSIGMA = ")
+                c = 1
+                for row in sigma:
+                    if c==1:
+                        self.fverbose_file.write("[" + " ".join(map(str, row)) + "\n")
+                    elif c==sigma.shape[0]:
+                        self.fverbose_file.write("\t         " + " ".join(map(str, row)) + "]\n")
+                    else:
+                        self.fverbose_file.write("\t         " + " ".join(map(str, row)) + "\n")
+                    c+=1
+            self.fverbose_file.write("\n\n")
 
 
 
