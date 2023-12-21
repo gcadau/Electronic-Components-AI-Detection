@@ -7,7 +7,7 @@ from collections.abc import Iterable
 from itertools import chain
 from algorithm.deep.exceptions import NotFoundOptimizerException, NotImplementedOptimizerException
 from algorithm.deep.utils import (set_parameters__ranges, set_parameters__initials,
-                                  fill_matrix, scaleAndFlat_matrix, spiral_flat_from_progressive,
+                                  fill_matrix, scaleAndFlat_matrix, spiral_flat_from_progressive, iterate_over_elements_below_diagonal,
                                   Triangular,
                                   MinMaxNorm_ElementWise,
                                   normalize_value, denormalize_value, normalize_value_log, denormalize_value_log)
@@ -1134,10 +1134,10 @@ class ResNet1(keras.Model):
                 else:
                     opt = self.optimizer
             if par is not None:
-                self.model_branch1.optmizer = opt(**par)
+                self.model_branch1.optimizer = opt(**par)
             else:
-                self.model_branch1.optmizer = opt()
-            self.__update_parameters(self.model_branch1.optmizer)
+                self.model_branch1.optimizer = opt()
+            self.__update_parameters(self.model_branch1.optimizer)
         if self.domain_randomization and self.optimize and self.model_branch2.optimizer is None:
             par = None
             if isinstance(self.optimizer[1], tuple):
@@ -1153,8 +1153,8 @@ class ResNet1(keras.Model):
                 params = ng.p.Tuple(*(list(chain(*trainableVars))))
             instrumentation = ng.p.Instrumentation(params=params)
             par["parametrization"] = instrumentation
-            self.model_branch2.optmizer = opt(**par)
-            self.__update_parameters(self.model_branch2.optmizer)
+            self.model_branch2.optimizer = opt(**par)
+            self.__update_parameters(self.model_branch2.optimizer)
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         imgs, labs = data
@@ -2382,30 +2382,29 @@ class ResNet2__0(keras.Model):
         y = self.branch1_dense2(x)
         return y
 
-    def train_step(self, data):
-        if self.model_branch1.optimizer is None:
-            par = None
-            try:
-                if isinstance(self.optimizer[0], tuple):
-                    opt, par = self.optimizer[0]
-                else:
-                    opt = self.optimizer[0]
-            except TypeError:
-                if isinstance(self.optimizer, tuple):
-                    opt, par = self.optimizer
-                else:
-                    opt = self.optimizer
-            if par is not None:
-                self.model_branch1.optmizer = opt(**par)
+    def compile(self, optimizer, **kwargs):
+        # optimizers configuration
+        par = None
+        try:
+            if isinstance(optimizer[0], tuple):
+                opt, par = optimizer[0]
             else:
-                self.model_branch1.optmizer = opt()
-            self.__update_parameters(self.model_branch1.optmizer)
-        if self.domain_randomization and self.optimize and self.model_branch2.optimizer is None:
-            par = None
-            if isinstance(self.optimizer[1], tuple):
-                opt, par = self.optimizer[1]
+                opt = optimizer[0]
+        except TypeError:
+            if isinstance(optimizer, tuple):
+                opt, par = optimizer
             else:
-                opt = self.optimizer[1]
+                opt = optimizer
+        if par is not None:
+            self.model_branch1.optimizer = opt(**par)
+        else:
+            self.model_branch1.optimizer = opt()
+        if self.domain_randomization and self.optimize:
+            par = None
+            if isinstance(optimizer[1], tuple):
+                opt, par = optimizer[1]
+            else:
+                opt = optimizer[1]
             if par is None:
                 par = {}
             trainableVars = [getattr(self, attr) for attr in self.model_branch2.get_trainable_variables()]
@@ -2415,15 +2414,18 @@ class ResNet2__0(keras.Model):
                 params = ng.p.Tuple(*(list(chain(*trainableVars))))
             instrumentation = ng.p.Instrumentation(params=params)
             par["parametrization"] = instrumentation
-            self.model_branch2.optmizer = opt(**par)
-            self.__update_parameters(self.model_branch2.optmizer)
+            self.model_branch2.optimizer = opt(**par)
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
+        super(ResNet2__0, self).compile(optimizer=keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
+
+    def train_step(self, data):
         imgs, labs = data
         with tf.GradientTape(persistent=True) as tape:
             predictions = self(imgs, training=True)
             loss = self.compiled_loss(labs, predictions)
         loss_branch1 = loss
+        loss_branch2 = loss
         if self.domain_randomization and self.optimize:
             if self.domain_randomization__mode == "uniform":
                 # constraints: lowers<=uppers
@@ -2444,7 +2446,7 @@ class ResNet2__0(keras.Model):
                                                       pi[0]-pi[1]+epsilon)
                                            /rescaling_factor[i]
                                            for i, pi in enumerate(p) ])
-                loss_branch2 = loss+penalty
+                loss_branch2 += penalty
             if self.domain_randomization__mode == "triangular":
                 # constraints: lowers<=modes, modes<=uppers
                 p = [[self.branch2_lowerA, self.branch2_modeA, self.branch2_upperA],
@@ -2464,7 +2466,7 @@ class ResNet2__0(keras.Model):
                                                       pi[0]-pi[1]+epsilon)
                                            /rescaling_factor[i]
                                            for i, pi in enumerate(p) ])
-                loss_branch2 = loss+penalty
+                loss_branch2 += penalty
                 ranges = tf.constant([[a[0], b[1]] for a, b in zip(self.modes__ranges, self.uppers__ranges)])
                 width = ranges[:,1]-ranges[:,0]
                 width = tf.where(tf.math.is_inf(width), 1000.0, width)
@@ -2474,18 +2476,48 @@ class ResNet2__0(keras.Model):
                                            /rescaling_factor[i]
                                            for i, pi in enumerate(p) ])
                 loss_branch2 += penalty
+            if self.domain_randomization__mode == "multivariate normal":
+                # constraints: elements of variance covariance matrix (complete version, not chol factorized ones)
+                # between their ranges
+                p = self.branch2_variancecovariance_matrix
+                epsilon = 0.001
+                sigma = tfp.math.fill_triangular(p)
+                sigma = tf.linalg.matmul(sigma, sigma, transpose_b=True).numpy()
+                width = tf.constant([self.variancecovariance_matrix__ranges[i][1]-self.variancecovariance_matrix__ranges[i][0]
+                                      for i in range(len(self.variancecovariance_matrix__ranges))])
+                width = tf.where(tf.math.is_inf(width), 1000.0, width)
+                rescaling_factor = width/(tf.reduce_max(width))
+                penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                      sigma[i,j]-self.variancecovariance_matrix__ranges[index][1]+epsilon)
+                                           /rescaling_factor[index]
+                                           for index, (i,j) in enumerate(iterate_over_elements_below_diagonal(sigma.shape[0])) ])
+                loss_branch2 += penalty
+                penalty = tf.reduce_mean([ tf.maximum(tf.constant(0, dtype=tf.float32),
+                                                      self.variancecovariance_matrix__ranges[index][0]-sigma[i,j]+epsilon)
+                                           /rescaling_factor[index]
+                                           for index, (i,j) in enumerate(iterate_over_elements_below_diagonal(sigma.shape[0])) ])
+                loss_branch2 += penalty
         self.__update_parameters(self.model_branch1.optimizer, loss_branch1, tape)
         if self.domain_randomization and self.optimize:
             self.__update_parameters(self.model_branch2.optimizer, loss_branch2)
         del tape
-        return {"loss": loss}
+
+        self.compiled_metrics.update_state(labs, predictions)
+        return {'loss': loss, **{m.name: m.result() for m in self.metrics}}
 
     def fit(self, *args, fverbose=0, **kwargs):
         self.fverbose = fverbose
         if self.fverbose>0:
-            if self.fverbose_path is None:
+            try:
+                if self.fverbose_path is None:
+                    self.fverbose_path = "training_parameters.txt"
+            except AttributeError:
                 self.fverbose_path = "training_parameters.txt"
             self.fverbose_file = open(self.fverbose_path, 'w', encoding='utf8')
+        # 1st update.
+        self.__update_parameters(self.model_branch1.optimizer)
+        if self.domain_randomization and self.optimize:
+            self.__update_parameters(self.model_branch2.optimizer)
         super(ResNet2__0, self).fit(*args, **kwargs)
         if self.fverbose>0:
             self.fverbose_file.close()
@@ -2494,7 +2526,7 @@ class ResNet2__0(keras.Model):
     def __update_parameters(self, optimizer, loss=None, tape=None):
         if is_nevergrad_optimizer(optimizer):
             if loss is not None:
-                optimizer.tell(self.__tmp_optimizer_branch2_x, loss)
+                optimizer.tell(self.__tmp_optimizer_branch2_x, float(loss.numpy()))
             x = optimizer.ask()
             parameters = list(x.kwargs['params'])
             if self.domain_randomization__mode == "uniform":
@@ -3731,10 +3763,10 @@ class ResNet2__1(keras.Model):
                 else:
                     opt = self.optimizer
             if par is not None:
-                self.model_branch1.optmizer = opt(**par)
+                self.model_branch1.optimizer = opt(**par)
             else:
-                self.model_branch1.optmizer = opt()
-            self.__update_parameters(self.model_branch1.optmizer)
+                self.model_branch1.optimizer = opt()
+            self.__update_parameters(self.model_branch1.optimizer)
         if self.domain_randomization and self.optimize and self.model_branch2.optimizer is None:
             par = None
             if isinstance(self.optimizer[1], tuple):
@@ -3750,8 +3782,8 @@ class ResNet2__1(keras.Model):
                 params = ng.p.Tuple(*(list(chain(*trainableVars))))
             instrumentation = ng.p.Instrumentation(params=params)
             par["parametrization"] = instrumentation
-            self.model_branch2.optmizer = opt(**par)
-            self.__update_parameters(self.model_branch2.optmizer)
+            self.model_branch2.optimizer = opt(**par)
+            self.__update_parameters(self.model_branch2.optimizer)
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         imgs, labs = data
@@ -3813,7 +3845,9 @@ class ResNet2__1(keras.Model):
         if self.domain_randomization and self.optimize:
             self.__update_parameters(self.model_branch2.optimizer, loss_branch2)
         del tape
-        return {"loss": loss}
+
+        self.compiled_metrics.update_state(labs, predictions)
+        return {'loss': loss, **{m.name: m.result() for m in self.metrics}}
 
 
     def __update_parameters(self, optimizer, loss=None, tape=None):
