@@ -305,6 +305,15 @@ def __is_symmetric(matrix):
     return (matrix == matrix.T).all()
 
 
+def iterate_over_elements_below_diagonal(shape):
+    # elements above (and of) the diagonal of a matrix
+    indexes = []
+    for i in range(shape):
+        for j in range(0, i+1):
+            indexes.append((i,j))
+    return indexes
+
+
 class Triangular(tf.Module):
     def __init__(self, low, mode, high):
         super(Triangular, self).__init__()
