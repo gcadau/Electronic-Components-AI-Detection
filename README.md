@@ -6,3 +6,5 @@ Master thesis project.
 Msc Data Science and Engineering @Polito. 
 
 Held at Seica S.P.A.
+
+Training versione to be run on the local machine.
