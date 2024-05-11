@@ -4155,33 +4155,67 @@ class ResNet2__1(keras.Model):
 
 
 class ResNet2__0__1(ResNet2__0):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
-        super(ResNet2__0__1, self).__init__(n_classes=n_classes, input_shape=input_shape, field=field)
-        # To be implemented:
-        #       Even after two epochs, validation accuracy arrives near 90%. After 40 epochs the model
-        #       comfortably converges. It is possible to reach up to higher accuracies by adding a couple of more fully
-        #       connected layers. The successful results with only one hidden fully connected layer mean that ResNet-152
-        #       does a pretty good job while extracting features for the classifier even though ImageNet and MNIST
-        #       contain fairly distant image samples.
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
+        super(ResNet2__0, self).__init__(n_classes, input_shape=input_shape, field=field, domain_randomization=domain_randomization)
+        self.branch1_dense2 = keras.layers.Dense(1024, activation='relu')
+        self.branch1_dense3 = keras.layers.Dense(2048, activation='relu')
+        self.branch1_dense4 = keras.layers.Dense(1024, activation='relu')
+        self.branch1_dense5 = keras.layers.Dense(n_classes, activation='softmax')
 
-    def call(self, inputs):
-        return self.model(inputs[self.field])
+        x = self.branch1_flatten(self.branch1_base_model.output)
+        x = self.branch1_dense1(x)
+        x = self.branch1_dense2(x)
+        x = self.branch1_dense3(x)
+        x = self.branch1_dense4(x)
+        self.branch1_y = self.branch1_dense5(x)
+
+        self.model_branch1 = Branch(inputs=self.branch1_base_model.input, outputs=self.branch1_y, name="Main Branch")
+        self.model_branch1.optimizer = None
+
+
+    def call(self, inputs, training=False):
+        super().call(inputs, training=training)
+        base_model_output = self.branch1_base_model(data)
+        x = self.branch1_flatten(base_model_output)
+        x = self.branch1_dense1(x)
+        x = self.branch1_dense2(x)
+        x = self.branch1_dense3(x)
+        x = self.branch1_dense4(x)
+        y = self.branch1_dense5(x)
+        return y
 
 
 
 
-class ResNet2__1__1(ResNet2__0):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data'):
-        super(ResNet2__1__1, self).__init__(n_classes=n_classes, input_shape=input_shape, field=field)
-        # To be implemented:
-        #       Even after two epochs, validation accuracy arrives near 90%. After 40 epochs the model
-        #       comfortably converges. It is possible to reach up to higher accuracies by adding a couple of more fully
-        #       connected layers. The successful results with only one hidden fully connected layer mean that ResNet-152
-        #       does a pretty good job while extracting features for the classifier even though ImageNet and MNIST
-        #       contain fairly distant image samples.
+class ResNet2__1__1(ResNet2__1):
+    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
+        super(ResNet2__1, self).__init__(n_classes, input_shape=input_shape, field=field, domain_randomization=domain_randomization)
+        self.branch1_dense2 = keras.layers.Dense(1024, activation='relu')
+        self.branch1_dense3 = keras.layers.Dense(2048, activation='relu')
+        self.branch1_dense4 = keras.layers.Dense(1024, activation='relu')
+        self.branch1_dense5 = keras.layers.Dense(n_classes, activation='softmax')
 
-    def call(self, inputs):
-        return self.model(inputs[self.field])
+        x = self.branch1_flatten(self.branch1_base_model.output)
+        x = self.branch1_dense1(x)
+        x = self.branch1_dense2(x)
+        x = self.branch1_dense3(x)
+        x = self.branch1_dense4(x)
+        self.branch1_y = self.branch1_dense5(x)
+
+        self.model_branch1 = Branch(inputs=self.branch1_base_model.input, outputs=self.branch1_y, name="Main Branch")
+        self.model_branch1.optimizer = None
+
+
+    def call(self, inputs, training=False):
+        super().call(inputs, training=training)
+        base_model_output = self.branch1_base_model(data)
+        x = self.branch1_flatten(base_model_output)
+        x = self.branch1_dense1(x)
+        x = self.branch1_dense2(x)
+        x = self.branch1_dense3(x)
+        x = self.branch1_dense4(x)
+        y = self.branch1_dense5(x)
+        return y
 
 
 
