@@ -18,7 +18,7 @@ from algorithm.domain_randomization.optimization.tf import (
     r_multivariatenormal as r_multivariatenormal_opt
 )
 from algorithm.domain_randomization.tf import r_uniform, r_triangular, r_univariatenormal, r_multivariatenormal
-from keras.optimizers import Optimizer as KerasOptimizer
+from tensorflow.keras.optimizers import Optimizer as KerasOptimizer
 from nevergrad.optimization import Optimizer as NevergradOptimizer
 from algorithm.deep.utils import is_keras_optimizer, is_nevergrad_optimizer
 
@@ -971,10 +971,10 @@ class ResNet1(keras.Model):
         print("'model.compile' parameters info:")
         print("\tclass name required for loss and optimizers (e.g.: "
               "keras.losses.categorical_crossentropy or "
-              "keras.optimizers.Adam or "
+              "tensorflow.keras.optimizers.Adam or "
               "ng.optimizers.CMA")
         print("\tany additional parameters required must be passed as a dictionary in the second element of the tuple "
-              "(class_name, parameters) (e.g.: (keras.optimizers.Adam, {'learning_rate':1e-3})")
+              "(class_name, parameters) (e.g.: (tensorflow.keras.optimizers.Adam, {'learning_rate':1e-3})")
         print("\t'run_eagerly=True' suggested.")
 
 
