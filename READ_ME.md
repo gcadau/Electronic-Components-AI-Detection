@@ -77,17 +77,17 @@ Ensure you have Python installed and that the necessary dependencies are met bef
 train.py
 
 optional arguments:
-  -h, --help            show this help message and exit
-  --data_path DATA_PATH
+* -h, --help            show this help message and exit
+* --data_path DATA_PATH
                         Path of the directory in which input data are stored
                         (default: Input\dataset)
-  --split SPLIT         Percentage to split the dataset into train/validation
+* --split SPLIT         Percentage to split the dataset into train/validation
                         sets. It can be a float between 0 and 1 (representing
                         the percentage), or 'auto' (to use the standard split:
                         0.2) or 'train only' (to use all the dataset for
                         training. Use this option if only training is needed).
                         (default: 'train only')
-  --transform TRANSFORM
+* --transform TRANSFORM
                         Transformations to be applied to images of the
                         dataset. (default: None, i.e.: no transformations are
                         appied.)
