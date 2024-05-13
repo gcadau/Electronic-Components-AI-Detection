@@ -5,16 +5,16 @@ Script python to train the model.
 
 ## Installation
 
-Python 3.7.* is necessary to launch the python script.
-It is necessary to install all python packages listed in requirements.txt.
-Quick install: pip install -r requirements.txt
+Python 3.7.* is necessary to launch the python script.      
+It is necessary to install all python packages listed in requirements.txt.       
+Quick install: pip install -r requirements.txt        
 
 
 ## Execution
 
 To execute the script, please follow these steps:
 
-1. Navigate to the root directory
+1. Navigate to the root directory 
 2. Locate the script named *train.py*
 3. Run the script using the following command: python3 [script_name].py [optional_parameters]
 4. Optionally, you can pass some parameters to set all training options. See next section for details
