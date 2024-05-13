@@ -23,8 +23,9 @@ Ensure you have Python installed and that the necessary dependencies are met bef
 
 ### Usage
 
-<pre>
-usage: train.py [-h]        
+
+<pre>   
+       train.py [-h]        
                 [--data_path DATA_PATH]          
                 [--split SPLIT]              
                 [--transform TRANSFORM]          
