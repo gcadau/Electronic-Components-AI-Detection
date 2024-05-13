@@ -78,7 +78,7 @@ train.py
 
 optional arguments:
 
-</pre>
+<pre>
   -h, --help            show this help message and exit
   --data_path DATA_PATH
                         Path of the directory in which input data are stored
@@ -2593,4 +2593,4 @@ optional arguments:
                         UltraSmoothRecombiningDiscreteLanglerOnePlusOne,
                         LHSSearch, NoisyRL2, SqrtSQPCMAPlus,
                         DiscreteNoisyInfSplits. (default: CMA)
-
+</pre>
