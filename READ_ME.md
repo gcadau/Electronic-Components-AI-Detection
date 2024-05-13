@@ -23,11 +23,11 @@ Ensure you have Python installed and that the necessary dependencies are met bef
 
 ### Usage
 
-usage: train.py [-h] 
-                [--data_path DATA_PATH] 
-                [--split SPLIT] 
-                [--transform TRANSFORM] 
-                [--normalize] 
+usage: train.py [-h]        
+                [--data_path DATA_PATH]          
+                [--split SPLIT]              
+                [--transform TRANSFORM]          
+                [--normalize]       
                 [--mean MEAN [MEAN ...]] 
                 [--std STD [STD ...]] 
                 [--resize] 
