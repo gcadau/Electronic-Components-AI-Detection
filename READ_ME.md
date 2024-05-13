@@ -23,6 +23,7 @@ Ensure you have Python installed and that the necessary dependencies are met bef
 
 ### Usage
 
+<pre>
 usage: train.py [-h]        
                 [--data_path DATA_PATH]          
                 [--split SPLIT]              
@@ -70,7 +71,7 @@ usage: train.py [-h]
                 [--gradient_based__loss GRADIENT_BASED__LOSS] 
                 [--epochs EPOCHS] 
                 [--gradient_free__optimizer GRADIENT_FREE__OPTIMIZER]
-
+</pre>
 
 train.py
 
