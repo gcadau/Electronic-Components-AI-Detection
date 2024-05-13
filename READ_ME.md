@@ -83,9 +83,8 @@ optional arguments:
   --data_path DATA_PATH
                         Path of the directory in which input data are stored
                         (default: Input\dataset)
-  --split SPLIT         Percentage to split the dataset into train/validation
-                        sets. It can be a float between 0 and 1 (representing
-                        the percentage), or 'auto' (to use the standard split:
+  --split SPLIT         Percentage to split the dataset into train/validation sets. 
+                        It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use the standard split:
                         0.2) or 'train only' (to use all the dataset for
                         training. Use this option if only training is needed).
                         (default: 'train only')
