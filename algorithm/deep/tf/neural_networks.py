@@ -993,7 +993,7 @@ class ResNet1(keras.Model):
                             self.branch2_variancecovariance_matrix
                         )
                     ).sample(sample_shape=(data.shape[0],)).numpy()
-                    data = dr(data, values=sampled_params, rand=False)
+                    data = dr(data, values=sampled_params, rand=False, training=training)
                 except AttributeError:
                     if self.domain_randomization__mode == "uniform":
                         sampled_paramA = tfp.distributions.Uniform(
@@ -1089,25 +1089,25 @@ class ResNet1(keras.Model):
                             loc=self.branch2_meanG,
                             scale=self.branch2_varianceG
                         ).sample(sample_shape=(data.shape[0],)).numpy()
-                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False)
-                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False)
-                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False)
-                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False)
-                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False)
-                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False)
-                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False)
+                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False, training=training)
+                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False, training=training)
+                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False, training=training)
+                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False, training=training)
+                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False, training=training)
+                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False, training=training)
+                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False, training=training)
             else:
                 try:
                     dr = self.branch1_random_parameters
-                    data = dr(data)
+                    data = dr(data, training=training)
                 except AttributeError:
-                    data = self.branch1_random_brightness(data)
-                    data = self.branch1_random_contrast(data)
-                    data = self.branch1_random_horizontally_flip(data)
-                    data = self.branch1_random_vertically_flip(data)
-                    data = self.branch1_random_hue(data)
-                    data = self.branch1_random_jpeg_quality(data)
-                    data = self.branch1_random_saturation(data)
+                    data = self.branch1_random_brightness(data, training=training)
+                    data = self.branch1_random_contrast(data, training=training)
+                    data = self.branch1_random_horizontally_flip(data, training=training)
+                    data = self.branch1_random_vertically_flip(data, training=training)
+                    data = self.branch1_random_hue(data, training=training)
+                    data = self.branch1_random_jpeg_quality(data, training=training)
+                    data = self.branch1_random_saturation(data, training=training)
         x = self.branch1_conv_1(data)
         x = self.branch1_conv_2(x)
         x = self.branch1_maxpool(x)
@@ -2363,7 +2363,7 @@ class ResNet2__0(keras.Model):
                             self.branch2_variancecovariance_matrix
                         )
                     ).sample(sample_shape=(data.shape[0],)).numpy()
-                    data = dr(data, values=sampled_params, rand=False)
+                    data = dr(data, values=sampled_params, rand=False, training=training)
                 except AttributeError:
                     if self.domain_randomization__mode == "uniform":
                         sampled_paramA = tfp.distributions.Uniform(
@@ -2459,25 +2459,25 @@ class ResNet2__0(keras.Model):
                             loc=self.branch2_meanG,
                             scale=self.branch2_varianceG
                         ).sample(sample_shape=(data.shape[0],)).numpy()
-                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False)
-                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False)
-                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False)
-                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False)
-                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False)
-                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False)
-                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False)
+                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False, training=training)
+                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False, training=training)
+                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False, training=training)
+                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False, training=training)
+                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False, training=training)
+                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False, training=training)
+                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False, training=training)
             else:
                 try:
                     dr = self.branch1_random_parameters
-                    data = dr(data)
+                    data = dr(data, training=training)
                 except AttributeError:
-                    data = self.branch1_random_brightness(data)
-                    data = self.branch1_random_contrast(data)
-                    data = self.branch1_random_horizontally_flip(data)
-                    data = self.branch1_random_vertically_flip(data)
-                    data = self.branch1_random_hue(data)
-                    data = self.branch1_random_jpeg_quality(data)
-                    data = self.branch1_random_saturation(data)
+                    data = self.branch1_random_brightness(data, training=training)
+                    data = self.branch1_random_contrast(data, training=training)
+                    data = self.branch1_random_horizontally_flip(data, training=training)
+                    data = self.branch1_random_vertically_flip(data, training=training)
+                    data = self.branch1_random_hue(data, training=training)
+                    data = self.branch1_random_jpeg_quality(data, training=training)
+                    data = self.branch1_random_saturation(data, training=training)
         base_model_output = self.branch1_base_model(data)
         x = self.branch1_flatten(base_model_output)
         x = self.branch1_dense1(x)
@@ -3730,7 +3730,7 @@ class ResNet2__1(keras.Model):
                             self.branch2_variancecovariance_matrix
                         )
                     ).sample(sample_shape=(data.shape[0],)).numpy()
-                    data = dr(data, values=sampled_params, rand=False)
+                    data = dr(data, values=sampled_params, rand=False, training=training)
                 except AttributeError:
                     if self.domain_randomization__mode == "uniform":
                         sampled_paramA = tfp.distributions.Uniform(
@@ -3826,25 +3826,25 @@ class ResNet2__1(keras.Model):
                             loc=self.branch2_meanG,
                             scale=self.branch2_varianceG
                         ).sample(sample_shape=(data.shape[0],)).numpy()
-                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False)
-                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False)
-                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False)
-                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False)
-                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False)
-                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False)
-                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False)
+                    data = self.branch1_random_brightness(data, value=sampled_paramA, rand=False, training=training)
+                    data = self.branch1_random_contrast(data, value=sampled_paramB, rand=False, training=training)
+                    data = self.branch1_random_horizontally_flip(data, value=sampled_paramC, rand=False, training=training)
+                    data = self.branch1_random_vertically_flip(data, value=sampled_paramD, rand=False, training=training)
+                    data = self.branch1_random_hue(data, value=sampled_paramE, rand=False, training=training)
+                    data = self.branch1_random_jpeg_quality(data, value=sampled_paramF, rand=False, training=training)
+                    data = self.branch1_random_saturation(data, value=sampled_paramG, rand=False, training=training)
             else:
                 try:
                     dr = self.branch1_random_parameters
-                    data = dr(data)
+                    data = dr(data, training=training)
                 except AttributeError:
-                    data = self.branch1_random_brightness(data)
-                    data = self.branch1_random_contrast(data)
-                    data = self.branch1_random_horizontally_flip(data)
-                    data = self.branch1_random_vertically_flip(data)
-                    data = self.branch1_random_hue(data)
-                    data = self.branch1_random_jpeg_quality(data)
-                    data = self.branch1_random_saturation(data)
+                    data = self.branch1_random_brightness(data, training=training)
+                    data = self.branch1_random_contrast(data, training=training)
+                    data = self.branch1_random_horizontally_flip(data, training=training)
+                    data = self.branch1_random_vertically_flip(data, training=training)
+                    data = self.branch1_random_hue(data, training=training)
+                    data = self.branch1_random_jpeg_quality(data, training=training)
+                    data = self.branch1_random_saturation(data, training=training)
         base_model_output = self.branch1_base_model(data)
         x = self.branch1_flatten(base_model_output)
         x = self.branch1_dense1(x)
