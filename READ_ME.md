@@ -17,7 +17,7 @@ To execute the script, please follow these steps:
 1. Navigate to the root directory 
 2. Locate the script named *train.py*
 3. Run the script using the following command: python3 [script_name].py [optional_parameters]
-4. Optionally, you can pass some parameters to set all training options. See next section for details
+4. Optionally, you can pass some parameters to set all training options. See next section for details.
 
 Ensure you have Python installed and that the necessary dependencies are met before running the script.
 
@@ -2594,3 +2594,7 @@ optional arguments:
                         LHSSearch, NoisyRL2, SqrtSQPCMAPlus,
                         DiscreteNoisyInfSplits. (default: CMA)
 </pre>
+
+
+
+### <span id="introduzione">Introduzione</span>
