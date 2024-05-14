@@ -86,8 +86,9 @@ optional arguments:
                         (default: Input\dataset)
   --split SPLIT         
                         Percentage to split the dataset into train/validation sets. 
-                        It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use the standard split: 0.2) or 
-                        'train only' (to use all the dataset for training. Use this option if only training is needed).
+                        It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use 
+                        the standard split: 0.2) or 'train only' (to use all the dataset for training. Use 
+                        this option if only training is needed).
                         (default: 'train only')
   --transform TRANSFORM
                         Transformations to be applied to images of the dataset. 
@@ -95,11 +96,11 @@ optional arguments:
   --normalize           
                         Normalize option to be applied to images of the dataset. (default: True)
   --mean MEAN [MEAN ...]
-                        Mean values for normalization. They can be multiple
-                        floats separated by a spaces (list representing the
-                        values, whose cardinality depends on the image format)
-                        or 'auto' (to apply standard values) or None (no
-                        normalization) .Standard values. Supported Color Modes
+                        Mean values for normalization. 
+                        They can be multiple floats separated by a spaces (list representing the values, 
+                        whose cardinality depends on the image format) or 'auto' (to apply standard values)
+                        or None (no normalization).
+                        Standard values. Supported Color Modes
                         and Standard Normalization Parameters: 1. RGB: - Mean:
                         [0.00392157, 0.00392157, 0.00392157] - Standard
                         Deviation (Std): [0.229, 0.224, 0.225] 2. Grayscale: -
