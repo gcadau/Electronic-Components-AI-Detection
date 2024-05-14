@@ -79,19 +79,21 @@ train.py
 optional arguments:
 
 <pre>
-  -h, --help            show this help message and exit
+  -h, --help            
+                        Show this help message and exit
   --data_path DATA_PATH
-                        Path of the directory in which input data are stored
+                        Path of the directory in which input data are stored.
                         (default: Input\dataset)
-  --split SPLIT         Percentage to split the dataset into train/validation sets. 
-                        It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use the standard split: 0.2) or 'train only' (to use all the dataset for training. Use this option if only training is needed).
+  --split SPLIT         
+                        Percentage to split the dataset into train/validation sets. 
+                        It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use the standard split: 0.2) or 
+                        'train only' (to use all the dataset for training. Use this option if only training is needed).
                         (default: 'train only')
   --transform TRANSFORM
-                        Transformations to be applied to images of the
-                        dataset. (default: None, i.e.: no transformations are
-                        appied.)
-  --normalize           Normalize option to be applied to images of the
-                        dataset. (default: True)
+                        Transformations to be applied to images of the dataset. 
+                        (default: None, i.e.: no transformations are applied.)
+  --normalize           
+                        Normalize option to be applied to images of the dataset. (default: True)
   --mean MEAN [MEAN ...]
                         Mean values for normalization. They can be multiple
                         floats separated by a spaces (list representing the
