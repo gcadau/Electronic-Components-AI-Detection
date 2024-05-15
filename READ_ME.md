@@ -2562,9 +2562,8 @@ Probability that for a single (batch of) image the corresponding parameter is ra
 
 #### <span id="Domain-Randomization-Standard-Distribution-Parameters">Domain Randomization, Standard Distribution Parameters</span>
 
-Domain randomization, standard distribution parameters.
-
-The meaning of the parameter depends on the distribution(s) considered. If univariate distributions are used, the order reflects the corresponding image parameter to be randomized:
+The meaning of the parameter depends on the distribution(s) considered.  
+If univariate distributions are used, the order reflects the corresponding image parameter to be randomized:
 - Univariate uniform distribution, 
 \tU(lower_brightness, upper_brightness);  U(lower_contrast, upper_contrast);  U(lower_horizontal_flip, upper_horizontal_flip);  U(lower_vertical_flip, upper_vertical_flip);  U(lower_hue, upper_hue);  U(lower_jpeg_quality, upper_jpeg_quality);  U(lower_saturation, upper_saturation)
 \tstandard distribution parameters, U(-0.2, 0.2);  U(0, 2.5);  U(0, 1);  U(0, 1);  U(-0.2, 0.2);  U(20, 100);  U(0, 2)
