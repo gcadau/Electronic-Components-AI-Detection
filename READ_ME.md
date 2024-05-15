@@ -2590,11 +2590,9 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 </pre>
 - Multivariate normal distribution,
 
-````
 ```math
 \begin{bmatrix}X\\Y\end{bmatrix}
 ```
-````
  
 \tN(mean_vector, variance_covariance_matrix), with mean_vector = [mean_i] and variance_covariance_matrix = [var_ii or covar_ij], with i, j = {brightness, contrast, horizontally flip, vertically flip, hue, jpeg quality, saturation}
 \tstandard distribution parameters, N(
