@@ -2602,7 +2602,6 @@ optional arguments:
 
 #### <span id="Supported-Color-Modes-and-Standard-Normalization-Parameters">Supported Color Modes and Standard Normalization Parameters</span>
 
-Supported Color Modes and Standard Normalization Parameters:
 
 1. RGB:
     - Mean: [0.00392157, 0.00392157, 0.00392157]
