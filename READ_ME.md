@@ -2596,9 +2596,9 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 	\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
 	\vdots & \vdots & \ddots & \vdots \\
 	\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
-	\end{bmatrix})
+	\end{bmatrix}) \\
+ 	with \mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
 	```
-with \mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
 - standard distribution parameters,
 \tstandard distribution parameters, N(
                                         [0, 1.25, 0.5, 0.5, 0, 60, 1.25],
