@@ -150,10 +150,9 @@ optional arguments:
                         Parameters. See the <a href="#Parameters-names">section</a>.
                         (default: True)
   --dom_rand__mode DOM_RAND__MODE
-                        Domain randomization mode. Domain randomization, mode.
-                        Distributions: - multivariate normal - univariate
-                        normal - uniform - triangular (default: multivariate
-                        normal)
+                        Domain randomization mode. 
+                        Distributions. See the <a href="#Distributions">section</a>.
+                        (default: 'multivariate normal')
   --dom_rand__seed DOM_RAND__SEED
                         Domain randomization random seed. (default: None)
   --dom_rand__factors DOM_RAND__FACTORS [DOM_RAND__FACTORS ...]
@@ -2627,3 +2626,14 @@ Note:
 - hue
 - jpeg quality
 - saturation
+
+### Domain randomization modes
+
+#### <span id="Distributions">Distributions</span>
+
+- multivariate normal
+- univariate normal
+- uniform
+- triangular
+
+  
