@@ -2591,7 +2591,13 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 - Multivariate normal distribution,
 
 ```math
-\mathcal{N}(\begin{bmatrix}\text{mean}_\text{brightness}\\\text{mean}_\text{contrast}\\\text{mean}_\text{horizontal flip}\\\text{mean}_\text{vertical flip}\\\text{mean}_\text{hue}\\\text{mean}_\text{jpeg quality}\\\text{mean}_\text{saturation}\end{bmatrix})
+\mathcal{N}(\begin{bmatrix}\text{mean}_\text{brightness}\\\text{mean}_\text{contrast}\\\text{mean}_\text{horizontal flip}\\\text{mean}_\text{vertical flip}\\\text{mean}_\text{hue}\\\text{mean}_\text{jpeg quality}\\\text{mean}_\text{saturation}\end{bmatrix}, $$
+\begin{bmatrix}
+\text{variance}_{\text{parametro1}} & \text{covariance}_{\text{parametro1}, \text{parametro2}} & \cdots & \text{covariance}_{\text{parametro1}, \text{parametroN}} \\
+\text{covariance}_{\text{parametro2}, \text{parametro1}} & \text{variance}_{\text{parametro2}} & \cdots & \text{covariance}_{\text{parametro2}, \text{parametroN}} \\
+\vdots & \vdots & \ddots & \vdots \\
+\text{covariance}_{\text{parametroN}, \text{parametro1}} & \text{covariance}_{\text{parametroN}, \text{parametro2}} & \cdots & \text{variance}_{\text{parametroN}}
+\end{bmatrix})
 ```
  
 \tN(mean_vector, variance_covariance_matrix), with mean_vector = [mean_i] and variance_covariance_matrix = [var_ii or covar_ij], with i, j = {brightness, contrast, horizontally flip, vertically flip, hue, jpeg quality, saturation}
