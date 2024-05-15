@@ -5,7 +5,7 @@ Script python to train the model.
 
 ## Installation
 
-Python 3.7.* is necessary to launch the python script.      
+Python $3.7.*$ is necessary to launch the python script.      
 It is necessary to install all python packages listed in requirements.txt.       
 Quick install: 
 <pre>  
