@@ -4,6 +4,8 @@ from algorithm.utils.params.tf.dr import DomainRandomization_parameters
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import warnings
+from absl import logging
+logging.set_verbosity(logging.ERROR)
 import argparse
 import tensorflow as tf
 import keras
@@ -1131,4 +1133,6 @@ else:
 # model.summary()
 
 model.save(out_dir)
-keras.utils.plot_model(model, f'{out_dir}/ResNet.svg', show_shapes=True, show_layer_activations=True, show_layer_names=True)
+
+#draw and save neural network architecture
+# keras.utils.plot_model(model, f'{out_dir}/ResNet.svg', show_shapes=True, show_layer_activations=True, show_layer_names=True)
