@@ -2598,5 +2598,4 @@ optional arguments:
 </pre>
 
 
-
-### <span id="introduzione">Introduzione</span>
+## Standard values used
