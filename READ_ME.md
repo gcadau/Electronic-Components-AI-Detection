@@ -111,11 +111,13 @@ optional arguments:
                         or None (no standard deviation, i.e.: sd = 0).
                         Standard values. See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>.
                         (default: None)
-  --resize              Resize option to be applied to images of the dataset.
+  --resize              
+                        Resize option to be applied to images of the dataset.
                         (default: True)
-  --height HEIGHT       Height value for resize. It can be a float or 'auto'
-                        (to apply standard values) or None (no resize)
-                        .Standard values. Standard Resize Parameters: -
+  --height HEIGHT       
+                        Height value for resize. It can be a float or 'auto' (to apply standard values) or 
+                        None (no resize).
+                        Standard values. See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>. Standard Resize Parameters: -
                         Height: 128 - Width: 128 (default: 'auto')
   --width WIDTH         Width value for resize. It can be a float or 'auto'
                         (to apply standard values) or None (no resize)
@@ -2602,3 +2604,9 @@ optional arguments:
 Note: 
 - The mean and standard deviation (std) values are used for normalization in the respective color modes.
 - RGB and RGBA mean values are scaled to the range [0, 1] by dividing by 255.
+
+
+#### <span id="Standard-Resize-Parameters">Standard Resize Parameters</span>
+
+- Height: 128
+- Width: 128
