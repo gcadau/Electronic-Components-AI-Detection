@@ -2631,8 +2631,3 @@ begin{bmatrix}X\\Y\end{bmatrix}
 - uniform
 - triangular
 
-  
-This is how it renders:
-```math
-\begin{bmatrix}X\\Y\end{bmatrix}
-```
