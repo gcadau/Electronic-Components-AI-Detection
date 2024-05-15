@@ -146,10 +146,9 @@ optional arguments:
                         Path of the directory in which the trained model will be saved. 
                         (default: 'out\model')
   --domain_randomization
-                        Enable image parameters domain randomization. Image
-                        Parameters: - brightness - contrast - horizontally
-                        flip - vertically flip - hue - jpeg quality -
-                        saturation (default: True)
+                        Enable image parameters domain randomization. 
+                        Parameters. See the <a href="#Parameters-names">section</a>.
+                        (default: True)
   --dom_rand__mode DOM_RAND__MODE
                         Domain randomization mode. Domain randomization, mode.
                         Distributions: - multivariate normal - univariate
@@ -2590,7 +2589,7 @@ optional arguments:
 </pre>
 
 
-### Standard values used
+### Standard values
 
 #### <span id="Supported-Color-Modes-and-Standard-Normalization-Parameters">Supported Color Modes and Standard Normalization Parameters</span>
 
@@ -2616,3 +2615,15 @@ Note:
 
 - Height: 128
 - Width: 128
+
+### Image parameters
+
+#### <span id="Parameters-names">Parameters names</span>
+
+- brightness
+- contrast
+- horizontally flip
+- vertically flip
+- hue
+- jpeg quality
+- saturation
