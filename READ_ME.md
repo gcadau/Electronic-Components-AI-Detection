@@ -2568,7 +2568,7 @@ If univariate distributions are used, the order reflects the corresponding image
     $$\mathcal{U}(\text{{lower brightness}}, \text{{upper brightness}});\quad  \mathcal{U}(\text{{lower contrast}}, \text{{upper contrast}});\quad  \mathcal{U}(\text{{lower horizontal filp}}, \text{{upper horizontal flip}});\quad  \mathcal{U}(\text{{lower vertical flip}}, \text{{upper vertical flip}});  \mathcal{U}(\text{{lower hue}}, \text{{upper hue}});\quad  \mathcal{U}(\text{{lower jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{U}(\text{{lower saturation}}, \text{{upper saturation}})$$
     standard distribution parameters,
   $$\qquad \mathcal{U}(-0.2, 0.2);\quad  \mathcal{U}(0, 2.5);\quad  \mathcal{U}(0, 1);\quad  \mathcal{U}(0, 1);\quad  \mathcal{U}(-0.2, 0.2);\quad  \mathcal{U}(20, 100);\quad  \mathcal{U}(0, 2)$$
-\t\tLinearized version: Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
+ Linearized version: Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
 - Univariate triangular distribution, 
 \tTr(lower_brightness, mode_brightness, upper_brightness);  Tr(lower_contrast, mode_contrast, upper_contrast);  Tr(lower_horizontal_flip, mode_horizontal_flip, upper_horizontal_flip);  Tr(lower_vertical_flip, mode_vertical_flip, upper_vertical_flip);  Tr(lower_hue, mode_hue, upper_hue);  Tr(lower_jpeg_quality, mode_jpeg_quality, upper_jpeg_quality);  Tr(lower_saturation, mode_saturation, upper_saturation)
 \tstandard distribution parameters, Tr(-0.2, 0, 0.2);  Tr(0, 1.25, 2.5);  Tr(0, 0.5, 1);  Tr(0, 0.5, 1);  Tr(-0.2, 0, 0.2);  Tr(20, 60, 100);  Tr(0, 1, 2)
