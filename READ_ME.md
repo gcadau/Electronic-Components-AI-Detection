@@ -124,22 +124,27 @@ optional arguments:
                         None (no resize).
                         Standard values. See the <a href="#Standard-Resize-Parameters">section</a>.
                         (default: 'auto')
-  --one_hot_encoding    One-hot encoding option to be applied to labels
-                        (default: 'True')
-  --name NAME           Name of the dataset (default: 'Electronic components
-                        dataset')
-  --format FORMAT       Image format (e.g.: RGB, Grayscale, RGBA). If not
-                        present, automatically deduced from images. Images of
-                        homegeneus formats are suggested to improve algorithm
-                        performances. (default: None)
+  --one_hot_encoding    
+                        One-hot encoding option to be applied to labels.
+                        (default: True)
+  --name NAME           
+                        Name of the dataset.
+                        (default: 'Electronic components dataset')
+  --format FORMAT       
+                        Image format (e.g.: RGB, Grayscale, RGBA). 
+                        If not present, automatically deduced from images. 
+                        Images of homegeneus formats are suggested to improve algorithm performances. 
+                        (default: None)
   --buffer_size BUFFER_SIZE
-                        Buffer size (default:500)
+                        Buffer size.
+                        (default:500)
   --batch_size BATCH_SIZE
-                        Batch size. Also possibile to use 'no batches'
+                        Batch size. 
+                        Also possibile to use 'no batches'.
                         (default:16)
   --model_path MODEL_PATH
-                        Path of the directory in which the trained model will
-                        be saved. (default: out\model)
+                        Path of the directory in which the trained model will be saved. 
+                        (default: 'out\model')
   --domain_randomization
                         Enable image parameters domain randomization. Image
                         Parameters: - brightness - contrast - horizontally
