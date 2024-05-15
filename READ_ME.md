@@ -2576,7 +2576,10 @@ If univariate distributions are used, the order reflects the corresponding image
     $$\mathcal{T}(\text{{lower brightness}}, \text{{mode brightness}}, \text{{upper brightness}});\quad  \mathcal{T}(\text{{lower contrast}}, \text{{mode contrast}}, \text{{upper contrast}});\quad  \mathcal{T}(\text{{lower horizontal filp}}, \text{{mode horizontal flip}}, \text{{upper horizontal flip}});\quad  \mathcal{T}(\text{{lower vertical flip}}, \text{{mode vertical flip}}, \text{{upper vertical flip}}); \quad \mathcal{T}(\text{{lower hue}}, \text{{mode hue}}, \text{{upper hue}});\quad  \mathcal{T}(\text{{lower jpeg quality}}, \text{{mode jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{T}(\text{{lower saturation}}, \text{{mode saturation}}, \text{{upper saturation}})$$
     standard distribution parameters,
   $$\qquad \mathcal{T}(-0.2, 0, 0.2) ;\quad \mathcal{T}(0, 1.25, 2.5) ;\quad \mathcal{T}(0, 0.5, 1) ;\quad \mathcal{T}(0, 0.5, 1) ;\quad \mathcal{T}(-0.2, 0, 0.2) ;\quad \mathcal{T}(20, 60, 100) ;\quad \mathcal{T}(0, 1, 2)$$
-\t\tLinearized version: Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
+           - Linearized version:
+<pre>
+\Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
+</pre>
 - Univariate normal distribution, 
 \tN(mean_brightness, variance_brightness);  N(mean_contrast, variance_contrast);  N(mean_horizontal_flip, variance_horizontal_flip);  N(mean_vertical_flip, variance_vertical_flip);  N(mean_hue, variance_hue);  N(mean_jpeg_quality, variance_jpeg_quality);  N(mean_saturation, variance_saturation)
 \tstandard distribution parameters, N(0, 0.15);  N(1.25, 1);  N(0.5, 0.1);  N(0.5, 0.1);  N(0, 0.15);  N(60, 25);  N(1.25, 1.125)
