@@ -109,7 +109,7 @@ optional arguments:
                         They can be multiple floats separated by a spaces (list representing the values, 
                         whose cardinality depends on the image format) or 'auto' (to apply standard values)
                         or None (no standard deviation, i.e.: sd = 0).
-                        Standard values.  See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>.
+                        Standard values. See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>.
                         (default: None)
   --resize              Resize option to be applied to images of the dataset.
                         (default: True)
