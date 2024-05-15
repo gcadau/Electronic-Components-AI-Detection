@@ -2650,4 +2650,4 @@ Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[
 - Multivariate normal distribution,
 
   
-```math \mathcal{N}_7(\begin{bmatrix} 0 \\ 1.25 \\ 0.5 \\ 0.5 \\ 0 \\ 60 \\ 1.25 \end{bmatrix}) ```
+	```math \mathcal{N}_7(\begin{bmatrix} 0 \\ 1.25 \\ 0.5 \\ 0.5 \\ 0 \\ 60 \\ 1.25 \end{bmatrix}) ```
