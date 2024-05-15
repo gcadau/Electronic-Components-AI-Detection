@@ -117,7 +117,7 @@ optional arguments:
   --height HEIGHT       
                         Height value for resize. It can be a float or 'auto' (to apply standard values) or 
                         None (no resize).
-                        Standard values. See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>. Standard Resize Parameters: -
+                        Standard values. See the <a href="#Standard-Resize-Parameters">section</a>. Standard Resize Parameters: -
                         Height: 128 - Width: 128 (default: 'auto')
   --width WIDTH         Width value for resize. It can be a float or 'auto'
                         (to apply standard values) or None (no resize)
