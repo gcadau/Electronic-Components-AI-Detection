@@ -1,5 +1,6 @@
 from tensorflow import keras
 import tensorflow as tf
+import random
 
 
 class RandomInvert(keras.layers.Layer):
@@ -43,23 +44,35 @@ class RandomBrightness(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            if self.seed is not None:
-                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor:
-                    im = tf.image.adjust_brightness(im, delta[i])
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                if self.seed is not None:
+                    delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_brightness(im, delta[i])
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    delta = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    delta = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor:
+                    return tf.map_fn(lambda x: tf.image.adjust_brightness(x, delta), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
 
@@ -74,23 +87,35 @@ class RandomContrast(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            if self.seed is not None:
-                contrast_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                contrast_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor:
-                    im = tf.image.adjust_contrast(im, contrast_factor[i])
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                if self.seed is not None:
+                    contrast_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    contrast_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_contrast(im, contrast_factor[i])
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    contrast_factor = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    contrast_factor = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor:
+                    return tf.map_fn(lambda x: tf.image.adjust_contrast(x, contrast_factor), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
 
@@ -110,24 +135,37 @@ class RandomHorizontallyFlip(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            prob = None
-            if self.seed is not None:
-                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
-                    im = tf.image.flip_left_right(im)
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                prob = None
+                if self.seed is not None:
+                    prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                        im = tf.image.flip_left_right(im)
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                prob = None
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    prob = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    prob = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor and prob < 0.5:
+                    return tf.map_fn(lambda x: tf.image.flip_left_right(x), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
 
@@ -144,24 +182,37 @@ class RandomVerticallyFlip(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            prob = None
-            if self.seed is not None:
-                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
-                    im = tf.image.flip_up_down(im)
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                prob = None
+                if self.seed is not None:
+                    prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    prob = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                        im = tf.image.flip_up_down(im)
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                prob = None
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    prob = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    prob = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor and prob < 0.5:
+                    return tf.map_fn(lambda x: tf.image.flip_up_down(x), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
 
@@ -178,23 +229,35 @@ class RandomHue(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            if self.seed is not None:
-                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor:
-                    im = tf.image.adjust_hue(im, delta[i])
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                if self.seed is not None:
+                    delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    delta = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_hue(im, delta[i])
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    delta = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    delta = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor:
+                    return tf.map_fn(lambda x: tf.image.adjust_hue(x, delta), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
 
@@ -209,23 +272,35 @@ class RandomJpegQuality(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            if self.seed is not None:
-                jpeg_quality = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                jpeg_quality = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor:
-                    im = tf.image.adjust_jpeg_quality(im, jpeg_quality[i])
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                if self.seed is not None:
+                    jpeg_quality = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    jpeg_quality = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_jpeg_quality(im, jpeg_quality[i])
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    jpeg_quality = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    jpeg_quality = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor:
+                    return tf.map_fn(lambda x: tf.image.adjust_jpeg_quality(x, jpeg_quality), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
 
@@ -240,21 +315,33 @@ class RandomSaturation(keras.layers.Layer):
 
     def call(self, x, training=None):
         if training:
-            if self.seed is not None:
-                saturation_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
-            else:
-                saturation_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
-            ims = []
-            for i in range(x.shape[0]):
-                im = x[i,:,:,:]
-                if tf.random.uniform([]) <= self.factor:
-                    im = tf.image.adjust_saturation(im, saturation_factor[i])
-                ims.append(im)
-            return tf.stack(ims)
+            if x.shape[0] is not None: 
+                if self.seed is not None:
+                    saturation_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper, seed=self.seed)
+                else:
+                    saturation_factor = tf.random.uniform(shape=[x.shape[0]], minval=self.lower, maxval=self.upper)
+                ims = []
+                for i in range(x.shape[0]):
+                    im = x[i,:,:,:]
+                    if tf.random.uniform([]) <= self.factor:
+                        im = tf.image.adjust_saturation(im, saturation_factor[i])
+                    ims.append(im)
+                return tf.stack(ims)
+            else: # no batches or eager execution not enabled
+                if self.seed is not None:
+                    tf.random.set_seed(self.seed)
+                    rng = np.random.default_rng(seed=self.seed)
+                    saturation_factor = rng.uniform(self.lower, self.upper, size=1)[0] 
+                else:
+                    saturation_factor = np.random.uniform(self.lower, self.upper, size=1)[0] 
+                if random.random() <= self.factor:
+                    return tf.map_fn(lambda x: tf.image.adjust_saturation(x, saturation_factor), x)
+                else:
+                    return x  
         else:
             return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'lower and upper': (self.lower, self.upper), 'factor': self.factor})
+        config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config

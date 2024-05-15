@@ -1,6 +1,7 @@
 from tensorflow import keras
 import tensorflow as tf
 import numpy as np
+import random
 
 
 class RandomInvert(keras.layers.Layer):
@@ -45,37 +46,56 @@ class RandomBrightness(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    delta = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    delta = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_brightness(im, delta[i])
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        delta = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        delta = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_brightness(im, delta[i])
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        delta = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        delta = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor:
+                        return tf.map_fn(lambda x: tf.image.adjust_brightness(x, delta), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        delta = value[i]
-                        im = tf.image.adjust_brightness(im, delta)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            delta = value[i]
+                            im = tf.image.adjust_brightness(im, delta)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if random.random() <= self.factor:
+                        delta = value[0]
+                        return tf.map_fn(lambda x: tf.image.adjust_brightness(x, delta), x)
+                    else:
+                        return x  
             else:
                 return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
 
@@ -91,37 +111,56 @@ class RandomContrast(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    contrast_factor = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    contrast_factor = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_contrast(im, contrast_factor[i])
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        contrast_factor = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        contrast_factor = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_contrast(im, contrast_factor[i])
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        contrast_factor = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        contrast_factor = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor:
+                        return tf.map_fn(lambda x: tf.image.adjust_contrast(x, contrast_factor), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        contrast_factor = value[i]
-                        im = tf.image.adjust_contrast(im, contrast_factor)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            contrast_factor = value[i]
+                            im = tf.image.adjust_contrast(im, contrast_factor)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if random.random() <= self.factor:
+                        contrast_factor = value[0]
+                        return tf.map_fn(lambda x: tf.image.adjust_contrast(x, contrast_factor), x)
+                    else:
+                        return x  
             else:
                 return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
 
@@ -140,38 +179,58 @@ class RandomHorizontallyFlip(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                prob = None
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    prob = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    prob = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
-                        im = tf.image.flip_left_right(im)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    prob = None
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        prob = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        prob = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                            im = tf.image.flip_left_right(im)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    prob = None
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        prob = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        prob = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor and prob < 0.5:
+                        return tf.map_fn(lambda x: tf.image.flip_left_right(x), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    prob = value[i]
-                    if tf.random.uniform([]) <= self.factor and prob < 0.5:
-                        im = tf.image.flip_left_right(im)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        prob = value[i]
+                        if tf.random.uniform([]) <= self.factor and prob < 0.5:
+                            im = tf.image.flip_left_right(im)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    prob = value[0]
+                    if random.random() <= self.factor and prob < 0.5:
+                        return tf.map_fn(lambda x: tf.image.flip_left_right(x), x)
+                    else:
+                        return x  
             else:
                 return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
 
@@ -187,38 +246,58 @@ class RandomVerticallyFlip(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                prob = None
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    prob = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    prob = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
-                        im = tf.image.flip_up_down(im)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    prob = None
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        prob = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        prob = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor and prob[i] < 0.5:
+                            im = tf.image.flip_up_down(im)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    prob = None
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        prob = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        prob = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor and prob < 0.5:
+                        return tf.map_fn(lambda x: tf.image.flip_up_down(x), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    prob = value[i]
-                    if tf.random.uniform([]) <= self.factor and prob < 0.5:
-                        im = tf.image.flip_up_down(im)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        prob = value[i]
+                        if tf.random.uniform([]) <= self.factor and prob < 0.5:
+                            im = tf.image.flip_up_down(im)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    prob = value[0]
+                    if random.random() <= self.factor and prob < 0.5:
+                        return tf.map_fn(lambda x: tf.image.flip_up_down(x), x)
+                    else:
+                        return x  
             else:
                 return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
 
@@ -236,37 +315,56 @@ class RandomHue(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    delta = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    delta = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_hue(im, delta[i])
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        delta = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        delta = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_hue(im, delta[i])
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        delta = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        delta = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor:
+                        return tf.map_fn(lambda x: tf.image.adjust_hue(x, delta), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    delta = value[i]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_hue(im, delta)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        delta = value[i]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_hue(im, delta)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if random.random() <= self.factor:
+                        delta = value[0]
+                        return tf.map_fn(lambda x: tf.image.adjust_hue(x, delta), x)
+                    else:
+                        return x  
             else:
                 return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
 
@@ -282,37 +380,56 @@ class RandomJpegQuality(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    jpeg_quality = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    jpeg_quality = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_jpeg_quality(im, jpeg_quality[i])
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        jpeg_quality = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        jpeg_quality = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_jpeg_quality(im, jpeg_quality[i])
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        jpeg_quality = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        jpeg_quality = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor:
+                        return tf.map_fn(lambda x: tf.image.adjust_jpeg_quality(x, jpeg_quality), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    jpeg_quality = value[i]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        jpeg_quality = value[i]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_jpeg_quality(im, jpeg_quality)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if random.random() <= self.factor:
+                        jpeg_quality = value[0]
+                        return tf.map_fn(lambda x: tf.image.adjust_jpeg_quality(x, jpeg_quality), x)
+                    else:
+                        return x  
             else:
                 return x
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
 
@@ -328,36 +445,55 @@ class RandomSaturation(keras.layers.Layer):
             mode = (upper-lower)/2
         if rand:
             if training:
-                if self.seed is not None:
-                    tf.random.set_seed(self.seed)
-                    rng = np.random.default_rng(seed=self.seed)
-                    saturation_factor = rng.triangular(lower, mode, upper, size=x.shape[0])
-                else:
-                    saturation_factor = np.random.triangular(lower, mode, upper, size=x.shape[0])
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_saturation(im, saturation_factor[i])
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        saturation_factor = rng.triangular(lower, mode, upper, size=x.shape[0])
+                    else:
+                        saturation_factor = np.random.triangular(lower, mode, upper, size=x.shape[0])
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_saturation(im, saturation_factor[i])
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if self.seed is not None:
+                        tf.random.set_seed(self.seed)
+                        rng = np.random.default_rng(seed=self.seed)
+                        saturation_factor = rng.triangular(lower, mode, upper, size=1)[0]
+                    else:
+                        saturation_factor = np.random.triangular(lower, mode, upper, size=1)[0]
+                    if random.random() <= self.factor:
+                        return tf.map_fn(lambda x: tf.image.adjust_saturation(x, saturation_factor), x)
+                    else:
+                        return x  
             else:
                 return x
         else:
             if training:
-                ims = []
-                for i in range(x.shape[0]):
-                    im = x[i,:,:,:]
-                    saturation_factor = value[i]
-                    if tf.random.uniform([]) <= self.factor:
-                        im = tf.image.adjust_saturation(im, saturation_factor)
-                    ims.append(im)
-                return tf.stack(ims)
+                if x.shape[0] is not None: 
+                    ims = []
+                    for i in range(x.shape[0]):
+                        im = x[i,:,:,:]
+                        saturation_factor = value[i]
+                        if tf.random.uniform([]) <= self.factor:
+                            im = tf.image.adjust_saturation(im, saturation_factor)
+                        ims.append(im)
+                    return tf.stack(ims)
+                else: # no batches or eager execution not enabled
+                    if random.random() <= self.factor:
+                        saturation_factor = value[0]
+                        return tf.map_fn(lambda x: tf.image.adjust_saturation(x, saturation_factor), x)
+                    else:
+                        return x  
             else:
                 return x
 
 
     def get_config(self):
         config = super().get_config()
-        config.update({'factor': self.factor})
+        config.update({'seed': self.seed, 'factor': self.factor})
         return config
