@@ -2599,7 +2599,7 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 	\end{bmatrix})
  	```
 with $$\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}$$
-	standard distribution parameters,
+standard distribution parameters,
  	```math
   	\mathcal{N}_7(\begin{bmatrix}
 	0 \\
