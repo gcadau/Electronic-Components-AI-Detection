@@ -2589,12 +2589,8 @@ standard distribution parameters,
 Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
 </pre>
 - Multivariate normal distribution,
- $$x = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix}$$
-$$
-\begin{pmatrix}
-`r x[1]` \\ `r x[2]` \\ `r x[3]`
-\end{pmatrix}
-$$
+ $$\begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix}$$
+
 \tN(mean_vector, variance_covariance_matrix), with mean_vector = [mean_i] and variance_covariance_matrix = [var_ii or covar_ij], with i, j = {brightness, contrast, horizontally flip, vertically flip, hue, jpeg quality, saturation}
 \tstandard distribution parameters, N(
                                         [0, 1.25, 0.5, 0.5, 0, 60, 1.25],
