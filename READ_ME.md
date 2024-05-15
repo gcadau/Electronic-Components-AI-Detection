@@ -2565,7 +2565,7 @@ Probability that for a single (batch of) image the corresponding parameter is ra
 The meaning of the parameter depends on the distribution(s) considered.  
 If univariate distributions are used, the order reflects the corresponding image parameter to be randomized:
 - Univariate uniform distribution,   
-    $$\mathcal{U}(\text{{lower brightness}}, \text{{upper brightness}});  \mathcal{U}(lower contrast, upper contrast);  \mathcal{U}(lower horizontal flip, upper horizontal flip);  \mathcal{U}(lower vertical flip, upper vertical flip);  \mathcal{U}(lower hue, upper hue);  \mathcal{U}(lower jpeg quality, upper jpeg quality);  \mathcal{U}(lower saturation, upper saturation)$$
+    $$\mathcal{U}(\text{{lower brightness}}, \text{{upper brightness}});  \mathcal{U}(\text{{lower contrast}}, \text{{upper contrast}});  \mathcal{U}(\text{{lower horizontal filp}}, \text{{upper horizontal flip}});  \mathcal{U}(\text{{lower vertical flip}}, \text{{upper vertical flip}});  \mathcal{U}(\text{{lower hue}}, \text{{upper hue}});  \mathcal{U}(\text{{lower jpeg quality}}, \text{{upper jpeg quality}});  \mathcal{U}(\text{{lower saturation}}, \text{{upper saturation}})$$
 \tstandard distribution parameters, U(-0.2, 0.2);  U(0, 2.5);  U(0, 1);  U(0, 1);  U(-0.2, 0.2);  U(20, 100);  U(0, 2)
 \t\tLinearized version: Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
 - Univariate triangular distribution, 
