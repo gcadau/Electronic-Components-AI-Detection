@@ -2602,3 +2602,6 @@ optional arguments:
 
 #### <span id="Sec_A">Supported</span>
  Color Modes and Standard Normalization Parameters
+
+## <span id="Sec_A">Usage</span>
+
