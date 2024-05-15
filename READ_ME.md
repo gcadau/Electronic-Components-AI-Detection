@@ -117,12 +117,13 @@ optional arguments:
   --height HEIGHT       
                         Height value for resize. It can be a float or 'auto' (to apply standard values) or 
                         None (no resize).
-                        Standard values. See the <a href="#Standard-Resize-Parameters">section</a>. Standard Resize Parameters: -
-                        Height: 128 - Width: 128 (default: 'auto')
-  --width WIDTH         Width value for resize. It can be a float or 'auto'
-                        (to apply standard values) or None (no resize)
-                        .Standard values. Standard Resize Parameters: -
-                        Height: 128 - Width: 128 (default: 'auto')
+                        Standard values. See the <a href="#Standard-Resize-Parameters">section</a>.
+                        (default: 'auto')
+  --width WIDTH         
+                        Width value for resize. It can be a float or 'auto' (to apply standard values) or 
+                        None (no resize).
+                        Standard values. See the <a href="#Standard-Resize-Parameters">section</a>.
+                        (default: 'auto')
   --one_hot_encoding    One-hot encoding option to be applied to labels
                         (default: 'True')
   --name NAME           Name of the dataset (default: 'Electronic components
