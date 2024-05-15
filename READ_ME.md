@@ -104,21 +104,13 @@ optional arguments:
                         or None (no normalization).
                         Standard values. See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>.
                         (default: 'auto')
-  --std STD [STD ...]   Standard deviation values for normalization. They can
-                        be multiple floats separated by a spaces (list
-                        representing the values, whose cardinality depends on
-                        the image format) or 'auto' (to apply standard values)
-                        or None (no standard deviation, i.e.: sd = 0)
-                        .Standard values. Supported Color Modes and Standard
-                        Normalization Parameters: 1. RGB: - Mean: [0.00392157,
-                        0.00392157, 0.00392157] - Standard Deviation (Std):
-                        [0.229, 0.224, 0.225] 2. Grayscale: - Mean: [0.5] -
-                        Std: [0.5] 3. RGBA: - Mean: [0.485, 0.456, 0.406, 0.0]
-                        - Std: [0.229, 0.224, 0.225, 1.0] Note: - The mean and
-                        standard deviation (std) values are used for
-                        normalization in the respective color modes. - RGB and
-                        RGBA mean values are scaled to the range [0, 1] by
-                        dividing by 255. (default: None)
+  --std STD [STD ...]   
+                        Standard deviation values for normalization. 
+                        They can be multiple floats separated by a spaces (list representing the values, 
+                        whose cardinality depends on the image format) or 'auto' (to apply standard values)
+                        or None (no standard deviation, i.e.: sd = 0).
+                        Standard values.  See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">section</a>.
+                        (default: None)
   --resize              Resize option to be applied to images of the dataset.
                         (default: True)
   --height HEIGHT       Height value for resize. It can be a float or 'auto'
