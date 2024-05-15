@@ -161,7 +161,7 @@ optional arguments:
                         Multiple floats separated by a space (list representing the values, whose 
                         cardinality depends on the number of parameters). 
                         If None, standard factors are used.
-                        Standard values. See the <a href="#Domain-Randomization,-Standard-Factor-Parameters">section</a>.
+                        Standard values. See the <a href="#Domain-Randomization-Standard-Factor-Parameters">section</a>.
                         (default: None)
   --dom_rand__dist_pars DOM_RAND__DIST_PARS [DOM_RAND__DIST_PARS ...]
                         Domain randomization distribution parameters. Use the
@@ -2612,7 +2612,7 @@ Note:
 - Height: 128
 - Width: 128
 
-#### <span id="Domain-Randomization,-Standard-Factor-Parameters">Domain Randomization, Standard Factor Parameters</span>
+#### <span id="Domain-Randomization-Standard-Factor-Parameters">Domain Randomization, Standard Factor Parameters</span>
 
 Probability that for a single (batch of) image the corresponding parameter is randomized:
 - brightness, 0.9
