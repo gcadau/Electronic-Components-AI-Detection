@@ -2600,4 +2600,4 @@ optional arguments:
 
 ### Standard values used
 
-#### Pro
+#### <span id="S1">Supported Color Modes and Standard Normalization Parameters</span>
