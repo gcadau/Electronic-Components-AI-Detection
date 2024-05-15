@@ -164,16 +164,15 @@ optional arguments:
                         Standard values. See the <a href="#Domain-Randomization-Standard-Factor-Parameters">section</a>.
                         (default: None)
   --dom_rand__dist_pars DOM_RAND__DIST_PARS [DOM_RAND__DIST_PARS ...]
-                        Domain randomization distribution parameters. Use the
-                        linearized version (i.e. Parameters list, whose
-                        cardinality depends on the number of parameters:
-                        single parameters separated by 1 single space. A
-                        single parameter can be a scalar, a vector or a a
-                        matrix. Inside a vector, elements are separated by 1
-                        single space. Inside a matrix, rows are representd as
-                        a (transpose) vector and inserted separated by 1
-                        single space). If None, standard distributions
-                        parameters are used. Domain randomization, standard
+                        Domain randomization distribution parameters. 
+                        Use the linearized version, i.e. Parameters list, whose cardinality depends 
+                        on the number of parameters: single parameters separated by 1 single space. 
+                        A single parameter can be a scalar, a vector or a a matrix. 
+                        Inside a vector, elements are separated by 1 single space. 
+                        Inside a matrix, rows are representd as a (transpose) vector and inserted separated
+                        by 1 single space). 
+                        If None, standard distributions parameters are used. 
+                        Domain randomization, standard
                         distribution parameters. The meaning of the parameter
                         depends on the distribution(s) considered. If
                         univariate distributions are used, the order reflects
