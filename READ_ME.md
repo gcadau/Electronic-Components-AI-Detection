@@ -170,8 +170,9 @@ optional arguments:
                         A single parameter can be a scalar, a vector or a a matrix. 
                         Inside a vector, elements are separated by 1 single space. 
                         Inside a matrix, rows are representd as a (transpose) vector and inserted separated
-                        by 1 single space). 
+                        by 1 single space. 
                         If None, standard distributions parameters are used. 
+                        Standard distributions parameters. See the <a href="#Domain-Randomization-Standard-Distribution-Parameters">section</a>.
                         Domain randomization, standard
                         distribution parameters. The meaning of the parameter
                         depends on the distribution(s) considered. If
@@ -2621,6 +2622,40 @@ Probability that for a single (batch of) image the corresponding parameter is ra
 - hue, 0.9
 - jpeg quality, 0.9
 - saturation, 0.9
+
+#### <span id="Domain-Randomization-Standard-Distribution-Parameters">Domain Randomization, Standard Distribution Parameters</span>
+
+Domain randomization, standard distribution parameters.
+
+The meaning of the parameter depends on the distribution(s) considered. If univariate distributions are used, the order reflects the corresponding image parameter to be randomized:
+- Univariate uniform distribution, 
+\tU(lower_brightness, upper_brightness);  U(lower_contrast, upper_contrast);  U(lower_horizontal_flip, upper_horizontal_flip);  U(lower_vertical_flip, upper_vertical_flip);  U(lower_hue, upper_hue);  U(lower_jpeg_quality, upper_jpeg_quality);  U(lower_saturation, upper_saturation)
+\tstandard distribution parameters, U(-0.2, 0.2);  U(0, 2.5);  U(0, 1);  U(0, 1);  U(-0.2, 0.2);  U(20, 100);  U(0, 2)
+\t\tLinearized version: Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
+- Univariate triangular distribution, 
+\tTr(lower_brightness, mode_brightness, upper_brightness);  Tr(lower_contrast, mode_contrast, upper_contrast);  Tr(lower_horizontal_flip, mode_horizontal_flip, upper_horizontal_flip);  Tr(lower_vertical_flip, mode_vertical_flip, upper_vertical_flip);  Tr(lower_hue, mode_hue, upper_hue);  Tr(lower_jpeg_quality, mode_jpeg_quality, upper_jpeg_quality);  Tr(lower_saturation, mode_saturation, upper_saturation)
+\tstandard distribution parameters, Tr(-0.2, 0, 0.2);  Tr(0, 1.25, 2.5);  Tr(0, 0.5, 1);  Tr(0, 0.5, 1);  Tr(-0.2, 0, 0.2);  Tr(20, 60, 100);  Tr(0, 1, 2)
+\t\tLinearized version: Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
+- Univariate normal distribution, 
+\tN(mean_brightness, variance_brightness);  N(mean_contrast, variance_contrast);  N(mean_horizontal_flip, variance_horizontal_flip);  N(mean_vertical_flip, variance_vertical_flip);  N(mean_hue, variance_hue);  N(mean_jpeg_quality, variance_jpeg_quality);  N(mean_saturation, variance_saturation)
+\tstandard distribution parameters, N(0, 0.15);  N(1.25, 1);  N(0.5, 0.1);  N(0.5, 0.1);  N(0, 0.15);  N(60, 25);  N(1.25, 1.125)
+\t\tLinearized version: Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
+- Multivariate normal distribution,
+\tN(mean_vector, variance_covariance_matrix), with mean_vector = [mean_i] and variance_covariance_matrix = [var_ii or covar_ij], with i, j = {brightness, contrast, horizontally flip, vertically flip, hue, jpeg quality, saturation}
+\tstandard distribution parameters, N(
+                                        [0, 1.25, 0.5, 0.5, 0, 60, 1.25],
+                                        [
+                                            [0.15, 0, 0, 0, 0, 0, 0],
+                                            [0, 1, 0, 0, 0, 0, 0],
+                                            [0, 0, 0.1, 0, 0, 0, 0],
+                                            [0, 0, 0, 0.1, 0, 0, 0],
+                                            [0, 0, 0, 0, 0.15, 0, 0],
+                                            [0, 0, 0, 0, 0, 25, 0],
+                                            [0, 0, 0, 0, 0, 0, 1.125]
+                                        ] 
+                                    )
+\t\tLinearized version: Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[[0.15, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0], [0, 0, 0.1, 0, 0, 0, 0], [0, 0, 0, 0.1, 0, 0, 0], [0, 0, 0, 0, 0.15, 0, 0], [0, 0, 0, 0, 0, 25, 0], [0, 0, 0, 0, 0, 0, 1.125]] -> 0.15, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 1.125
+
 
 ### Image parameters
 
