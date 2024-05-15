@@ -2591,12 +2591,12 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 - Multivariate normal distribution,
 
 ```math
-\mathcal{N}(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
+\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
 \begin{bmatrix}
-\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{parametroN}} \\
-\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{parametroN}} \\
+\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{saturation}} \\
+\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
 \vdots & \vdots & \ddots & \vdots \\
-\sigma_{\text{parametroN}, \text{brightness}} & \sigma_{\text{parametroN}, \text{contrast}} & \cdots & \sigma^2_{\text{parametroN}}
+\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
 \end{bmatrix})
 ```
  
