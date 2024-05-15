@@ -154,18 +154,15 @@ optional arguments:
                         Distributions. See the <a href="#Distributions">section</a>.
                         (default: 'multivariate normal')
   --dom_rand__seed DOM_RAND__SEED
-                        Domain randomization random seed. (default: None)
+                        Domain randomization random seed. 
+                        (default: None)
   --dom_rand__factors DOM_RAND__FACTORS [DOM_RAND__FACTORS ...]
-                        Domain randomization factor parameters. Multiple
-                        floats separated by a spaces (list representing the
-                        values, whose cardinality depends on the number of
-                        parameters). If None, standard factors are used.
-                        Domain randomization, standard factor parameters.
-                        Probability that for a single (batch of) image the
-                        corresponding parameter is randomized: - brightness,
-                        0.9 - contrast, 0.9 - horizontally flip, 0.9 -
-                        vertically flip, 0.9 - hue, 0.9 - jpeg quality, 0.9 -
-                        saturation, 0.9 (default: None)
+                        Domain randomization factor parameters. 
+                        Multiple floats separated by a space (list representing the values, whose 
+                        cardinality depends on the number of parameters). 
+                        If None, standard factors are used.
+                        Standard values. See the <a href="#Domain-Randomization,-Standard-Factor-Parameters">section</a>.
+                        (default: None)
   --dom_rand__dist_pars DOM_RAND__DIST_PARS [DOM_RAND__DIST_PARS ...]
                         Domain randomization distribution parameters. Use the
                         linearized version (i.e. Parameters list, whose
@@ -2614,6 +2611,17 @@ Note:
 
 - Height: 128
 - Width: 128
+
+#### <span id="Domain-Randomization,-Standard-Factor-Parameters">Domain Randomization, Standard Factor Parameters</span>
+
+Probability that for a single (batch of) image the corresponding parameter is randomized:
+- brightness, 0.9
+- contrast, 0.9
+- horizontally flip, 0.9
+- vertically flip, 0.9
+- hue, 0.9
+- jpeg quality, 0.9
+- saturation, 0.9
 
 ### Image parameters
 
