@@ -2632,3 +2632,7 @@ begin{bmatrix}X\\Y\end{bmatrix}
 - triangular
 
   
+This is how it renders:
+```math
+\begin{bmatrix}X\\Y\end{bmatrix}
+```
