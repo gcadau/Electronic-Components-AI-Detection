@@ -2602,3 +2602,20 @@ optional arguments:
 
 #### <span id="Supported-Color-Modes-and-Standard-Normalization-Parameters">Supported Color Modes and Standard Normalization Parameters</span>
 
+Supported Color Modes and Standard Normalization Parameters:
+
+1. RGB:
+    - Mean: [0.00392157, 0.00392157, 0.00392157]
+    - Standard Deviation (Std): [0.229, 0.224, 0.225]
+
+2. Grayscale:
+    - Mean: [0.5]
+    - Std: [0.5]
+
+3. RGBA:
+    - Mean: [0.485, 0.456, 0.406, 0.0]
+    - Std: [0.229, 0.224, 0.225, 1.0]
+
+Note: 
+- The mean and standard deviation (std) values are used for normalization in the respective color modes.
+- RGB and RGBA mean values are scaled to the range [0, 1] by dividing by 255.
