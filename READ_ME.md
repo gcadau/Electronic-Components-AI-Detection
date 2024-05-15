@@ -2589,7 +2589,6 @@ standard distribution parameters,
 Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
 </pre>
 - Multivariate normal distribution,
-
 ```math
 \mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
 \begin{bmatrix}
@@ -2600,7 +2599,7 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 \end{bmatrix})
 ```
  with $$\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}$$
-\tN(mean_vector, variance_covariance_matrix), with mean_vector = [mean_i] and variance_covariance_matrix = [var_ii or covar_ij], with i, j = {brightness, contrast, horizontally flip, vertically flip, hue, jpeg quality, saturation}
+standard distribution parameters,
 \tstandard distribution parameters, N(
                                         [0, 1.25, 0.5, 0.5, 0, 60, 1.25],
                                         [
