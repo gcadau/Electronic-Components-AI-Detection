@@ -2582,7 +2582,8 @@ Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], 
 </pre>
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal filp}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
-\tN(mean_brightness, variance_brightness);  N(mean_contrast, variance_contrast);  N(mean_horizontal_flip, variance_horizontal_flip);  N(mean_vertical_flip, variance_vertical_flip);  N(mean_hue, variance_hue);  N(mean_jpeg_quality, variance_jpeg_quality);  N(mean_saturation, variance_saturation)
+standard distribution parameters,
+  $$\qquad \mathcal{N}(0, 0.15);\quad  \mathcal{N}(1.25, 1);\quad  \mathcal{N}(0.5, 0.1);\quad  \mathcal{N}(0.5, 0.1);\quad  \mathcal{N}(0, 0.15);\quad  \mathcal{N}(60, 25);\quad  \mathcal{N}(1.25, 1.125)$$
 \tstandard distribution parameters, N(0, 0.15);  N(1.25, 1);  N(0.5, 0.1);  N(0.5, 0.1);  N(0, 0.15);  N(60, 25);  N(1.25, 1.125)
 \t\tLinearized version: Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
 - Multivariate normal distribution,
