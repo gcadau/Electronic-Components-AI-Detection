@@ -102,7 +102,7 @@ optional arguments:
                         They can be multiple floats separated by a spaces (list representing the values, 
                         whose cardinality depends on the image format) or 'auto' (to apply standard values)
                         or None (no normalization).
-                        Standard values. See the <a href="#Supported Color Modes and Standard Normalization Parameters">next section</a> Supported Color Modes
+                        Standard values. See the <a href="#Supported-Color-Modes-and-Standard-Normalization-Parameters">next section</a> Supported Color Modes
                         and Standard Normalization Parameters: 1. RGB: - Mean:
                         [0.00392157, 0.00392157, 0.00392157] - Standard
                         Deviation (Std): [0.229, 0.224, 0.225] 2. Grayscale: -
@@ -2600,5 +2600,5 @@ optional arguments:
 
 ### Standard values used
 
-#### <span id="Supported Color Modes and Standard Normalization Parameters">Supported Color Modes and Standard Normalization Parameters</span>
+#### <span id="Supported-Color-Modes-and-Standard-Normalization-Parameters">Supported Color Modes and Standard Normalization Parameters</span>
 
