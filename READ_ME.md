@@ -2648,11 +2648,3 @@ Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[
 - triangular
 
 
-
-
-
-\begin{itemize}
-  \item Primo elemento
-  \item Secondo elemento
-  \item Terzo elemento
-\end{itemize}
