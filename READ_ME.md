@@ -2600,4 +2600,5 @@ optional arguments:
 
 ### Standard values used
 
-#### <span id="S1">Supported Color Modes and Standard Normalization Parameters</span>
+#### <span id="S1">Supported</span>
+ Color Modes and Standard Normalization Parameters
