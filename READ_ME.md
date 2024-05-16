@@ -2610,9 +2610,9 @@ If univariate distributions are used, the order reflects the corresponding image
     standard distribution parameters,
   $$\qquad \mathcal{U}(-0.2, 0.2);\quad  \mathcal{U}(0, 2.5);\quad  \mathcal{U}(0, 1);\quad  \mathcal{U}(0, 1);\quad  \mathcal{U}(-0.2, 0.2);\quad  \mathcal{U}(20, 100);\quad  \mathcal{U}(0, 2)$$
 	- Linearized version:
-<pre>
-  Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
-</pre>
+	<pre>
+  		Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
+	</pre>
 - Univariate triangular distribution,
     $$\mathcal{T}(\text{{lower brightness}}, \text{{mode brightness}}, \text{{upper brightness}});\quad  \mathcal{T}(\text{{lower contrast}}, \text{{mode contrast}}, \text{{upper contrast}});\quad  \mathcal{T}(\text{{lower horizontal filp}}, \text{{mode horizontal flip}}, \text{{upper horizontal flip}});\quad  \mathcal{T}(\text{{lower vertical flip}}, \text{{mode vertical flip}}, \text{{upper vertical flip}}); \quad \mathcal{T}(\text{{lower hue}}, \text{{mode hue}}, \text{{upper hue}});\quad  \mathcal{T}(\text{{lower jpeg quality}}, \text{{mode jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{T}(\text{{lower saturation}}, \text{{mode saturation}}, \text{{upper saturation}})$$
     standard distribution parameters,
