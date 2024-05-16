@@ -1380,29 +1380,29 @@ The meaning of the parameter depends on the distribution(s) considered.
 If univariate distributions are used, the order reflects the corresponding image parameter to be randomized:
 - Univariate uniform distribution,   
     $$\mathcal{U}(\text{{lower brightness}}, \text{{upper brightness}});\quad  \mathcal{U}(\text{{lower contrast}}, \text{{upper contrast}});\quad  \mathcal{U}(\text{{lower horizontal filp}}, \text{{upper horizontal flip}});\quad  \mathcal{U}(\text{{lower vertical flip}}, \text{{upper vertical flip}});  \mathcal{U}(\text{{lower hue}}, \text{{upper hue}});\quad  \mathcal{U}(\text{{lower jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{U}(\text{{lower saturation}}, \text{{upper saturation}})$$
-    standard distribution parameters up ranges,
-    $$\qquad \mathcal{U}(a, b),\text{upper range for }a = 1, \text{upper range for }b = 1;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty;\quad  \mathcal{U}(a, b),\text{upper range for }a = 1, \text{upper range for }b = 1;\quad  \mathcal{U}(a, b),\text{upper range for }a = 100, \text{upper range for }b = 100;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty$$
+    standard distribution parameters initial values,
+    $$\qquad \mathcal{U}(a, b),\text{initial value for }a = 0, \text{initial value for }b = 0;\quad  \mathcal{U}(a, b),\text{initial value for }a = \infty, \text{initial value for }b = \infty;\quad  \mathcal{U}(a, b),\text{initial value for }a = \infty, \text{initial value for }b = \infty;\quad  \mathcal{U}(a, b),\text{initial value for }a = \infty, \text{initial value for }b = \infty;\quad  \mathcal{U}(a, b),\text{initial value for }a = 0, \text{initial value for }b = 0;\quad  \mathcal{U}(a, b),\text{initial value for }a = 50, \text{initial value for }b = 50;\quad  \mathcal{U}(a, b),\text{initial value for }a = 1.25, \text{initial value for }b = 1.25$$
 	- Linearized version:
 	<pre>
-	Given lowers=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], uppers= [1, float(inf), float(inf), float(inf), 1, 100, float(inf)] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 1 float(inf) float(inf) float(inf) 1 100 float(inf)
+	Given lowers=[0, 0, 0, 0, 0, 50, 1.25], uppers= [0, 0, 0, 0, 0, 50, 1.25] -> 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25
 	</pre>
   &nbsp;
 - Univariate triangular distribution,
     $$\mathcal{T}(\text{{lower brightness}}, \text{{mode brightness}}, \text{{upper brightness}});\quad  \mathcal{T}(\text{{lower contrast}}, \text{{mode contrast}}, \text{{upper contrast}});\quad  \mathcal{T}(\text{{lower horizontal filp}}, \text{{mode horizontal flip}}, \text{{upper horizontal flip}});\quad  \mathcal{T}(\text{{lower vertical flip}}, \text{{mode vertical flip}}, \text{{upper vertical flip}}); \quad \mathcal{T}(\text{{lower hue}}, \text{{mode hue}}, \text{{upper hue}});\quad  \mathcal{T}(\text{{lower jpeg quality}}, \text{{mode jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{T}(\text{{lower saturation}}, \text{{mode saturation}}, \text{{upper saturation}})$$
     standard distribution parameters up ranges,
-        $$\qquad \mathcal{T}(a, m, b),\text{upper range for }a = 1, \text{upper range for }m = 1, \text{upper range for }b = 1;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = 1, \text{upper range for }m = 1, \text{upper range for }b = 1;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = 100, \text{upper range for }m = 100, \text{upper range for }b = 100;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty$$
+        $$\qquad \mathcal{T}(a, m, b),\text{initial value for }a = 1, \text{initial value for }m = 1, \text{initial value for }b = 1;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 1, \text{initial value for }m = 1, \text{initial value for }b = 1;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 100, \text{initial value for }m = 100, \text{initial value for }b = 100;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty$$
 	- Linearized version:
 	<pre>
-	Given lowers=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], modes= [1, float(inf), float(inf), float(inf), 1, 100, float(inf)], uppers[1, float(inf), float(inf), float(inf), 1, 100, float(inf)] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 1 float(inf) float(inf) float(inf) 1 100 float(inf) 1 float(inf) float(inf) float(inf) 1 100 float(inf)
+	Given lowers=[0, 0, 0, 0, 0, 50, 1.25], modes= [0, 0, 0, 0, 0, 50, 1.25], uppers=[0, 0, 0, 0, 0, 50, 1.25] -> 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25
 	</pre>
   &nbsp;
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
     standard distribution parameters up ranges,
-    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 1, \text{upper range for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 1, \text{upper range for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 100, \text{upper range for }\sigma^2 = 25;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10$$
+    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 1, \text{initial value for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 1, \text{initial value for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 100, \text{initial value for }\sigma^2 = 25;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10$$
 	- Linearized version:
 	<pre>
-	Given means=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variances=[0.4, 10, 10, 10, 0.4, 25, 10] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 10 10 10 0.4 25 10
+	Given means=[0, 0, 0, 0, 0, 50, 1.25], variances=[0.2, 5, 5, 5, 0.2, 12.5, 5] -> 0 0 0 0 0 50 1.25 0.2 5 5 5 0.2 12.5 5
 	</pre>
  &nbsp;       
 - Multivariate normal distribution,
@@ -1421,7 +1421,7 @@ If univariate distributions are used, the order reflects the corresponding image
  		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
  	```
 
-	standard distribution parameters up ranges,
+	standard distribution parameters initial values,
 
  	```math
 		\mathcal{N}_7(\begin{bmatrix}
@@ -1445,47 +1445,47 @@ If univariate distributions are used, the order reflects the corresponding image
 	```
 
 	```math
-		\text{upper range for }\mu_1 = 1,
+		\text{initial value for }\mu_1 = 1,
  	```
  
  	```math
-  		\text{upper range for }\mu_2 = \infty, 
+  		\text{initial value for }\mu_2 = \infty, 
   	```
 
   	```math
-  		\text{upper range for }\mu_3 = \infty, 
+  		\text{initial value for }\mu_3 = \infty, 
   	```
 
    	```math
-  		\text{upper range for }\mu_4 = \infty, 
+  		\text{initial value for }\mu_4 = \infty, 
   	```
 
    	```math
-  		\text{upper range for }\mu_5 = 1, 
+  		\text{initial value for }\mu_5 = 1, 
   	```
 
    	```math
-  		\text{upper range for }\mu_6 = 100, 
+  		\text{initial value for }\mu_6 = 100, 
   	```
 
    	```math
-  		\text{upper range for }\mu_7 = \infty,
+  		\text{initial value for }\mu_7 = \infty,
   	```
 
 	```math
-  		\text{upper range for }\sigma^2_i = 0.4, i \in \{1, 5\},
+  		\text{initial value for }\sigma^2_i = 0.4, i \in \{1, 5\},
   	```
 	
 	```math
-  		\text{upper range for }\sigma^2_i = 10, i \in \{2, 3, 4, 7\},
+  		\text{initial value for }\sigma^2_i = 10, i \in \{2, 3, 4, 7\},
   	```
 
 	```math
-  		\text{upper range for }\sigma^2_i = 25, i = 6,
+  		\text{initial value for }\sigma^2_i = 25, i = 6,
   	```
 
 	```math
-  		\text{upper range for }\sigma_{ij} = 100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
+  		\text{initial value for }\sigma_{ij} = 100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
   	```
 
 	- Linearized version
