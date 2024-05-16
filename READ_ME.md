@@ -2373,7 +2373,7 @@ If univariate distributions are used, the order reflects the corresponding image
   	```
 
 	```math
-  		\text{lower range for }\sigma_{ij} = -100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \text{s.t.} i \neq j
+  		\text{lower range for }\sigma_{ij} = -100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} i \neq j
   	```
 
 	- Linearized version
