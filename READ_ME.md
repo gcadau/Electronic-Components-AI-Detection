@@ -1,7 +1,17 @@
 - Open the file.
 - Find the following code block on line 21,
+	 
+	```math
+		\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
+		\begin{bmatrix}
+		\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{saturation}} \\
+		\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
+		\vdots & \vdots & \ddots & \vdots \\
+		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
+		\end{bmatrix})
+ 	```
 
-  	```math
+ 	```math
 		\mathcal{N}_7(\begin{bmatrix}
 		0 \\
 		1.25 \\
@@ -21,18 +31,7 @@
 		0 & 0 & 0 & 0 & 0 & 0 & 1.125
 		\end{bmatrix})
 	```
-
-	 
-	```math
-		\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
-		\begin{bmatrix}
-		\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{saturation}} \\
-		\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
-		\vdots & \vdots & \ddots & \vdots \\
-		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
-		\end{bmatrix})
- 	```
- 
+  
    	prova2
   
 
