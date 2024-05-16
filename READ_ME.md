@@ -2682,8 +2682,9 @@ Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[
 		\vdots & \vdots & \ddots & \vdots \\
 		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
 		\end{bmatrix}) \\,
+ 	```
 
- 		\\
+	```math
  		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
  	```
 
