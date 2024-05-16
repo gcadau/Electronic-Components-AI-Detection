@@ -2600,7 +2600,7 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
  	```
 with $$\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}$$
 standard distribution parameters,
-\(
+\begin{align}
 	\mathcal{N}_7(\begin{bmatrix}
 	0 \\
 	1.25 \\
@@ -2619,7 +2619,7 @@ standard distribution parameters,
 	0 & 0 & 0 & 0 & 0 & 25 & 0 \\
 	0 & 0 & 0 & 0 & 0 & 0 & 1.125
 	\end{bmatrix})
-\)
+\end{align}
 	- Linearized version:
 <pre>
 Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[[0.15, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0], [0, 0, 0.1, 0, 0, 0, 0], [0, 0, 0, 0.1, 0, 0, 0], [0, 0, 0, 0, 0.15, 0, 0], [0, 0, 0, 0, 0, 25, 0], [0, 0, 0, 0, 0, 0, 1.125]] -> 0.15, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 1.125
