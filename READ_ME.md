@@ -332,117 +332,16 @@ optional arguments:
 			Standard distribution parameters up ranges. See the <a href="#Adaptive-Domain-Randomization-Standard-Distribution-Parameters-Up-Ranges">section</a>.
                         (default: None)
   --adaptive_dom_rand__dist_initials ADAPTIVE_DOM_RAND__DIST_INITIALS [ADAPTIVE_DOM_RAND__DIST_INITIALS ...]
-                        Adaptive domain randomization distribution parameters
-                        initial values. Use the linearized version (i.e.
-                        Parameters list, whose cardinality depends on the
-                        number of parameters: single parameters separated by 1
-                        single space. A single parameter can be a scalar, a
-                        vector or a a matrix. Inside a vector, elements are
-                        separated by 1 single space. Inside a matrix, rows are
-                        representd as a (transpose) vector and inserted
-                        separated by 1 single space). If None, standard
-                        distribution parameters ranges are used. Adaptive
-                        domain randomization, standard distribution parameters
-                        initial values. The meaning of the parameter depends
-                        on the distribution(s) considered. If univariate
-                        distributions are used, the order reflects the
-                        corresponding image parameter to be randomized: -
-                        Univariate uniform distribution, U(lower_brightness,
-                        upper_brightness); U(lower_contrast, upper_contrast);
-                        U(lower_horizontal_flip, upper_horizontal_flip);
-                        U(lower_vertical_flip, upper_vertical_flip);
-                        U(lower_hue, upper_hue); U(lower_jpeg_quality,
-                        upper_jpeg_quality); U(lower_saturation,
-                        upper_saturation) standard distribution parameters
-                        initial values, U(a, b), initial value for a = 0,
-                        initial value for b = 0; U(a, b), initial value for a
-                        = 0, initial value for b = 0; U(a, b), initial value
-                        for a = 0, initial value for b = 0; U(a, b), initial
-                        value for a = 0, initial value for b = 0; U(a, b),
-                        initial value for a = 0, initial value for b = 0; U(a,
-                        b), initial value for a = 50, initial value for b =
-                        50; U(a, b), initial value for a = 1.25, initial value
-                        for b = 1.25 Linearized version: Given lowers=[0, 0,
-                        0, 0, 0, 50, 1.25], uppers= [0, 0, 0, 0, 0, 50, 1.25]
-                        -> 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25 - Univariate
-                        triangular distribution, Tr(lower_brightness,
-                        mode_brightness, upper_brightness); Tr(lower_contrast,
-                        mode_contrast, upper_contrast);
-                        Tr(lower_horizontal_flip, mode_horizontal_flip,
-                        upper_horizontal_flip); Tr(lower_vertical_flip,
-                        mode_vertical_flip, upper_vertical_flip);
-                        Tr(lower_hue, mode_hue, upper_hue);
-                        Tr(lower_jpeg_quality, mode_jpeg_quality,
-                        upper_jpeg_quality); Tr(lower_saturation,
-                        mode_saturation, upper_saturation) standard
-                        distribution parameters initial values, Tr(a, m, b),
-                        initial value for a = 0, initial value for m = 0,
-                        initial value for b = 0; Tr(a, m, b), initial value
-                        for a = 0, initial value for m = 0, initial value for
-                        b = 0; Tr(a, m, b), initial value for a = 0, initial
-                        value for m = 0, initial value for b = 0; Tr(a, m, b),
-                        initial value for a = 0, initial value for m = 0,
-                        initial value for b = 0; Tr(a, m, b), initial value
-                        for a = 0, initial value for m = 0, initial value for
-                        b = 0; Tr(a, m, b), initial value for a = 50, initial
-                        value for m = 50, initial value for b = 50; Tr(a, m,
-                        b), initial value for a = 1.25, initial value for m =
-                        1.25, initial value for b = 1.25 Linearized version:
-                        Given lowers=[0, 0, 0, 0, 0, 50, 1.25], modes= [0, 0,
-                        0, 0, 0, 50, 1.25], uppers=[0, 0, 0, 0, 0, 50, 1.25]
-                        -> 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25 0 0 0 0 0 50
-                        1.25 - Univariate normal distribution,
-                        N(mean_brightness, variance_brightness);
-                        N(mean_contrast, variance_contrast);
-                        N(mean_horizontal_flip, variance_horizontal_flip);
-                        N(mean_vertical_flip, variance_vertical_flip);
-                        N(mean_hue, variance_hue); N(mean_jpeg_quality,
-                        variance_jpeg_quality); N(mean_saturation,
-                        variance_saturation) standard distribution parameters
-                        initial values, N(mu, sigma), initial value for mu =
-                        0, initial value for sigma = 0.2; N(mu, sigma),
-                        initial value for mu = 0, initial value for sigma = 5;
-                        N(mu, sigma), initial value for mu = 0, initial value
-                        for sigma = 5; N(mu, sigma), initial value for mu = 0,
-                        initial value for sigma = 5; N(mu, sigma), initial
-                        value for mu = 0, initial value for sigma = 0.2; N(mu,
-                        sigma), initial value for mu = 50, initial value for
-                        sigma = 12.5; N(mu, sigma), initial value for mu =
-                        1.25, initial value for sigma = 5 Linearized version:
-                        Given means=[0, 0, 0, 0, 0, 50, 1.25], variances=[0.2,
-                        5, 5, 5, 0.2, 12.5, 5] -> 0 0 0 0 0 50 1.25 0.2 5 5 5
-                        0.2 12.5 5 - Multivariate normal distribution,
-                        N(mean_vector, variance_covariance_matrix), with
-                        mean_vector = [mean_i] and variance_covariance_matrix
-                        = [var_ii or covar_ij], with i, j = {brightness,
-                        contrast, horizontally flip, vertically flip, hue,
-                        jpeg quality, saturation} standard distribution
-                        parameters initial values, N( [mu_1, mu_2, mu_3, mu_4,
-                        mu_5, mu_6, mu_7], [ [sigma_11, sigma_12, sigma_13,
-                        sigma_14, sigma_15, sigma_16, sigma_17], [sigma_21,
-                        sigma_22, sigma_23, sigma_24, sigma_25, sigma_26,
-                        sigma_27], [sigma_31, sigma_32, sigma_33, sigma_34,
-                        sigma_35, sigma_36, sigma_37], [sigma_41, sigma_42,
-                        sigma_43, sigma_44, sigma_45, sigma_46, sigma_47],
-                        [sigma_51, sigma_52, sigma_53, sigma_54, sigma_55,
-                        sigma_56, sigma_57], [sigma_61, sigma_62, sigma_63,
-                        sigma_64, sigma_65, sigma_66, sigma_67], [sigma_71,
-                        sigma_72, sigma_73, sigma_74, sigma_75, sigma_76,
-                        sigma_77] ] ), initial value for mu_1 = 0, initial
-                        value for mu_2 = 0, initial value for mu_3 = 0,
-                        initial value for mu_4 = 0, initial value for mu_5 =
-                        0, initial value for mu_6 = 1.25, initial value for
-                        mu_7 = 50, initial value for sigma_ij = 0.2 if i = j =
-                        {1,5}, initial value for sigma_ij = 5 if i = j =
-                        {2,3,4,7}, initial value for sigma_ij = 12.5 if i = j
-                        = 6, initial value for sigma_ij = 0 if i != j
-                        Linearized version: Given mean_vector=[0, 0, 0, 0, 0,
-                        1.25, 50], variance_covariance_matrix=[[0.2], [0, 5],
-                        [0, 0, 5], [0, 0, 0, 5], [0, 0, 0, 0, 0.2], [0, 0, 0,
-                        0, 0, 12.5], [0, 0, 0, 0, 0, 0, 5]] -> 0 0 0 0 0 1.25
-                        500.2 0 5 0 0 5 0 0 0 5 0 0 0 0 0.2 0 0 0 0 0 12.5 0 0
-                        0 0 0 0 5 -- triangular matrix required -- (default:
-                        None)
+                        Adaptive domain randomization distribution parameters initial values. 
+			Use the linearized version, i.e. Parameters list, whose cardinality depends 
+                        on the number of parameters: single parameters separated by 1 single space. 
+                        A single parameter can be a scalar, a vector or a a matrix. 
+                        Inside a vector, elements are separated by 1 single space. 
+                        Inside a matrix, rows are representd as a (transpose) vector and inserted separated
+                        by 1 single space. 
+			If None, standard distribution parameters ranges are used. 
+			Standard distribution parameters low ranges. See the <a href="#Adaptive-Domain-Randomization-Standard-Distribution-Parameters-Initial-Values">section</a>.
+                        (default: None)
   --adaptive_dom_rand__dist_initials___uniform ADAPTIVE_DOM_RAND__DIST_INITIALS___UNIFORM [ADAPTIVE_DOM_RAND__DIST_INITIALS___UNIFORM ...]
                         Adaptive domain randomization uniform distribution
                         parameters initial values. Use the linearized version
@@ -1474,6 +1373,126 @@ If univariate distributions are used, the order reflects the corresponding image
 	Given mean_vector=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variance_covariance_matrix=[[0.4], [100, 10], [100, 100, 10], [100, 100, 100, 10], [100, 100, 100, 100, 0.4], [100, 100, 100, 100, 100, 25], [100, 100, 100, 100, 100, 100, 10]] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 100 10 100 100 10 100 100 100 10 100 100 100 100 0.4 100 100 100 100 100 25 100 100 100 100 100 100 10
 	</pre>
 
+
+ #### <span id="Adaptive-Domain-Randomization-Standard-Distribution-Parameters-Initial-Values">Adaptive Domain Randomization, Standard Distribution Parameters Initial Values</span>
+
+The meaning of the parameter depends on the distribution(s) considered.  
+If univariate distributions are used, the order reflects the corresponding image parameter to be randomized:
+- Univariate uniform distribution,   
+    $$\mathcal{U}(\text{{lower brightness}}, \text{{upper brightness}});\quad  \mathcal{U}(\text{{lower contrast}}, \text{{upper contrast}});\quad  \mathcal{U}(\text{{lower horizontal filp}}, \text{{upper horizontal flip}});\quad  \mathcal{U}(\text{{lower vertical flip}}, \text{{upper vertical flip}});  \mathcal{U}(\text{{lower hue}}, \text{{upper hue}});\quad  \mathcal{U}(\text{{lower jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{U}(\text{{lower saturation}}, \text{{upper saturation}})$$
+    standard distribution parameters up ranges,
+    $$\qquad \mathcal{U}(a, b),\text{upper range for }a = 1, \text{upper range for }b = 1;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty;\quad  \mathcal{U}(a, b),\text{upper range for }a = 1, \text{upper range for }b = 1;\quad  \mathcal{U}(a, b),\text{upper range for }a = 100, \text{upper range for }b = 100;\quad  \mathcal{U}(a, b),\text{upper range for }a = \infty, \text{upper range for }b = \infty$$
+	- Linearized version:
+	<pre>
+	Given lowers=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], uppers= [1, float(inf), float(inf), float(inf), 1, 100, float(inf)] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 1 float(inf) float(inf) float(inf) 1 100 float(inf)
+	</pre>
+  &nbsp;
+- Univariate triangular distribution,
+    $$\mathcal{T}(\text{{lower brightness}}, \text{{mode brightness}}, \text{{upper brightness}});\quad  \mathcal{T}(\text{{lower contrast}}, \text{{mode contrast}}, \text{{upper contrast}});\quad  \mathcal{T}(\text{{lower horizontal filp}}, \text{{mode horizontal flip}}, \text{{upper horizontal flip}});\quad  \mathcal{T}(\text{{lower vertical flip}}, \text{{mode vertical flip}}, \text{{upper vertical flip}}); \quad \mathcal{T}(\text{{lower hue}}, \text{{mode hue}}, \text{{upper hue}});\quad  \mathcal{T}(\text{{lower jpeg quality}}, \text{{mode jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{T}(\text{{lower saturation}}, \text{{mode saturation}}, \text{{upper saturation}})$$
+    standard distribution parameters up ranges,
+        $$\qquad \mathcal{T}(a, m, b),\text{upper range for }a = 1, \text{upper range for }m = 1, \text{upper range for }b = 1;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = 1, \text{upper range for }m = 1, \text{upper range for }b = 1;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = 100, \text{upper range for }m = 100, \text{upper range for }b = 100;\quad  \mathcal{T}(a, m, b),\text{upper range for }a = \infty, \text{upper range for }m = \infty, \text{upper range for }b = \infty$$
+	- Linearized version:
+	<pre>
+	Given lowers=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], modes= [1, float(inf), float(inf), float(inf), 1, 100, float(inf)], uppers[1, float(inf), float(inf), float(inf), 1, 100, float(inf)] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 1 float(inf) float(inf) float(inf) 1 100 float(inf) 1 float(inf) float(inf) float(inf) 1 100 float(inf)
+	</pre>
+  &nbsp;
+- Univariate normal distribution,
+        $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
+    standard distribution parameters up ranges,
+    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 1, \text{upper range for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 1, \text{upper range for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 100, \text{upper range for }\sigma^2 = 25;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10$$
+	- Linearized version:
+	<pre>
+	Given means=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variances=[0.4, 10, 10, 10, 0.4, 25, 10] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 10 10 10 0.4 25 10
+	</pre>
+ &nbsp;       
+- Multivariate normal distribution,
+	 
+	```math
+		\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
+		\begin{bmatrix}
+		\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{saturation}} \\
+		\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
+		\vdots & \vdots & \ddots & \vdots \\
+		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
+		\end{bmatrix}) \\,
+ 	```
+
+	```math
+ 		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
+ 	```
+
+	standard distribution parameters up ranges,
+
+ 	```math
+		\mathcal{N}_7(\begin{bmatrix}
+		\mu_1 \\
+		\mu_2 \\
+		\mu_3 \\
+		\mu_4 \\
+		\mu_5 \\
+		\mu_6 \\
+		\mu_7
+		\end{bmatrix}, \\
+		\begin{bmatrix}
+		\sigma^2_1 & \sigma_{12} & \sigma_{13} & \sigma_{14} & \sigma_{15} & \sigma_{16} & \sigma_{17} \\
+		\sigma_{21} & \sigma^2_2 & \sigma_{23} & \sigma_{24} & \sigma_{25} & \sigma_{26} & \sigma_{27} \\
+		\sigma_{31} & \sigma_{32} & \sigma^2_3 & \sigma_{34} & \sigma_{35} & \sigma_{36} & \sigma_{37} \\
+		\sigma_{41} & \sigma_{42} & \sigma_{43} & \sigma^2_4 & \sigma_{45} & \sigma_{46} & \sigma_{47} \\
+		\sigma_{51} & \sigma_{52} & \sigma_{53} & \sigma_{54} & \sigma^2_5 & \sigma_{56} & \sigma_{57} \\
+		\sigma_{61} & \sigma_{62} & \sigma_{63} & \sigma_{64} & \sigma_{65} & \sigma^2_6 & \sigma_{67} \\
+		\sigma_{71} & \sigma_{72} & \sigma_{73} & \sigma_{74} & \sigma_{75} & \sigma_{76} & \sigma^2_7
+		\end{bmatrix}),
+	```
+
+	```math
+		\text{upper range for }\mu_1 = 1,
+ 	```
+ 
+ 	```math
+  		\text{upper range for }\mu_2 = \infty, 
+  	```
+
+  	```math
+  		\text{upper range for }\mu_3 = \infty, 
+  	```
+
+   	```math
+  		\text{upper range for }\mu_4 = \infty, 
+  	```
+
+   	```math
+  		\text{upper range for }\mu_5 = 1, 
+  	```
+
+   	```math
+  		\text{upper range for }\mu_6 = 100, 
+  	```
+
+   	```math
+  		\text{upper range for }\mu_7 = \infty,
+  	```
+
+	```math
+  		\text{upper range for }\sigma^2_i = 0.4, i \in \{1, 5\},
+  	```
+	
+	```math
+  		\text{upper range for }\sigma^2_i = 10, i \in \{2, 3, 4, 7\},
+  	```
+
+	```math
+  		\text{upper range for }\sigma^2_i = 25, i = 6,
+  	```
+
+	```math
+  		\text{upper range for }\sigma_{ij} = 100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
+  	```
+
+	- Linearized version
+   		(note that the variance covariance matrix is a _positive definite matrix_: only elements of diagonal and elements below diagonal has to be specified):
+	<pre>
+	Given mean_vector=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variance_covariance_matrix=[[0.4], [100, 10], [100, 100, 10], [100, 100, 100, 10], [100, 100, 100, 100, 0.4], [100, 100, 100, 100, 100, 25], [100, 100, 100, 100, 100, 100, 10]] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 100 10 100 100 10 100 100 100 10 100 100 100 100 0.4 100 100 100 100 100 25 100 100 100 100 100 100 10
+	</pre>
 
 
 ### Image parameters
