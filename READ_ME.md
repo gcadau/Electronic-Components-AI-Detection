@@ -2372,6 +2372,10 @@ If univariate distributions are used, the order reflects the corresponding image
   		\text{lower range for }\sigma^2_i = 0, i \in \{1, 2, 3, 4, 5, 6, 7\}
   	```
 
+	```math
+  		\text{lower range for }\sigma_{ij} = -100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} s.t. i \neq j
+  	```
+
 	- Linearized version
 	<pre>
 	Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[[0.15, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0], [0, 0, 0.1, 0, 0, 0, 0], [0, 0, 0, 0.1, 0, 0, 0], [0, 0, 0, 0, 0.15, 0, 0], [0, 0, 0, 0, 0, 25, 0], [0, 0, 0, 0, 0, 0, 1.125]] -> 0.15, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 1.125
