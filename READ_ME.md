@@ -1,3 +1,47 @@
+- Multivariate normal distribution,
+	 
+	```math
+		\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
+		\begin{bmatrix}
+		\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{saturation}} \\
+		\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
+		\vdots & \vdots & \ddots & \vdots \\
+		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
+		\end{bmatrix}) \\,
+ 	```
+
+	```math
+ 		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
+ 	```
+
+	standard distribution parameters,
+
+ 	```math
+		\mathcal{N}_7(\begin{bmatrix}
+		0 \\
+		1.25 \\
+		0.5 \\
+		0.5 \\
+		0 \\
+		60 \\
+		1.25
+		\end{bmatrix}, \\
+		\begin{bmatrix}
+		0.15 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+		0 & 0 & 0.1 & 0 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0.1 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0.15 & 0 & 0 \\
+		0 & 0 & 0 & 0 & 0 & 25 & 0 \\
+		0 & 0 & 0 & 0 & 0 & 0 & 1.125
+		\end{bmatrix})
+	```
+
+	- Linearized version
+	<pre>
+	Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[[0.15, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0], [0, 0, 0.1, 0, 0, 0, 0], [0, 0, 0, 0.1, 0, 0, 0], [0, 0, 0, 0, 0.15, 0, 0], [0, 0, 0, 0, 0, 25, 0], [0, 0, 0, 0, 0, 0, 1.125]] -> 0.15, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0.15, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 1.125
+	</pre>
+
 # Training
 
 Script python to train the model.
