@@ -2380,7 +2380,7 @@ If univariate distributions are used, the order reflects the corresponding image
 	<pre>
 	Given mean_vector=[-1, float(-inf), float(-inf), float(-inf), -1, 0, 0], variance_covariance_matrix=[[0], [-100, 0], [-100, -100, 0], [-100, -100, -100, 0], [-100, -100, -100, -100, 0], [-100, -100, -100, -100, -100, 0], [-100, -100, -100, -100, -100, -100, 0]] -> -1 float(-inf) float(-inf) float(-inf) -1 0 0 0 -100 0 -100 -100 0 -100 -100 -100 0 -100 -100 -100 -100 0 -100 -100 -100 -100 -100 0 -100 -100 -100 -100 -100 -100 0 
 	</pre>
- 	Note that the variance covariance matrix is a _lower triangular matrix_: only diagonal of diagonal and elements below diagonal has to be specified.
+ 		Note that the variance covariance matrix is a _lower triangular matrix_: only diagonal of diagonal and elements below diagonal has to be specified.
 
 
 ### Image parameters
