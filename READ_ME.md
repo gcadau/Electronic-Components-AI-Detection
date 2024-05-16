@@ -2590,10 +2590,6 @@ standard distribution parameters,
 	</pre>
 - Multivariate normal distribution,
 	 
-	
-
-- Multivariate normal distribution,
-	 
 	```math
 		\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
 		\begin{bmatrix}
