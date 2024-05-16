@@ -2291,10 +2291,10 @@ If univariate distributions are used, the order reflects the corresponding image
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
     standard distribution parameters up ranges,
-    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = -1, \text{upper range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = -\infty, \text{upper range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = -\infty, \text{upper range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = -\infty, \text{upper range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = -1, \text{upper range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 0, \text{upper range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 0, \text{upper range for }\sigma^2 = 0$$
+    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 1, \text{upper range for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 1, \text{upper range for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = 100, \text{upper range for }\sigma^2 = 25;\quad  \mathcal{N}(\mu, \sigma^2),\text{upper range for }\mu = \infty, \text{upper range for }\sigma^2 = 10$$
 	- Linearized version:
 	<pre>
-	Given means=[-1, float(-inf), float(-inf), float(-inf), -1, 0, 0], variances=[0, 0, 0, 0, 0, 0, 0] -> -1 float(-inf) float(-inf) float(-inf) -1 0 0 0 0 0 0 0 0 0
+	Given means=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variances=[0.4, 10, 10, 10, 0.4, 25, 10] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 10 10 10 0.4 25 10
 	</pre>
  &nbsp;       
 - Multivariate normal distribution,
@@ -2313,7 +2313,7 @@ If univariate distributions are used, the order reflects the corresponding image
  		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
  	```
 
-	standard distribution parameters low ranges,
+	standard distribution parameters up ranges,
 
  	```math
 		\mathcal{N}_7(\begin{bmatrix}
@@ -2337,45 +2337,53 @@ If univariate distributions are used, the order reflects the corresponding image
 	```
 
 	```math
-		\text{lower range for }\mu_1 = -1,
+		\text{upper range for }\mu_1 = 1,
  	```
  
  	```math
-  		\text{lower range for }\mu_2 = -\infty, 
+  		\text{upper range for }\mu_2 = \infty, 
   	```
 
   	```math
-  		\text{lower range for }\mu_3 = -\infty, 
+  		\text{upper range for }\mu_3 = \infty, 
   	```
 
    	```math
-  		\text{lower range for }\mu_4 = -\infty, 
+  		\text{upper range for }\mu_4 = \infty, 
   	```
 
    	```math
-  		\text{lower range for }\mu_5 = -1, 
+  		\text{upper range for }\mu_5 = 1, 
   	```
 
    	```math
-  		\text{lower range for }\mu_6 = 0, 
+  		\text{upper range for }\mu_6 = 100, 
   	```
 
    	```math
-  		\text{lower range for }\mu_7 = 0,
+  		\text{upper range for }\mu_7 = \infty,
   	```
 
 	```math
-  		\text{lower range for }\sigma^2_i = 0, i \in \{1, 2, 3, 4, 5, 6, 7\},
+  		\text{upper range for }\sigma^2_i = 0.4, i \in \{1, 5\},
+  	```
+	
+	```math
+  		\text{upper range for }\sigma^2_i = 10, i \in \{2, 3, 4, 7\},
   	```
 
 	```math
-  		\text{lower range for }\sigma_{ij} = -100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
+  		\text{upper range for }\sigma^2_i = 25, i = 6,
+  	```
+
+	```math
+  		\text{upper range for }\sigma_{ij} = 100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
   	```
 
 	- Linearized version
    		(note that the variance covariance matrix is a _positive definite matrix_: only elements of diagonal and elements below diagonal has to be specified):
 	<pre>
-	Given mean_vector=[-1, float(-inf), float(-inf), float(-inf), -1, 0, 0], variance_covariance_matrix=[[0], [-100, 0], [-100, -100, 0], [-100, -100, -100, 0], [-100, -100, -100, -100, 0], [-100, -100, -100, -100, -100, 0], [-100, -100, -100, -100, -100, -100, 0]] -> -1 float(-inf) float(-inf) float(-inf) -1 0 0 0 -100 0 -100 -100 0 -100 -100 -100 0 -100 -100 -100 -100 0 -100 -100 -100 -100 -100 0 -100 -100 -100 -100 -100 -100 0 
+	Given mean_vector=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variance_covariance_matrix=[[0.4], [100, 10], [100, 100, 10], [100, 100, 100, 10], [100, 100, 100, 100, 0.4], [100, 100, 100, 100, 100, 25], [100, 100, 100, 100, 100, 100, 10]] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 100 10 100 100 10 100 100 100 10 100 100 100 100 0.4 100 100 100 100 100 25 100 100 100 100 100 100 10
 	</pre>
 
 
