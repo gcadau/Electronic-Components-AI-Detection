@@ -2345,12 +2345,12 @@ If univariate distributions are used, the order reflects the corresponding image
  	```
  
  	```math
-  		\text{lower range for }\mu_2 = float('-inf'), 
+  		\text{lower range for }\mu_2 = -\infty, 
   	```
 
   	```math
-   		\text{lower range for }\mu_3 = float('-inf'),
-    	```
+  		\text{lower range for }\mu_3 = -\infty, 
+  	```
 
    	```math
    		\text{lower range for }\mu_4 = float('-inf'),
