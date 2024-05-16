@@ -2345,7 +2345,7 @@ If univariate distributions are used, the order reflects the corresponding image
  	```
  
  	```math
-  		\text{lower range for }\mu_2 = float('-inf'),
+  		\text{lower range for }\mu_2 = float('-inf'), 
   	```
 
   	```math
