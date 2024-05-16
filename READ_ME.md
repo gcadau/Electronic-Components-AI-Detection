@@ -2572,6 +2572,7 @@ If univariate distributions are used, the order reflects the corresponding image
 	<pre>
 	Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
 	</pre>
+  &nbsp;
 - Univariate triangular distribution,
     $$\mathcal{T}(\text{{lower brightness}}, \text{{mode brightness}}, \text{{upper brightness}});\quad  \mathcal{T}(\text{{lower contrast}}, \text{{mode contrast}}, \text{{upper contrast}});\quad  \mathcal{T}(\text{{lower horizontal filp}}, \text{{mode horizontal flip}}, \text{{upper horizontal flip}});\quad  \mathcal{T}(\text{{lower vertical flip}}, \text{{mode vertical flip}}, \text{{upper vertical flip}}); \quad \mathcal{T}(\text{{lower hue}}, \text{{mode hue}}, \text{{upper hue}});\quad  \mathcal{T}(\text{{lower jpeg quality}}, \text{{mode jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{T}(\text{{lower saturation}}, \text{{mode saturation}}, \text{{upper saturation}})$$
     standard distribution parameters,
@@ -2580,6 +2581,7 @@ If univariate distributions are used, the order reflects the corresponding image
 	<pre>
 	Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
 	</pre>
+  &nbsp;
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
 standard distribution parameters,
@@ -2588,7 +2590,7 @@ standard distribution parameters,
 	<pre>
 	Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
 	</pre>
-            
+ &nbsp;       
 - Multivariate normal distribution,
 	 
 	```math
