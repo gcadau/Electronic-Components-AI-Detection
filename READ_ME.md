@@ -1,44 +1,3 @@
-- Open the file.
-- Find the following code block on line 21,
-	 
-	```math
-		\mathcal{N}_7(\begin{bmatrix}\mu_\text{brightness}\\\mu_\text{contrast}\\\mu_\text{horizontal flip}\\\mu_\text{vertical flip}\\\mu_\text{hue}\\\mu_\text{jpeg quality}\\\mu_\text{saturation}\end{bmatrix}, \\
-		\begin{bmatrix}
-		\sigma^2_{\text{brightness}} & \sigma_{\text{brightness}, \text{contrast}} & \cdots & \sigma_{\text{brightness}, \text{saturation}} \\
-		\sigma_{\text{contrast}, \text{brightness}} & \sigma^2_{\text{contrast}} & \cdots & \sigma_{\text{contrast}, \text{saturation}} \\
-		\vdots & \vdots & \ddots & \vdots \\
-		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
-		\end{bmatrix})
- 	```
-
- 	```math
-		\mathcal{N}_7(\begin{bmatrix}
-		0 \\
-		1.25 \\
-		0.5 \\
-		0.5 \\
-		0 \\
-		60 \\
-		1.25
-		\end{bmatrix}, \\
-		\begin{bmatrix}
-		0.15 & 0 & 0 & 0 & 0 & 0 & 0 \\
-		0 & 1 & 0 & 0 & 0 & 0 & 0 \\
-		0 & 0 & 0.1 & 0 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 0.1 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 0 & 0.15 & 0 & 0 \\
-		0 & 0 & 0 & 0 & 0 & 25 & 0 \\
-		0 & 0 & 0 & 0 & 0 & 0 & 1.125
-		\end{bmatrix})
-	```
-  
-   	prova2
-  
-
-- Update the title to match the name of your website.
-
-
-
 # Training
 
 Script python to train the model.
@@ -2710,8 +2669,11 @@ Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[
 		0 & 0 & 0 & 0 & 0 & 0 & 1.125
 		\end{bmatrix})
 	```
-  
-   	- Linearized version
+
+	- Linearized version
+	<pre>
+	Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
+	</pre>
   
 
 - Update the title to match the name of your website.
