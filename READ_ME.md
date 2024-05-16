@@ -2641,8 +2641,6 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 		\sigma_{\text{saturation}, \text{brightness}} & \sigma_{\text{saturation}, \text{contrast}} & \cdots & \sigma^2_{\text{saturation}}
 		\end{bmatrix})
  	```
-
-
 - Multivariate normal distribution,
 
 	```math
