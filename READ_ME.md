@@ -230,7 +230,7 @@ optional arguments:
                         Inside a matrix, rows are representd as a (transpose) vector and inserted separated
                         by 1 single space. 
 			If None, standard distribution parameters ranges are used. 
-			Standard distribution parameters low ranges. See the <a href="#Domain-Randomization-Standard-Distribution-Parameters">section</a>.
+			Standard distribution parameters low ranges. See the <a href="#Adaptive-Domain-Randomization-Standard-Distribution-Parameters-Low-Ranges">section</a>.
                         (default: None)
   --adaptive_dom_rand__dist_ranges____up ADAPTIVE_DOM_RAND__DIST_RANGES____UP [ADAPTIVE_DOM_RAND__DIST_RANGES____UP ...]
                         Adaptive domain randomization distribution parameters
