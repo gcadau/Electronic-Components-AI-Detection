@@ -2337,8 +2337,12 @@ If univariate distributions are used, the order reflects the corresponding image
 		\sigma_{51} & \sigma_{52} & \sigma_{53} & \sigma_{54} & \sigma^2_5 & \sigma_{56} & \sigma_{57} \\
 		\sigma_{61} & \sigma_{62} & \sigma_{63} & \sigma_{64} & \sigma_{65} & \sigma^2_6 & \sigma_{67} \\
 		\sigma_{71} & \sigma_{72} & \sigma_{73} & \sigma_{74} & \sigma_{75} & \sigma_{76} & \sigma^2_7
-		\end{bmatrix})
+		\end{bmatrix}),
 	```
+
+	```math
+ 		\text{lower range for }\mu_1 = -1,\quad \text{lower range for }\mu_2 = float('-inf'),\quad \text{lower range for }\mu_3 = float('-inf'),\quad \text{lower range for }\mu_4 = float('-inf'),\quad \text{lower range for }\mu_5 = -1,\quad \text{lower range for }\mu_6 = 0,\quad \text{lower range for }\mu_7 = 0 
+ 	```
 
 	- Linearized version
 	<pre>
