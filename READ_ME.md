@@ -1,12 +1,12 @@
-1. Open the file.
-2. Find the following code block on line 21:
+- Open the file.
+- Find the following code block on line 21:
 
         <html>
           <head>
             <title>Test</title>
           </head>
 
-3. Update the title to match the name of your website.
+- Update the title to match the name of your website.
 
 
 # Training
