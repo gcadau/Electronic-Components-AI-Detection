@@ -3,10 +3,6 @@
   
 	prova
 
-        <html>
-          <head>
-            <title>Test</title>
-          </head>
   	```math
 		\mathcal{N}_7(\begin{bmatrix}
 		0 \\
