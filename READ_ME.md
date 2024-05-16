@@ -2377,7 +2377,7 @@ If univariate distributions are used, the order reflects the corresponding image
   	```
 
 	- Linearized version
-   		(Note that the variance covariance matrix is a _positive definite matrix_: only elements of diagonal and elements below diagonal has to be specified):
+   		(note that the variance covariance matrix is a _positive definite matrix_: only elements of diagonal and elements below diagonal has to be specified):
 	<pre>
 	Given mean_vector=[-1, float(-inf), float(-inf), float(-inf), -1, 0, 0], variance_covariance_matrix=[[0], [-100, 0], [-100, -100, 0], [-100, -100, -100, 0], [-100, -100, -100, -100, 0], [-100, -100, -100, -100, -100, 0], [-100, -100, -100, -100, -100, -100, 0]] -> -1 float(-inf) float(-inf) float(-inf) -1 0 0 0 -100 0 -100 -100 0 -100 -100 -100 0 -100 -100 -100 -100 0 -100 -100 -100 -100 -100 0 -100 -100 -100 -100 -100 -100 0 
 	</pre>
