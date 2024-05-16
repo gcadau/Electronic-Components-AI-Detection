@@ -1,7 +1,5 @@
 - Open the file.
 - Find the following code block on line 21,
-  
-	prova
 
   	```math
 		\mathcal{N}_7(\begin{bmatrix}
