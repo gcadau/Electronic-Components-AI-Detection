@@ -2294,8 +2294,8 @@ If univariate distributions are used, the order reflects the corresponding image
   &nbsp;
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
-standard distribution parameters,
-  $\qquad \mathcal{N}(0, 0.15);\quad  \mathcal{N}(1.25, 1);\quad  \mathcal{N}(0.5, 0.1);\quad  \mathcal{N}(0.5, 0.1);\quad  \mathcal{N}(0, 0.15);\quad  \mathcal{N}(60, 25);\quad  \mathcal{N}(1.25, 1.125)$
+    standard distribution parameters low ranges,
+    $$\qquad \mathcal{U}(a, b),\text{lower range for }a = -1, \text{lower range for }b = -1;\quad  \mathcal{U}(a, b),\text{lower range for }a = -\infty, \text{lower range for }b = -\infty;\quad  \mathcal{U}(a, b),\text{lower range for }a = -\infty, \text{lower range for }b = -\infty;\quad  \mathcal{U}(a, b),\text{lower range for }a = -\infty, \text{lower range for }b = -\infty;\quad  \mathcal{U}(a, b),\text{lower range for }a = -1, \text{lower range for }b = -1;\quad  \mathcal{U}(a, b),\text{lower range for }a = 0, \text{lower range for }b = 0;\quad  \mathcal{U}(a, b),\text{lower range for }a = -0, \text{lower range for }b = 0$$
 	- Linearized version:
 	<pre>
 	Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
