@@ -2353,20 +2353,20 @@ If univariate distributions are used, the order reflects the corresponding image
   	```
 
    	```math
-   		\text{lower range for }\mu_4 = float('-inf'),
-    	```
+  		\text{lower range for }\mu_4 = -\infty, 
+  	```
 
    	```math
-   		\text{lower range for }\mu_5 = -1,
-    	```
+  		\text{lower range for }\mu_5 = -1, 
+  	```
 
    	```math
-   		\text{lower range for }\mu_6 = 0,
-    	```
+  		\text{lower range for }\mu_6 = 0, 
+  	```
 
    	```math
-   		\text{lower range for }\mu_7 = 0
- 	```
+  		\text{lower range for }\mu_7 = 0
+  	```
 
 	- Linearized version
 	<pre>
