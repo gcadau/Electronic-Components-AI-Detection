@@ -266,7 +266,7 @@ optional arguments:
                         U(a, b), upper range for a = float('inf'), upper range
                         for b = float('inf') Linearized version: Given
                         lowers=[1, float(inf), float(inf), float(inf), 1, 100,
-                        float(inf)], uppers= [1, float(inf), float(inf),
+                        float(inf)], uppers=[1, float(inf), float(inf),
                         float(inf), 1, 100, float(inf)] -> 1 float(inf)
                         float(inf) float(inf) 1 100 float(inf) 1 float(inf)
                         float(inf) float(inf) 1 100 float(inf) - Univariate
