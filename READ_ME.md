@@ -2688,6 +2688,8 @@ Given mean_vector=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variance_covariance_matrix=[
  		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
  	```
 
+	standard distribution parameters,
+
  	```math
 		\mathcal{N}_7(\begin{bmatrix}
 		0 \\
