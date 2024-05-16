@@ -1389,8 +1389,8 @@ If univariate distributions are used, the order reflects the corresponding image
   &nbsp;
 - Univariate triangular distribution,
     $$\mathcal{T}(\text{{lower brightness}}, \text{{mode brightness}}, \text{{upper brightness}});\quad  \mathcal{T}(\text{{lower contrast}}, \text{{mode contrast}}, \text{{upper contrast}});\quad  \mathcal{T}(\text{{lower horizontal filp}}, \text{{mode horizontal flip}}, \text{{upper horizontal flip}});\quad  \mathcal{T}(\text{{lower vertical flip}}, \text{{mode vertical flip}}, \text{{upper vertical flip}}); \quad \mathcal{T}(\text{{lower hue}}, \text{{mode hue}}, \text{{upper hue}});\quad  \mathcal{T}(\text{{lower jpeg quality}}, \text{{mode jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{T}(\text{{lower saturation}}, \text{{mode saturation}}, \text{{upper saturation}})$$
-    standard distribution parameters up ranges,
-        $$\qquad \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = \infty, \text{initial value for }m = \infty, \text{initial value for }b = \infty;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 50, \text{initial value for }m = 50, \text{initial value for }b = 50;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 1.25, \text{initial value for }m = 1.25, \text{initial value for }b = 1.25$$
+    standard distribution parameters initial values,
+        $$\qquad \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 0, \text{initial value for }m = 0, \text{initial value for }b = 0;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 50, \text{initial value for }m = 50, \text{initial value for }b = 50;\quad  \mathcal{T}(a, m, b),\text{initial value for }a = 1.25, \text{initial value for }m = 1.25, \text{initial value for }b = 1.25$$
 	- Linearized version:
 	<pre>
 	Given lowers=[0, 0, 0, 0, 0, 50, 1.25], modes= [0, 0, 0, 0, 0, 50, 1.25], uppers=[0, 0, 0, 0, 0, 50, 1.25] -> 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25 0 0 0 0 0 50 1.25
@@ -1398,8 +1398,8 @@ If univariate distributions are used, the order reflects the corresponding image
   &nbsp;
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
-    standard distribution parameters up ranges,
-    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 1, \text{initial value for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 1, \text{initial value for }\sigma^2 = 0.4;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 100, \text{initial value for }\sigma^2 = 25;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = \infty, \text{initial value for }\sigma^2 = 10$$
+    standard distribution parameters initial values,
+    $$\qquad \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 0, \text{initial value for }\sigma^2 = 0.2;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 0, \text{initial value for }\sigma^2 = 5;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 0, \text{initial value for }\sigma^2 = 5;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 0, \text{initial value for }\sigma^2 = 5;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 0, \text{initial value for }\sigma^2 = 0.2;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 50, \text{initial value for }\sigma^2 = 12.5;\quad  \mathcal{N}(\mu, \sigma^2),\text{initial value for }\mu = 1.25, \text{initial value for }\sigma^2 = 5$$
 	- Linearized version:
 	<pre>
 	Given means=[0, 0, 0, 0, 0, 50, 1.25], variances=[0.2, 5, 5, 5, 0.2, 12.5, 5] -> 0 0 0 0 0 50 1.25 0.2 5 5 5 0.2 12.5 5
@@ -1445,53 +1445,53 @@ If univariate distributions are used, the order reflects the corresponding image
 	```
 
 	```math
-		\text{initial value for }\mu_1 = 1,
+		\text{initial value for }\mu_1 = 0,
  	```
  
  	```math
-  		\text{initial value for }\mu_2 = \infty, 
+  		\text{initial value for }\mu_2 = 0, 
   	```
 
   	```math
-  		\text{initial value for }\mu_3 = \infty, 
+  		\text{initial value for }\mu_3 = 0, 
   	```
 
    	```math
-  		\text{initial value for }\mu_4 = \infty, 
+  		\text{initial value for }\mu_4 = 0, 
   	```
 
    	```math
-  		\text{initial value for }\mu_5 = 1, 
+  		\text{initial value for }\mu_5 = 0, 
   	```
 
    	```math
-  		\text{initial value for }\mu_6 = 100, 
+  		\text{initial value for }\mu_6 = 1.25, 
   	```
 
    	```math
-  		\text{initial value for }\mu_7 = \infty,
+  		\text{initial value for }\mu_7 = 50,
   	```
 
 	```math
-  		\text{initial value for }\sigma^2_i = 0.4, i \in \{1, 5\},
+  		\text{initial value for }\sigma^2_i = 0.2, i \in \{1, 5\},
   	```
 	
 	```math
-  		\text{initial value for }\sigma^2_i = 10, i \in \{2, 3, 4, 7\},
+  		\text{initial value for }\sigma^2_i = 5, i \in \{2, 3, 4, 7\},
   	```
 
 	```math
-  		\text{initial value for }\sigma^2_i = 25, i = 6,
+  		\text{initial value for }\sigma^2_i = 12.5, i = 6,
   	```
 
 	```math
-  		\text{initial value for }\sigma_{ij} = 100, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
+  		\text{initial value for }\sigma_{ij} = 0, i, j \in \{1, 2, 3, 4, 5, 6, 7\} \quad \text{s.t.} \quad i \neq j
   	```
 
 	- Linearized version
    		(note that the variance covariance matrix is a _positive definite matrix_: only elements of diagonal and elements below diagonal has to be specified):
 	<pre>
-	Given mean_vector=[1, float(inf), float(inf), float(inf), 1, 100, float(inf)], variance_covariance_matrix=[[0.4], [100, 10], [100, 100, 10], [100, 100, 100, 10], [100, 100, 100, 100, 0.4], [100, 100, 100, 100, 100, 25], [100, 100, 100, 100, 100, 100, 10]] -> 1 float(inf) float(inf) float(inf) 1 100 float(inf) 0.4 100 10 100 100 10 100 100 100 10 100 100 100 100 0.4 100 100 100 100 100 25 100 100 100 100 100 100 10
+	Given mean_vector=[0, 0, 0, 0, 0, 1.25, 50], variance_covariance_matrix=[[0.2], [0, 5], [0, 0, 5], [0, 0, 0, 5], [0, 0, 0, 0, 0.2], [0, 0, 0, 0, 0, 12.5], [0, 0, 0, 0, 0, 0, 5]] -> 0 0 0 0 0 1.25 500.2 0 5 0 0 5 0 0 0 5 0 0 0 0 0.2 0 0 0 0 0 12.5 0 0 0 0 0 0 5
 	</pre>
 
 
