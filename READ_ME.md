@@ -2609,7 +2609,7 @@ If univariate distributions are used, the order reflects the corresponding image
     $$\mathcal{U}(\text{{lower brightness}}, \text{{upper brightness}});\quad  \mathcal{U}(\text{{lower contrast}}, \text{{upper contrast}});\quad  \mathcal{U}(\text{{lower horizontal filp}}, \text{{upper horizontal flip}});\quad  \mathcal{U}(\text{{lower vertical flip}}, \text{{upper vertical flip}});  \mathcal{U}(\text{{lower hue}}, \text{{upper hue}});\quad  \mathcal{U}(\text{{lower jpeg quality}}, \text{{upper jpeg quality}});\quad  \mathcal{U}(\text{{lower saturation}}, \text{{upper saturation}})$$
     standard distribution parameters,
   $$\qquad \mathcal{U}(-0.2, 0.2);\quad  \mathcal{U}(0, 2.5);\quad  \mathcal{U}(0, 1);\quad  \mathcal{U}(0, 1);\quad  \mathcal{U}(-0.2, 0.2);\quad  \mathcal{U}(20, 100);\quad  \mathcal{U}(0, 2)$$
-         - Linearized version:
+	- Linearized version:
 <pre>
   Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
 </pre>
