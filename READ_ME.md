@@ -2641,7 +2641,6 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
  	```
 
 	with $$\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}$$
-
 	standard distribution parameters,
 
 	```math
