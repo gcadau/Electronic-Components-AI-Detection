@@ -2317,26 +2317,26 @@ If univariate distributions are used, the order reflects the corresponding image
  		\mu: \text{mean}, \quad \sigma^2: \text{variance} \quad and \quad \sigma: \text{covariance}
  	```
 
-	standard distribution parameters,
+	standard distribution parameters low ranges,
 
  	```math
 		\mathcal{N}_7(\begin{bmatrix}
-		0 \\
-		1.25 \\
-		0.5 \\
-		0.5 \\
-		0 \\
-		60 \\
-		1.25
+		\mu_1 \\
+		\mu_2 \\
+		\mu_3 \\
+		\mu_4 \\
+		\mu_5 \\
+		\mu_6 \\
+		\mu_7
 		\end{bmatrix}, \\
 		\begin{bmatrix}
-		0.15 & 0 & 0 & 0 & 0 & 0 & 0 \\
-		0 & 1 & 0 & 0 & 0 & 0 & 0 \\
-		0 & 0 & 0.1 & 0 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 0.1 & 0 & 0 & 0 \\
-		0 & 0 & 0 & 0 & 0.15 & 0 & 0 \\
-		0 & 0 & 0 & 0 & 0 & 25 & 0 \\
-		0 & 0 & 0 & 0 & 0 & 0 & 1.125
+		\sigma^2_1 & \sigma_{12} & \sigma_{13} & \sigma_{14} & \sigma_{15} & \sigma_{16} & \sigma_{17} \\
+		\sigma_{21} & \sigma^2_2 & \sigma_{23} & \sigma_{24} & \sigma_{25} & \sigma_{26} & \sigma_{27} \\
+		\sigma_{31} & \sigma_{32} & \sigma^2_3 & \sigma_{34} & \sigma_{35} & \sigma_{36} & \sigma_{37} \\
+		\sigma_{41} & \sigma_{42} & \sigma_{43} & \sigma^2_4 & \sigma_{45} & \sigma_{46} & \sigma_{47} \\
+		\sigma_{51} & \sigma_{52} & \sigma_{53} & \sigma_{54} & \sigma^2_5 & \sigma_{56} & \sigma_{57} \\
+		\sigma_{61} & \sigma_{62} & \sigma_{63} & \sigma_{64} & \sigma_{65} & \sigma^2_6 & \sigma_{67} \\
+		\sigma_{71} & \sigma_{72} & \sigma_{73} & \sigma_{74} & \sigma_{75} & \sigma_{76} & \sigma^2_7
 		\end{bmatrix})
 	```
 
