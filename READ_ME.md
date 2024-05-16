@@ -2640,6 +2640,7 @@ Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15
 		\end{bmatrix})
  	```
 
+
  	with
 - Multivariate normal distribution,
 
