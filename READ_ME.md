@@ -2280,7 +2280,7 @@ If univariate distributions are used, the order reflects the corresponding image
     $$\qquad \mathcal{U}(a, b),\text{lower range for }a = -1, \text{lower range for }b = -1;\quad  \mathcal{U}(a, b),\text{lower range for }a = -\infty, \text{lower range for }b = -\infty;\quad  \mathcal{U}(a, b),\text{lower range for }a = -\infty, \text{lower range for }b = -\infty;\quad  \mathcal{U}(a, b),\text{lower range for }a = -\infty, \text{lower range for }b = -\infty;\quad  \mathcal{U}(a, b),\text{lower range for }a = -1, \text{lower range for }b = -1;\quad  \mathcal{U}(a, b),\text{lower range for }a = 0, \text{lower range for }b = 0;\quad  \mathcal{U}(a, b),\text{lower range for }a = -0, \text{lower range for }b = 0$$
 	- Linearized version:
 	<pre>
-	Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0.2 2.5 1 1 0.2 100 2
+	Given lowers=[-1, float(-inf), float(-inf), float(-inf), -1, 0, 0], uppers= [-1, float(-inf), float(-inf), float(-inf), -1, 0, 0] -> -1 float(-inf) float(-inf) float(-inf) -1 0 0 -1 float(-inf) float(-inf) float(-inf) -1 0 0
 	</pre>
   &nbsp;
 - Univariate triangular distribution,
