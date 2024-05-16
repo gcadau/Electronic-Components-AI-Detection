@@ -1,6 +1,6 @@
 - Open the file.
 - Find the following code block on line 21:
-  prova
+	prova
 
         <html>
           <head>
