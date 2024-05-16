@@ -2619,7 +2619,7 @@ If univariate distributions are used, the order reflects the corresponding image
   $$\qquad \mathcal{T}(-0.2, 0, 0.2) ;\quad \mathcal{T}(0, 1.25, 2.5) ;\quad \mathcal{T}(0, 0.5, 1) ;\quad \mathcal{T}(0, 0.5, 1) ;\quad \mathcal{T}(-0.2, 0, 0.2) ;\quad \mathcal{T}(20, 60, 100) ;\quad \mathcal{T}(0, 1, 2)$$
 	- Linearized version:
 	<pre>
-Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
+	Given lowers=[-0.2, 0, 0, 0, -0.2, 20, 0], modes=[0, 1.25, 0.5, 0.5, 0, 60, 1], uppers=[0.2, 2.5, 1, 1, 0.2, 100, 2] -> -0.2 0 0 0 -0.2 20 0 0 1.25 0.5 0.5 0 60 1 0.2 2.5 1 1 0.2 100 2
 	</pre>
 - Univariate normal distribution,
         $$\mathcal{N}(\text{{mean brightness}}, \text{{variance brightness}});\quad  \mathcal{N}(\text{{mean contrast}}, \text{{variance contrast}});\quad  \mathcal{N}(\text{{mean horizontal flip}}, \text{{variance horizontal flip}});\quad  \mathcal{N}(\text{{mean vertical flip}}, \text{{variance vertical flip}});  \mathcal{N}(\text{{mean hue}}, \text{{variance hue}});\quad  \mathcal{N}(\text{{mean jpeg quality}}, \text{{variance jpeg quality}});\quad  \mathcal{N}(\text{{mean saturation}}, \text{{variance saturation}})$$
@@ -2627,7 +2627,7 @@ standard distribution parameters,
   $\qquad \mathcal{N}(0, 0.15);\quad  \mathcal{N}(1.25, 1);\quad  \mathcal{N}(0.5, 0.1);\quad  \mathcal{N}(0.5, 0.1);\quad  \mathcal{N}(0, 0.15);\quad  \mathcal{N}(60, 25);\quad  \mathcal{N}(1.25, 1.125)$
 	- Linearized version:
 	<pre>
-Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
+	Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
 	</pre>
 - Multivariate normal distribution,
 	 
