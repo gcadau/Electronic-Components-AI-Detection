@@ -1,14 +1,12 @@
-<ul>
-  <li>First item</li>
-  <li>Second item</li>
-  <li>Third item
-    <ul>
-      <li>Indented item</li>
-      <li>Indented item</li>
-    </ul>
-  </li>
-  <li>Fourth item</li>
-</ul>
+1. Open the file.
+2. Find the following code block on line 21:
+
+        <html>
+          <head>
+            <title>Test</title>
+          </head>
+
+3. Update the title to match the name of your website.
 
 
 # Training
