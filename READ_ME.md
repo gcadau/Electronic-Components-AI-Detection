@@ -1,4 +1,3 @@
-\begin{displaymath} 2 \end{displaymath}
 # Training
 
 Script python to train the model.
