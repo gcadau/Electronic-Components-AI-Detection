@@ -2298,7 +2298,7 @@ If univariate distributions are used, the order reflects the corresponding image
     $$\qquad \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = -1, \text{lower range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = -\infty, \text{lower range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = -\infty, \text{lower range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = -\infty, \text{lower range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = -1, \text{lower range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = 0, \text{lower range for }\sigma^2 = 0;\quad  \mathcal{N}(\mu, \sigma^2),\text{lower range for }\mu = 0, \text{lower range for }\sigma^2 = 0$$
 	- Linearized version:
 	<pre>
-	Given means=[0, 1.25, 0.5, 0.5, 0, 60, 1.25], variances=[0.15, 1, 0.1, 0.1, 0.15, 25, 1.125] -> 0 1.25 0.5 0.5 0 60 1.25 0.15 1 0.1 0.1 0.15 25 1.125
+	Given means=[-1, float(-inf), float(-inf), float(-inf), -1, 0, 0], variances=[0, 0, 0, 0, 0, 0, 0] -> -1 float(-inf) float(-inf) float(-inf) -1 0 0 0 0 0 0 0 0 0
 	</pre>
  &nbsp;       
 - Multivariate normal distribution,
