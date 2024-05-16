@@ -2340,7 +2340,9 @@ If univariate distributions are used, the order reflects the corresponding image
 		\end{bmatrix}),
 	```
 
+	```math
 	$$\text{lower range for }\mu_1 = -1,\quad \text{lower range for }\mu_2 = float('-inf'),\quad \text{lower range for }\mu_3 = float('-inf'),\quad \text{lower range for }\mu_4 = float('-inf'),\quad \text{lower range for }\mu_5 = -1,\quad \text{lower range for }\mu_6 = 0,\quad \text{lower range for }\mu_7 = 0$$
+ 	```
 
 	- Linearized version
 	<pre>
