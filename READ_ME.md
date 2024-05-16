@@ -2369,7 +2369,7 @@ If univariate distributions are used, the order reflects the corresponding image
   	```
 
 	```math
-  		\text{lower range for }\sigma^2_i = 0, i \in \{1, 2, 3, 4, 5, 6, 7\}
+  		\text{lower range for }\sigma^2_i = 0, i \in \{1, 2, 3, 4, 5, 6, 7\},
   	```
 
 	```math
