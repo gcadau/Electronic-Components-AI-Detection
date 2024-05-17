@@ -1141,7 +1141,7 @@ If univariate distributions are used, the order reflects the corresponding image
 
 Very fast training, potential low performances.
 
-##### <span id="ResNet20">ResNet 2.0</span>
+##### <span id="ResNet20">ResNet20</span>
 
 Slowest training, able to reach the best performances.
 
