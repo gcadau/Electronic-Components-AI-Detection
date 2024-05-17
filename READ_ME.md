@@ -1112,30 +1112,6 @@ If univariate distributions are used, the order reflects the corresponding image
 4. ResNet 2.0.1 (See <a href="#resnet-201">info</a>)
 5. ResNet 2.1.1 (See <a href="#resnet-211">info</a>)
    
-- multivariate normal
-- univariate normal
-- uniform
-- triangular
-- multivariate normal
-- univariate normal
-- uniform
-- triangular
-- - multivariate normal
-- univariate normal
-- uniform
-- triangular
-- - multivariate normal
-- univariate normal
-- uniform
-- triangular
-- - multivariate normal
-- univariate normal
-- uniform
-- triangular
-- - multivariate normal
-- univariate normal
-- uniform
-- triangular
 
 ##### <span id="ResNet-1">ResNet 1</span>
 
