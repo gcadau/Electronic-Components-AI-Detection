@@ -85,7 +85,7 @@ optional arguments:
                         Show this help message and exit
   --data_path DATA_PATH
                         Path of the directory in which input data are stored.
-                        (default: Input\dataset)
+                        (default: 'Input\dataset')
   --split SPLIT         
                         Percentage to split the dataset into train/validation sets. 
                         It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use 
@@ -389,13 +389,11 @@ optional arguments:
   --neural_network NEURAL_NETWORK
                         Neural Network to be used. 
 			Possible choices. See the <a href="#Neural-Networks">section</a>.
-			(default: ResNet 2.0)
+			(default: 'ResNet 2.0')
   --gradient_based__optimizer GRADIENT_BASED__OPTIMIZER
                         Optimizer to be used for gradient based optimization.
-                        Possible choices: SGD, RMSprop, Adagrad, Adadelta,
-                        Adafactor, Adam, Adamax, AdamW, Lion, LossScale,
-                        Nadam, FTRL, ProximalGradientDescent, ProximalAdagrad,
-                        Schedules. (default: Adam)
+                        Possible choices. See the <a href="#Gradient-Based-Optimizers">section</a>.
+			(default: 'Adam')
   --gradient_based__optimizer___learning_rate GRADIENT_BASED__OPTIMIZER___LEARNING_RATE
                         Learning rate of the optimizer to be used for gradient
                         based optimization. It has to be a float. (default:
@@ -409,7 +407,7 @@ optional arguments:
                         CategoricalCrossentropy,
                         SparseCategoricalCrossentropy, BinaryCrossentropy,
                         KLDivergence, Poisson, CosineSimilarity, serialize,
-                        deserialize. (default: CategoricalCrossentropy)
+                        deserialize. (default: 'CategoricalCrossentropy')
   --epochs EPOCHS       Training epochs. It has to be an int. (default: 1000)
   --gradient_free__optimizer GRADIENT_FREE__OPTIMIZER
                         Optimizer to be used for gradient free optimization.
@@ -609,7 +607,7 @@ optional arguments:
                         DSproba2,
                         UltraSmoothRecombiningDiscreteLanglerOnePlusOne,
                         LHSSearch, NoisyRL2, SqrtSQPCMAPlus,
-                        DiscreteNoisyInfSplits. (default: CMA)
+                        DiscreteNoisyInfSplits. (default: 'CMA')
 </pre>
 
 
@@ -1133,3 +1131,12 @@ Deeper version of ResNet 2.0, useful for large datasets with many classes.
 
 Deeper version of ResNet 2.1, useful for large datasets with many classes. 
   
+### Optimizers
+
+#### <span id="Gradient-Based-Optimizers">Gradient Based Optimizers</span>
+
+1. ResNet 1 (See <a href="#ResNet-1">info</a>)
+2. ResNet 2.0 (See <a href="#resnet-20">info</a>)
+3. ResNet 2.1 (See <a href="#resnet-21">info</a>)
+4. ResNet 2.0.1 (See <a href="#resnet-201">info</a>)
+5. ResNet 2.1.1 (See <a href="#resnet-211">info</a>)
