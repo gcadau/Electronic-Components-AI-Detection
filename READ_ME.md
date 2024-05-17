@@ -395,20 +395,17 @@ optional arguments:
                         Possible choices. See the <a href="#Gradient-Based-Optimizers">section</a>.
 			(default: 'Adam')
   --gradient_based__optimizer___learning_rate GRADIENT_BASED__OPTIMIZER___LEARNING_RATE
-                        Learning rate of the optimizer to be used for gradient
-                        based optimization. It has to be a float. (default:
-                        1e-03)
+                        Learning rate of the optimizer to be used for gradient based optimization. 
+			It has to be a float. 
+			(default: 1e-03)
   --gradient_based__loss GRADIENT_BASED__LOSS
                         Loss to be used for gradient based optimization.
-                        Possible choices: MeanSquaredError, MeanAbsoluteError,
-                        MeanAbsolutePercentageError,
-                        MeanSquaredLogarithmicError, SquaredHinge, Hinge,
-                        CategoricalHinge, LogCosh, Huber,
-                        CategoricalCrossentropy,
-                        SparseCategoricalCrossentropy, BinaryCrossentropy,
-                        KLDivergence, Poisson, CosineSimilarity, serialize,
-                        deserialize. (default: 'CategoricalCrossentropy')
-  --epochs EPOCHS       Training epochs. It has to be an int. (default: 1000)
+                        Possible choices. See the <a href="#Gradient-Based-Optimizers-Losses">section</a>. 
+			(default: 'CategoricalCrossentropy')
+  --epochs EPOCHS       
+			Training epochs. 
+			It has to be an int. 
+			(default: 1000)
   --gradient_free__optimizer GRADIENT_FREE__OPTIMIZER
                         Optimizer to be used for gradient free optimization.
                         Possible choices: SqrtMultiBFGS,
@@ -1150,4 +1147,7 @@ Deeper version of ResNet 2.1, useful for large datasets with many classes.
 13. ProximalGradientDescent
 14. ProximalAdagrad
 15. Schedules
+
+##### <span id="Gradient-Based-Optimizers-Losses">Gradient Based Optimizers Losses</span>
+
 
