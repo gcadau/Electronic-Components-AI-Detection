@@ -1145,7 +1145,7 @@ Very fast training, potential low performances.
 
 Slowest training, able to reach the best performances.
 
-##### <span id="ResNet-2.1">ResNet 2.1</span>
+##### <span id="ResNet-2-1">2%2E0%2E1</span>
 
 Fast training, potential low performances, generally better than ResNet 1.
 
