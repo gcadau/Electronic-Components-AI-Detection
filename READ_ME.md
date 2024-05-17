@@ -1150,4 +1150,21 @@ Deeper version of ResNet 2.1, useful for large datasets with many classes.
 
 ##### <span id="Gradient-Based-Optimizers-Losses">Gradient Based Optimizers Losses</span>
 
+1. MeanSquaredError
+2. MeanAbsoluteError
+3. MeanAbsolutePercentageError
+4. MeanSquaredLogarithmicError
+5. SquaredHinge
+6. Hinge
+7. CategoricalHinge
+8. LogCosh
+9. Huber
+10. CategoricalCrossentropy
+11. SparseCategoricalCrossentropy
+12. BinaryCrossentropy
+13. KLDivergence
+14. Poisson
+15. CosineSimilarity
+16. serialize
+17. deserialize
 
