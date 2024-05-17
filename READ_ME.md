@@ -1106,9 +1106,12 @@ If univariate distributions are used, the order reflects the corresponding image
 
 #### <span id="Neural-Networks">Networks</span>
 
-- multivariate normal
-- univariate normal
-- uniform
-- triangular
+1. ResNet1 (See <a href="#Usage">info)
+2. ResNet 2.0
+3. ResNet 2.1
+4. ResNet 2.0.1
+5. ResNet 2.1.1
+
+##### <span id="ResNet1">ResNet1</span>
 
   
