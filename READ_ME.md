@@ -1102,4 +1102,13 @@ If univariate distributions are used, the order reflects the corresponding image
 - uniform
 - triangular
 
+### Neural Networks
+
+#### <span id="Neural-Networks">Networks</span>
+
+- multivariate normal
+- univariate normal
+- uniform
+- triangular
+
   
