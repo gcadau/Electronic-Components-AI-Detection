@@ -1135,8 +1135,19 @@ Deeper version of ResNet 2.1, useful for large datasets with many classes.
 
 #### <span id="Gradient-Based-Optimizers">Gradient Based Optimizers</span>
 
-1. ResNet 1 (See <a href="#ResNet-1">info</a>)
-2. ResNet 2.0 (See <a href="#resnet-20">info</a>)
-3. ResNet 2.1 (See <a href="#resnet-21">info</a>)
-4. ResNet 2.0.1 (See <a href="#resnet-201">info</a>)
-5. ResNet 2.1.1 (See <a href="#resnet-211">info</a>)
+1. SGD
+2. RMSprop
+3. Adagrad
+4. Adadelta
+5. Adafactor
+6. Adam
+7. Adamax
+8. AdamW
+9. Lion
+10. LossScale
+11. Nadam
+12. FTRL
+13. ProximalGradientDescent
+14. ProximalAdagrad
+15. Schedules
+
