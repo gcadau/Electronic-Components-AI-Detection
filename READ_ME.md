@@ -1137,7 +1137,7 @@ If univariate distributions are used, the order reflects the corresponding image
 - uniform
 - triangular
 
-##### <span id="ResNet1">ResNet 1</span>
+##### <span id="ResNet1">ResNet1</span>
 
 Very fast training, potential low performances.
 
