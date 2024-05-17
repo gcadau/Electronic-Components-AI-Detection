@@ -388,7 +388,7 @@ optional arguments:
                         (default: None)
   --neural_network NEURAL_NETWORK
                         Neural Network to be used. 
-			Possible choices. See the <a href="#Neural Networks">section</a>.
+			Possible choices. See the <a href="#Neural-Networks">section</a>.
 			(default: ResNet 2.0)
   --gradient_based__optimizer GRADIENT_BASED__OPTIMIZER
                         Optimizer to be used for gradient based optimization.
