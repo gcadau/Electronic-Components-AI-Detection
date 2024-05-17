@@ -1107,7 +1107,7 @@ If univariate distributions are used, the order reflects the corresponding image
 #### <span id="Neural-Networks">Networks</span>
 
 1. ResNet 1 (See <a href="#ResNet-1">info</a>)
-2. ResNet 2.0 (See <a href="#ResNet-2.0.1">info</a>)
+2. ResNet 2.0 (See <a href="#ResNet-2-0-1">info</a>)
 3. ResNet 2.1 (See <a href="#ResNet-2.1">info</a>)
 4. ResNet 2.0.1 (See <a href="#ResNet-2.0.1">info</a>)
 5. ResNet 2.1.1 (See <a href="#ResNet-2.1.1">info</a>)
@@ -1145,7 +1145,7 @@ Very fast training, potential low performances.
 
 Slowest training, able to reach the best performances.
 
-##### <span id="ResNet-2.0.1">ResNet 2.0.1</span>
+##### <span id="ResNet-2-0-1">ResNet 2.0.1</span>
 
 Fast training, potential low performances, generally better than ResNet 1.
 
