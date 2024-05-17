@@ -387,17 +387,9 @@ optional arguments:
 			Standard distribution parameters low ranges. See the <a href="#Adaptive-Domain-Randomization-Standard-Distribution-Parameters-Initial-Values">section</a>.
                         (default: None)
   --neural_network NEURAL_NETWORK
-                        Neural Network to be used. Possible choices: [ResNet
-                        1, ResNet 2.0, ResNet 2.1, ResNet 2.0.1, ResNet
-                        2.1.1]. Neural Networks: - ResNet 1: very fast
-                        training, potential low performances. - ResNet 2.0:
-                        slowest training, able to reach the best performances.
-                        - ResNet 2.1: fast training, potential low
-                        performances, generally better than ResNet 1. - ResNet
-                        2.0.1: deeper version of ResNet 2.0, useful for large
-                        datasets with many classes. - ResNet 2.1.1: deeper
-                        version of ResNet 2.1, useful for large datasets with
-                        many classes. (default: ResNet 2.0)
+                        Neural Network to be used. 
+			Possible choices. See the <a href="#Neural Networks">section</a>.
+			(default: ResNet 2.0)
   --gradient_based__optimizer GRADIENT_BASED__OPTIMIZER
                         Optimizer to be used for gradient based optimization.
                         Possible choices: SGD, RMSprop, Adagrad, Adadelta,
