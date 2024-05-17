@@ -1107,10 +1107,10 @@ If univariate distributions are used, the order reflects the corresponding image
 #### <span id="Neural-Networks">Networks</span>
 
 1. ResNet 1 (See <a href="#ResNet-1">info</a>)
-2. ResNet 2.0 (See <a href="#resnet-201">info</a>)
-3. ResNet 2.1 (See <a href="#ResNet-2.1">info</a>)
-4. ResNet 2.0.1 (See <a href="#ResNet-2.0.1">info</a>)
-5. ResNet 2.1.1 (See <a href="#resnet-201">info</a>)
+2. ResNet 2.0 (See <a href="#resnet-20">info</a>)
+3. ResNet 2.1 (See <a href="#resnet-21">info</a>)
+4. ResNet 2.0.1 (See <a href="#resnet-201">info</a>)
+5. ResNet 2.1.1 (See <a href="#resnet-211">info</a>)
    
 - multivariate normal
 - univariate normal
@@ -1141,19 +1141,19 @@ If univariate distributions are used, the order reflects the corresponding image
 
 Very fast training, potential low performances.
 
-##### <span id="ResNet20">ResNet20</span>
+##### <span id="resnet-20">ResNet 2.0</span>
 
 Slowest training, able to reach the best performances.
 
-##### <span id="resnet-201">ResNet 2.0.1</span>
+##### <span id="resnet-21">ResNet 2.1</span>
 
 Fast training, potential low performances, generally better than ResNet 1.
 
-##### <span id="ResNet-2.0.1">ResNet 2.0.1</span>
+##### <span id="resnet-201">ResNet 2.0.1</span>
 
 Deeper version of ResNet 2.0, useful for large datasets with many classes.
 
-##### <span id="ResNet-2.1.1">ResNet 2.1.1</span>
+##### <span id="resnet-211">ResNet 2.1.1</span>
 
 Deeper version of ResNet 2.1, useful for large datasets with many classes. 
   
