@@ -1,6 +1,6 @@
 # Test
 
-Script python to train the model.
+Script python to make predictions based on the model.
 
 
 ## Installation
