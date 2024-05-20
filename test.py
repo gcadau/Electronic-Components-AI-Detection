@@ -64,30 +64,38 @@ tf.get_logger().setLevel('ERROR')
 model = keras.models.load_model(model_dir)
 
 good = 0
-extr = list(iter(validset))[np.random.randint(0, len(validset))]
-img, lab = extr
-for i in range(len(lab)):
-    im = tf.expand_dims(img['data'][i], axis=0)
-    printable_object = dataset.print_item(img['print_object'][i])
-    pred = model.predict(im)
-    pred_lidx = tf.argmax(pred[0])
-    pred_label = class_names[pred_lidx]
-    print("Predicted label: {}".format(pred_label))
-    act_lidx = tf.argmax(lab[i])
-    act_label = class_names[act_lidx]
-    print("Real label: {}".format(act_label))
-    print()
-    if pred_lidx == act_lidx:
-        good += 1
-    plt.figure(figsize=(8, 8))
-    label = pred_label
-    plt.title(label, fontsize=30)
-    plt.axis("off")
-    plt.imshow(printable_object)
-    plt.show()
-    plt.figure(figsize=(35, 10))
-    plt.bar(range(len(class_names)), pred[0], tick_label=class_names)
-    plt.xticks(rotation=45, fontsize=18)
-    plt.show()
+tot = 0
+batches = list(iter(validset))
+for j in range(len(batches)):
+    extr = batches[j]
+    img, lab = extr
+    for i in range(len(lab)):
+        im = tf.expand_dims(img['data'][i], axis=0)
+        printable_object = dataset.print_item(img['print_object'][i])
+        po = tf.expand_dims(img['print_object'][i], axis=0)
+        pred = model.predict({'data': im, 'print_object': po})
+        pred_lidx = tf.argmax(pred[0])
+        pred_label = class_names[pred_lidx]
+        print("Predicted label: {}".format(pred_label))
+        act_lidx = tf.argmax(lab[i])
+        act_label = class_names[act_lidx]
+        print("Real label: {}".format(act_label))
+        print("Probability of the prediction:", pred[0][pred_lidx])
+        print()
+        if pred_lidx == act_lidx:
+            good += 1
+        tot += 1
+        # To plot images and probabilities
+        #plt.figure(figsize=(8, 8))
+        label = pred_label
+        #plt.title(label, fontsize=30)
+        #plt.axis("off")
+        #plt.imshow(printable_object)
+        #plt.show()
+        #plt.figure(figsize=(35, 10))
+        #plt.bar(range(len(class_names)), pred[0], tick_label=class_names)
+        #plt.xticks(rotation=45, fontsize=18)
+        #plt.show()
+        print("Partial score:", good, "/", tot, f"({(good/tot)*100}%)")
 print("\n\n")
-print("Score:", good, "/", len(lab), f"({(good/len(lab))*100}%)")
+print("Score:", good, "/", tot, f"({(good/tot)*100}%)")

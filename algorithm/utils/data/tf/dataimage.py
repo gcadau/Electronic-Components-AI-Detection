@@ -37,7 +37,7 @@ class DataImage:
         else:
             if not isinstance(self.split, int) and not isinstance(self.split, float):
                 raise NotCorrectSplitException(self.split, "no number")
-            if self.split < 0 or self.split >= 1:
+            if self.split <= 0 or self.split > 1:
                 raise NotCorrectSplitException(self.split, "wrong number")
         self.data = self.data.shuffle(len(self.data), reshuffle_each_iteration=False)
         train_data = self.data.skip(int(len(self.data) * self.split))
