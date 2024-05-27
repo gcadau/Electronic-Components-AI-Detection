@@ -18,9 +18,9 @@ from algorithm.domain_randomization.optimization.tf import (
     r_multivariatenormal as r_multivariatenormal_opt
 )
 from algorithm.domain_randomization.tf import r_uniform, r_triangular, r_univariatenormal, r_multivariatenormal
-from keras.optimizers import Optimizer as KerasOptimizer
+from tf.keras.optimizers import Optimizer as KerasOptimizer
 from nevergrad.optimization import Optimizer as NevergradOptimizer
-from keras.utils import register_keras_serializable
+from tf.keras.utils import register_keras_serializable
 from algorithm.deep.utils import is_keras_optimizer, is_nevergrad_optimizer
 from algorithm.utils.params.tf.dr import DomainRandomization_parameters
 
@@ -986,11 +986,11 @@ class ResNet1(keras.Model):
 
         print("'model.compile' parameters info:")
         print("\tclass name required for loss and optimizers (e.g.: "
-              "keras.losses.categorical_crossentropy or "
-              "keras.optimizers.Adam or "
+              "tf.keras.losses.categorical_crossentropy or "
+              "tf.keras.optimizers.Adam or "
               "ng.optimizers.CMA")
         print("\tany additional parameters required must be passed as a dictionary in the second element of the tuple "
-              "(class_name, parameters) (e.g.: (keras.optimizers.Adam, {'learning_rate':1e-3})")
+              "(class_name, parameters) (e.g.: (tf.keras.optimizers.Adam, {'learning_rate':1e-3})")
         print("\t'run_eagerly=True' suggested.")
 
 
@@ -1171,7 +1171,7 @@ class ResNet1(keras.Model):
             self.model_branch2.optimizer = opt(**par)
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
-        super(ResNet1, self).compile(optimizer=keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
+        super(ResNet1, self).compile(optimizer=tf.keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
 
     def train_step(self, data):
         imgs, labs = data
@@ -2375,11 +2375,11 @@ class ResNet2__0(keras.Model):
 
         print("'model.compile' parameters info:")
         print("\tclass name required for loss and optimizers (e.g.: "
-              "keras.losses.categorical_crossentropy or "
-              "keras.optimizers.Adam or "
+              "tf.keras.losses.categorical_crossentropy or "
+              "tf.keras.optimizers.Adam or "
               "ng.optimizers.CMA")
         print("\tany additional parameters required must be passed as a dictionary in the second element of the tuple "
-              "(class_name, parameters) (e.g.: (keras.optimizers.Adam, {'learning_rate':1e-3})")
+              "(class_name, parameters) (e.g.: (tf.keras.optimizers.Adam, {'learning_rate':1e-3})")
         print("\t'run_eagerly=True' suggested.")
 
 
@@ -2563,7 +2563,7 @@ class ResNet2__0(keras.Model):
                 self.model_branch2.optimizer = opt
         if self.model_branch1.optimizer is None or ((self.domain_randomization__ and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
-        super(ResNet2__0, self).compile(optimizer=keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
+        super(ResNet2__0, self).compile(optimizer=tf.keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
 
     def train_step(self, data):
         imgs, labs = data
@@ -3768,11 +3768,11 @@ class ResNet2__1(keras.Model):
 
         print("'model.compile' parameters info:")
         print("\tclass name required for loss and optimizers (e.g.: "
-              "keras.losses.categorical_crossentropy or "
-              "keras.optimizers.Adam or "
+              "tf.keras.losses.categorical_crossentropy or "
+              "tf.keras.optimizers.Adam or "
               "ng.optimizers.CMA")
         print("\tany additional parameters required must be passed as a dictionary in the second element of the tuple "
-              "(class_name, parameters) (e.g.: (keras.optimizers.Adam, {'learning_rate':1e-3})")
+              "(class_name, parameters) (e.g.: (tf.keras.optimizers.Adam, {'learning_rate':1e-3})")
         print("\t'run_eagerly=True' suggested.")
 
 
@@ -3947,7 +3947,7 @@ class ResNet2__1(keras.Model):
             self.model_branch2.optimizer = opt(**par)
         if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
-        super(ResNet2__1, self).compile(optimizer=keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
+        super(ResNet2__1, self).compile(optimizer=tf.keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
 
     def train_step(self, data):
         imgs, labs = data

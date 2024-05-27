@@ -1,5 +1,5 @@
 from algorithm.utils.params.exceptions import NotFoundDomainRandomizationModeException
-from tensorflow.keras.utils import register_keras_serializable
+from tensorflow.tf.keras.utils import register_keras_serializable
 
 @register_keras_serializable(package='Custom', name='DomainRandomizationParameters')
 class DomainRandomization_parameters():

@@ -4,7 +4,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow import keras
 from .exceptions import WrongVarianceCovarianceMatrixException
-from keras.optimizers import Optimizer as KerasOptimizer
+from tf.keras.optimizers import Optimizer as KerasOptimizer
 from nevergrad.optimization import Optimizer as NevergradOptimizer
 
 
