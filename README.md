@@ -7,4 +7,4 @@ Msc Data Science and Engineering @Polito.
 
 Held at Seica S.P.A.
 
-Test version to be run on the local machine.
+Object detection version to be run on the local machine.
