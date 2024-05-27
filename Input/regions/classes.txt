@@ -1,0 +1,22 @@
+Ceramic capacitor
+Connector
+Diode
+Dip Switch
+Fuse
+IC
+Inductor
+Jumper
+Jumper cut
+LED
+Minimelf
+Not mounted
+Optoisolator
+Oscillator
+Pushbutton
+Rectangular pin
+Relais
+Resistor
+Resistor Network
+SOT
+TO252
+Tantalum capacitor
