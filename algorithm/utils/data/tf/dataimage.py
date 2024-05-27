@@ -8,7 +8,7 @@ from algorithm.utils.data.exceptions import *
 
 
 class DataImage:
-    def __init__(self, data_path=".\\data", split=0, transform=None, normalize=False, mean=None, std=None,
+    def __init__(self, data_path="./data", split=0, transform=None, normalize=False, mean=None, std=None,
                  resize=False, height=None, width=None, one_hot_encoding=False, name=None, format=None, buffer_size=500, batch_size=32):
 
         self.__SEPARATOR = "_"
@@ -21,7 +21,7 @@ class DataImage:
         default_split, only_train_split = 0.2, 0
 
         if os.path.exists(self.data_path):
-            self.data = tf.data.Dataset.list_files(f"{self.data_path}\\*", shuffle=False)
+            self.data = tf.data.Dataset.list_files(f"{self.data_path}/*", shuffle=False)
             self.__identifier = [os.path.join(self.data_path, n) for n in os.listdir(self.data_path)]
         else:
             raise NotFoundDirectoryException(self.data_path)
@@ -37,7 +37,7 @@ class DataImage:
         else:
             if not isinstance(self.split, int) and not isinstance(self.split, float):
                 raise NotCorrectSplitException(self.split, "no number")
-            if self.split < 0 or self.split >= 1:
+            if self.split <= 0 or self.split > 1:
                 raise NotCorrectSplitException(self.split, "wrong number")
         self.data = self.data.shuffle(len(self.data), reshuffle_each_iteration=False)
         train_data = self.data.skip(int(len(self.data) * self.split))
@@ -79,7 +79,7 @@ class DataImage:
             self.norms = (mean, std)
             self.transforms.append(f"Normalize(mean={mean}, std={std})")
 
-        self.one_hot_encoding = one_hot_encoding 
+        self.one_hot_encoding = one_hot_encoding # to be implemented
 
         self.buffer_size = buffer_size
 
