@@ -987,10 +987,10 @@ class ResNet1(keras.Model):
         print("'model.compile' parameters info:")
         print("\tclass name required for loss and optimizers (e.g.: "
               "keras.losses.categorical_crossentropy or "
-              "tensorflow.keras.optimizers.Adam or "
+              "keras.optimizers.Adam or "
               "ng.optimizers.CMA")
         print("\tany additional parameters required must be passed as a dictionary in the second element of the tuple "
-              "(class_name, parameters) (e.g.: (tensorflow.keras.optimizers.Adam, {'learning_rate':1e-3})")
+              "(class_name, parameters) (e.g.: (keras.optimizers.Adam, {'learning_rate':1e-3})")
         print("\t'run_eagerly=True' suggested.")
 
 

@@ -1,7 +1,7 @@
 from tensorflow import keras
 import tensorflow as tf
 import random
-from tensorflow.keras.utils import register_keras_serializable
+from keras.utils import register_keras_serializable
 
 
 @register_keras_serializable(package="Custom", name="RandomInverttfr_uniformlayers")
