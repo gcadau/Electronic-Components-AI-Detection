@@ -1,8 +1,8 @@
-To do
-
-
-Tag: version 8
-     version 9
-     version 10
-
-2 chat
+Comando di input.
+	Ricerca {n} componenti. Es: "Ricerca 5 resistenze", "Ricerca 8 condensatori"
+	Data area di ricerca
+		{n}: intero.
+Output.
+	Posizione 	
+	Tollerenza
+	Rotazione
