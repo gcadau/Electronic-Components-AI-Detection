@@ -1,8 +1,10 @@
 from tensorflow import keras
 import tensorflow as tf
 import random
+from tensorflow.keras.utils import register_keras_serializable
 
 
+@register_keras_serializable(package="Custom", name="RandomInverttfr_uniformlayers")
 class RandomInvert(keras.layers.Layer):
 
     def __init__(self, factor=0.5, seed=None, **kwargs):
@@ -30,7 +32,11 @@ class RandomInvert(keras.layers.Layer):
         config.update({'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomBrightnesstfr_uniformlayers")
 class RandomBrightness(keras.layers.Layer):
     def __init__(self, lower=-0.2, upper=0.2, seed=None, factor=0.9, **kwargs):
         # usual behaviour (not mandatory): lower=-{max_delta}, upper={max_delta} (-> delta sampled from [-delta, delta],
@@ -75,7 +81,11 @@ class RandomBrightness(keras.layers.Layer):
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomContrasttfr_uniformlayers")
 class RandomContrast(keras.layers.Layer):
     def __init__(self, lower=0, upper=2.5, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -118,10 +128,14 @@ class RandomContrast(keras.layers.Layer):
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
 # possibile to define class RandomCrop(keras.layers.Layer), not so useful.
 
 
+@register_keras_serializable(package="Custom", name="RandomHorizontallyFliptfr_uniformlayers")
 class RandomHorizontallyFlip(keras.layers.Layer):
     def __init__(self, lower=0, upper=1, seed=None, factor=0.9, **kwargs):
         # usual behaviour (not mandatory): lower=0, upper=1 -> same probability to get
@@ -168,7 +182,11 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomVerticallyFliptfr_uniformlayers")
 class RandomVerticallyFlip(keras.layers.Layer):
     def __init__(self, lower=0, upper=1, seed=None, factor=0.9, **kwargs):
         # usual behaviour (not mandatory): lower=0, upper=1 -> same probability to get
@@ -215,7 +233,11 @@ class RandomVerticallyFlip(keras.layers.Layer):
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomHuetfr_uniformlayers")
 class RandomHue(keras.layers.Layer):
     def __init__(self, lower=-0.2, upper=0.2, seed=None, factor=0.9, **kwargs):
         # usual behaviour (not mandatory): lower=-{max_delta}, upper={max_delta} (-> delta sampled from [-delta, delta],
@@ -260,7 +282,11 @@ class RandomHue(keras.layers.Layer):
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomJpegQualitytfr_uniformlayers")
 class RandomJpegQuality(keras.layers.Layer):
     def __init__(self, lower=20, upper=100, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -303,7 +329,11 @@ class RandomJpegQuality(keras.layers.Layer):
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomSaturationtfr_uniformlayers")
 class RandomSaturation(keras.layers.Layer):
     def __init__(self, lower=0, upper=2, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -345,3 +375,7 @@ class RandomSaturation(keras.layers.Layer):
         config = super().get_config()
         config.update({"lower": self.lower, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
+
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)

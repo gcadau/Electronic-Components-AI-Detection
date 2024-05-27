@@ -1,5 +1,7 @@
 from algorithm.utils.params.exceptions import NotFoundDomainRandomizationModeException
+from tensorflow.keras.utils import register_keras_serializable
 
+@register_keras_serializable(package='Custom', name='DomainRandomizationParameters')
 class DomainRandomization_parameters():
     def __init__(self, mode="multivariate normal", seed=None, factors=None, params=None, optimize=True, ranges=None, initials=None):
         self.mode = mode
@@ -164,3 +166,51 @@ class DomainRandomization_parameters():
 
     def get_parameters_list(self):
         return ['brightness', 'contrast', 'horizontally flip', 'vertically flip', 'hue', 'jpeg quality', 'saturation']
+
+
+    def get_config(self):
+        return {
+            'mode': self.mode,
+            'seed': self.seed,
+            'factors': self.factors,
+            'params': [
+                self.mean_vector, self.variancecovariance_matrix
+            ] if self.mode == "multivariate normal" else (
+                [self.means, self.variances] if self.mode == "univariate normal" else (
+                    [self.lowers, self.uppers] if self.mode == "uniform" else (
+                        [self.lowers, self.modes, self.uppers] if self.mode == "triangular" else None
+                    )
+                )
+            ),
+            'ranges': [
+                self.mean_vector__ranges, self.variancecovariance_matrix__ranges
+            ] if self.mode == "multivariate normal" else (
+                [self.means__ranges, self.variances__ranges] if self.mode == "univariate normal" else (
+                    [self.lowers__ranges, self.uppers__ranges] if self.mode == "uniform" else (
+                        [self.lowers__ranges, self.modes__ranges, self.uppers__ranges] if self.mode == "triangular" else None
+                    )
+                )
+            ),
+            'initials': [
+                self.mean_vector__initials, self.variancecovariance_matrix__initials
+            ] if self.mode == "multivariate normal" else (
+                [self.means__initials, self.variances__initials] if self.mode == "univariate normal" else (
+                    [self.lowers__initials, self.uppers__initials] if self.mode == "uniform" else (
+                        [self.lowers__initials, self.modes__initials, self.uppers__initials] if self.mode == "triangular" else None
+                    )
+                )
+            ),
+            'optimize': self.optimize
+        }
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            mode=config['mode'],
+            seed=config.get('seed', None),
+            factors=config.get('factors', None),
+            params=config.get('params', None),
+            optimize=config.get('optimize', True),
+            ranges=config.get('ranges', None),
+            initials=config.get('initials', None)
+        )

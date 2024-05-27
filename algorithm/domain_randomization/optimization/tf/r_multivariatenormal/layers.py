@@ -2,8 +2,10 @@ from tensorflow import keras
 import tensorflow as tf
 import numpy as np
 import random
+from tensorflow.keras.utils import register_keras_serializable
 
 
+@register_keras_serializable(package="Custom", name="RandomInvertoptimizationtfr_multivariatenormallayers")
 class RandomInvert(keras.layers.Layer):
 
     def __init__(self, factor=0.5, seed=None, **kwargs):
@@ -31,7 +33,11 @@ class RandomInvert(keras.layers.Layer):
         config.update({'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="Brightnessoptimizationtfr_multivariatenormallayers")
 class Brightness(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -53,7 +59,11 @@ class Brightness(keras.layers.Layer):
         config.update({'par': self.delta})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="Contrastoptimizationtfr_multivariatenormallayers")
 class Contrast(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -71,10 +81,14 @@ class Contrast(keras.layers.Layer):
         config.update({'par': self.contrast_factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
 # possibile to define class Crop(keras.layers.Layer), not so useful.
 
 
+@register_keras_serializable(package="Custom", name="HorizontallyFlipoptimizationtfr_multivariatenormallayers")
 class HorizontallyFlip(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -95,7 +109,11 @@ class HorizontallyFlip(keras.layers.Layer):
         config.update({'par': self.prob})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="VerticallyFlipoptimizationtfr_multivariatenormallayers")
 class VerticallyFlip(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -116,7 +134,11 @@ class VerticallyFlip(keras.layers.Layer):
         config.update({'par': self.prob})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="Hueoptimizationtfr_multivariatenormallayers")
 class Hue(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -138,7 +160,11 @@ class Hue(keras.layers.Layer):
         config.update({'par': self.delta})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="JpegQualityoptimizationtfr_multivariatenormallayers")
 class JpegQuality(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -159,7 +185,11 @@ class JpegQuality(keras.layers.Layer):
         config.update({'par': self.jpeg_quality})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="Saturationoptimizationtfr_multivariatenormallayers")
 class Saturation(keras.layers.Layer):
     def __init__(self, par, **kwargs):
         super().__init__(**kwargs)
@@ -179,10 +209,14 @@ class Saturation(keras.layers.Layer):
         config.update({'par': self.saturation_factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
 
 
 
+@register_keras_serializable(package="Custom", name="RandomParametersoptimizationtfr_multivariatenormallayers")
 class RandomParameters(keras.layers.Layer):
     def __init__(self, seed=None, factors=None, **kwargs):
         super().__init__(**kwargs)
@@ -449,11 +483,22 @@ class RandomParameters(keras.layers.Layer):
         config.update({"seed": self.seed, "factors": self.factors})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
 
+@register_keras_serializable(package="Custom", name="NoneTransformationoptimizationtfr_multivariatenormallayers")
 class NoneTransformation():
     def __int__(self):
         pass
 
     def __call__(self, x, training=None):
         return x
+
+	def get_config(self):
+		config = super().get_config()
+		
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)

@@ -20,9 +20,12 @@ from algorithm.domain_randomization.optimization.tf import (
 from algorithm.domain_randomization.tf import r_uniform, r_triangular, r_univariatenormal, r_multivariatenormal
 from keras.optimizers import Optimizer as KerasOptimizer
 from nevergrad.optimization import Optimizer as NevergradOptimizer
+from keras.utils import register_keras_serializable
 from algorithm.deep.utils import is_keras_optimizer, is_nevergrad_optimizer
+from algorithm.utils.params.tf.dr import DomainRandomization_parameters
 
 
+@register_keras_serializable(package="Custom", name="ResNetBlock")
 class ResNetBlock(keras.layers.Layer):
     def __init__(self, filters):
         super(ResNetBlock, self).__init__()
@@ -38,7 +41,20 @@ class ResNetBlock(keras.layers.Layer):
         x += inputs
         return x
 
+    def get_config(self):
+        config = super(ResNetBlock, self).get_config()
+        config.update({
+            "filters": self.conv2a.filters,
+        })
+        return config
 
+    @classmethod
+    def from_config(cls, config):
+        filters = config.pop('filters')
+        return cls(filters)        
+
+
+@register_keras_serializable(package="Custom", name="ResNet1")
 class ResNet1(keras.Model):
     def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet1, self).__init__()
@@ -971,10 +987,10 @@ class ResNet1(keras.Model):
         print("'model.compile' parameters info:")
         print("\tclass name required for loss and optimizers (e.g.: "
               "keras.losses.categorical_crossentropy or "
-              "keras.optimizers.Adam or "
+              "tensorflow.keras.optimizers.Adam or "
               "ng.optimizers.CMA")
         print("\tany additional parameters required must be passed as a dictionary in the second element of the tuple "
-              "(class_name, parameters) (e.g.: (keras.optimizers.Adam, {'learning_rate':1e-3})")
+              "(class_name, parameters) (e.g.: (tensorflow.keras.optimizers.Adam, {'learning_rate':1e-3})")
         print("\t'run_eagerly=True' suggested.")
 
 
@@ -1419,17 +1435,36 @@ class ResNet1(keras.Model):
                         self.fverbose_file.write("\t         " + " ".join(map(str, row)) + "\n")
                     c+=1
             self.fverbose_file.write("\n\n")
+            
+    def get_config(self):
+        config = super(ResNet1, self).get_config()
+        config.update({
+            "n_classes": self.n_classes,
+            "input_shape_": self.input_shape_,
+            "field": self.field,
+            "domain_randomization": self.domain_randomization.get_config() if self.domain_randomization else None
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        domain_randomization = DomainRandomization_parameters.from_config(config['domain_randomization'])
+        return cls(n_classes=config['n_classes'], input_shape_=config['input_shape_'], field=config['field'], domain_randomization=domain_randomization)  
 
 
 
 
+@register_keras_serializable(package="Custom", name="ResNet2__0")
 class ResNet2__0(keras.Model):
-    def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
+    def __init__(self, n_classes, input_shape_=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet2__0, self).__init__()
-        self.branch1_base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape)
+        self.n_classes = n_classes
+        self.input_shape_ = input_shape_
+        self.domain_randomization = domain_randomization
+        self.branch1_base_model = keras.applications.ResNet152(weights = 'imagenet', include_top = False, input_shape = input_shape_)
         self.branch1_flatten = keras.layers.Flatten()
         self.branch1_dense1 = keras.layers.Dense(1000, activation='relu')
-        self.branch1_dense2 = keras.layers.Dense(n_classes, activation='softmax')
+        self.branch1_dense2 = keras.layers.Dense(self.n_classes , activation='softmax')
 
         x = self.branch1_flatten(self.branch1_base_model.output)
         x = self.branch1_dense1(x)
@@ -1439,7 +1474,7 @@ class ResNet2__0(keras.Model):
         self.model_branch1.optimizer = None
 
         if domain_randomization is not None:
-            self.domain_randomization = True
+            self.domain_randomization__ = True
             parameters_name = domain_randomization.get_parameters_list()
             self.normalized_space = {"lower": 0.0, "upper":4.0}
 
@@ -2330,8 +2365,8 @@ class ResNet2__0(keras.Model):
                     params["seed"] = domain_randomization.seed
                     self.branch1_random_parameters = r_multivariatenormal.layers.RandomParameters(**params)
         else:
-            self.domain_randomization = False
-        self.domain_randomization__mode = domain_randomization.mode
+            self.domain_randomization__ = False
+        self.domain_randomization____mode = domain_randomization.mode
 
         self.field = field
 
@@ -2353,9 +2388,9 @@ class ResNet2__0(keras.Model):
             data = inputs[self.field]
         except KeyError:
             data = inputs
-        if self.domain_randomization:
+        if self.domain_randomization__:
             if self.optimize and training:
-                try: # self.domain_randomization__mode == "multivariate normal"
+                try: # self.domain_randomization____mode == "multivariate normal"
                     dr = self.branch1_random_parameters
                     sampled_params = tfp.distributions.MultivariateNormalTriL(
                         loc=self.branch2_mean_vector,
@@ -2365,7 +2400,7 @@ class ResNet2__0(keras.Model):
                     ).sample(sample_shape=(data.shape[0],)).numpy()
                     data = dr(data, values=sampled_params, rand=False, training=training)
                 except AttributeError:
-                    if self.domain_randomization__mode == "uniform":
+                    if self.domain_randomization____mode == "uniform":
                         sampled_paramA = tfp.distributions.Uniform(
                             low=self.branch2_lowerA,
                             high=self.branch2_upperA
@@ -2394,7 +2429,7 @@ class ResNet2__0(keras.Model):
                             low=self.branch2_lowerG,
                             high=self.branch2_upperG
                         ).sample(sample_shape=(data.shape[0],)).numpy()
-                    if self.domain_randomization__mode == "triangular":
+                    if self.domain_randomization____mode == "triangular":
                         sampled_paramA = Triangular(
                             low=self.branch2_lowerA,
                             mode=self.branch2_modeA,
@@ -2430,7 +2465,7 @@ class ResNet2__0(keras.Model):
                             mode=self.branch2_modeG,
                             high=self.branch2_upperG
                         ).sample(sample_shape=(data.shape[0],)).numpy()
-                    if self.domain_randomization__mode == "univariate normal":
+                    if self.domain_randomization____mode == "univariate normal":
                         sampled_paramA = tfp.distributions.Normal(
                             loc=self.branch2_meanA,
                             scale=self.branch2_varianceA
@@ -2498,10 +2533,16 @@ class ResNet2__0(keras.Model):
             else:
                 opt = optimizer
         if par is not None:
-            self.model_branch1.optimizer = opt(**par)
+            try:
+                self.model_branch1.optimizer = opt(**par)
+            except TypeError: # .compile() call by load, optimizer already instantiated.
+                self.model_branch1.optimizer = opt
         else:
-            self.model_branch1.optimizer = opt()
-        if self.domain_randomization and self.optimize:
+            try:
+                self.model_branch1.optimizer = opt()
+            except TypeError: # .compile() call by load, optimizer already instantiated.
+                self.model_branch1.optimizer = opt
+        if self.domain_randomization__ and self.optimize:
             par = None
             if isinstance(optimizer[1], tuple):
                 opt, par = optimizer[1]
@@ -2510,14 +2551,17 @@ class ResNet2__0(keras.Model):
             if par is None:
                 par = {}
             trainableVars = [getattr(self, attr) for attr in self.model_branch2.get_trainable_variables()]
-            if self.domain_randomization__mode != "multivariate normal":
+            if self.domain_randomization____mode != "multivariate normal":
                 params = ng.p.Tuple(*trainableVars)
             else:
                 params = ng.p.Tuple(*(list(chain(*trainableVars))))
             instrumentation = ng.p.Instrumentation(params=params)
             par["parametrization"] = instrumentation
-            self.model_branch2.optimizer = opt(**par)
-        if self.model_branch1.optimizer is None or ((self.domain_randomization and self.optimize) and self.model_branch2.optimizer is None):
+            try:
+                self.model_branch2.optimizer = opt(**par)
+            except TypeError: # .compile() call by load, optimizer already instantiated.
+                self.model_branch2.optimizer = opt
+        if self.model_branch1.optimizer is None or ((self.domain_randomization__ and self.optimize) and self.model_branch2.optimizer is None):
             raise NotFoundOptimizerException()
         super(ResNet2__0, self).compile(optimizer=keras.optimizers.Adam(), **kwargs) # optimizers already handled: pass a 'default optimizer'
 
@@ -2528,8 +2572,8 @@ class ResNet2__0(keras.Model):
             loss = self.compiled_loss(labs, predictions)
         loss_branch1 = loss
         loss_branch2 = loss
-        if self.domain_randomization and self.optimize:
-            if self.domain_randomization__mode == "uniform":
+        if self.domain_randomization__ and self.optimize:
+            if self.domain_randomization____mode == "uniform":
                 # constraints: lowers<=uppers
                 p = [[self.branch2_lowerA, self.branch2_upperA],
                      [self.branch2_lowerB, self.branch2_upperB],
@@ -2549,7 +2593,7 @@ class ResNet2__0(keras.Model):
                                            /rescaling_factor[i]
                                            for i, pi in enumerate(p) ])
                 loss_branch2 += penalty
-            if self.domain_randomization__mode == "triangular":
+            if self.domain_randomization____mode == "triangular":
                 # constraints: lowers<=modes, modes<=uppers
                 p = [[self.branch2_lowerA, self.branch2_modeA, self.branch2_upperA],
                      [self.branch2_lowerB, self.branch2_modeB, self.branch2_upperA],
@@ -2578,7 +2622,7 @@ class ResNet2__0(keras.Model):
                                            /rescaling_factor[i]
                                            for i, pi in enumerate(p) ])
                 loss_branch2 += penalty
-            if self.domain_randomization__mode == "multivariate normal":
+            if self.domain_randomization____mode == "multivariate normal":
                 # constraints: elements of variance covariance matrix (complete version, not chol factorized ones)
                 # between their ranges
                 p = self.branch2_variancecovariance_matrix
@@ -2600,7 +2644,7 @@ class ResNet2__0(keras.Model):
                                            for index, (i,j) in enumerate(iterate_over_elements_below_diagonal(sigma.shape[0])) ])
                 loss_branch2 += penalty
         self.__update_parameters(self.model_branch1.optimizer, loss_branch1, tape)
-        if self.domain_randomization and self.optimize:
+        if self.domain_randomization__ and self.optimize:
             self.__update_parameters(self.model_branch2.optimizer, loss_branch2)
         del tape
 
@@ -2618,7 +2662,7 @@ class ResNet2__0(keras.Model):
             self.fverbose_file = open(self.fverbose_path, 'w', encoding='utf8')
         # 1st update.
         self.__update_parameters(self.model_branch1.optimizer)
-        if self.domain_randomization and self.optimize:
+        if self.domain_randomization__ and self.optimize:
             self.__update_parameters(self.model_branch2.optimizer)
         super(ResNet2__0, self).fit(*args, **kwargs)
         if self.fverbose>0:
@@ -2631,7 +2675,7 @@ class ResNet2__0(keras.Model):
                 optimizer.tell(self.__tmp_optimizer_branch2_x, float(loss.numpy()))
             x = optimizer.ask()
             parameters = list(x.kwargs['params'])
-            if self.domain_randomization__mode == "uniform":
+            if self.domain_randomization____mode == "uniform":
                 for i in range(len(self.lowers__initials)):
                     p = parameters[i]
                     p = denormalize_value(
@@ -2652,7 +2696,7 @@ class ResNet2__0(keras.Model):
                         self.normalized_space["upper"]
                     )
                     parameters[i+len(self.lowers__initials)] = p
-            elif self.domain_randomization__mode == "triangular":
+            elif self.domain_randomization____mode == "triangular":
                 for i in range(len(self.lowers__initials)):
                     p = parameters[i]
                     p = denormalize_value(
@@ -2683,7 +2727,7 @@ class ResNet2__0(keras.Model):
                         self.normalized_space["upper"]
                     )
                     parameters[i+len(self.modes__initials)] = p
-            elif self.domain_randomization__mode == "multivariate normal":
+            elif self.domain_randomization____mode == "multivariate normal":
                 for i in range(len(self.mean_vector__initials)):
                     p = parameters[i]
                     p = denormalize_value(
@@ -2706,7 +2750,7 @@ class ResNet2__0(keras.Model):
                         self.normalized_space["upper"]
                     )
                     parameters[i+len(self.mean_vector__initials)] = p
-            if self.domain_randomization__mode != "multivariate normal":
+            if self.domain_randomization____mode != "multivariate normal":
                 for var, new_var in zip(self.model_branch2.get_trainable_variables(), parameters):
                     setattr(self, var, new_var)
             else:
@@ -2743,14 +2787,14 @@ class ResNet2__0(keras.Model):
                 self.fverbose_file.write(f"{var.name}: {var.numpy()}\n")
             self.fverbose_file.write("\n\n")
         if branch == 2:
-            if self.domain_randomization__mode == "uniform":
+            if self.domain_randomization____mode == "uniform":
                 variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
                 n_params = len(self.lowers__initials)
                 for i in range(n_params):
                     low = variables[i]
                     upper = variables[n_params+i]
                     self.fverbose_file.write(f"Param {i}: U({low}, {upper})\n")
-            if self.domain_randomization__mode == "triangular":
+            if self.domain_randomization____mode == "triangular":
                 variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
                 n_params = len(self.lowers__initials)
                 for i in range(n_params):
@@ -2758,14 +2802,14 @@ class ResNet2__0(keras.Model):
                     mode = variables[n_params+i]
                     upper = variables[n_params+n_params+i]
                     self.fverbose_file.write(f"Param {i}: Tr({low}, {mode}, {upper})\n")
-            if self.domain_randomization__mode == "univariate normal":
+            if self.domain_randomization____mode == "univariate normal":
                 variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
                 n_params = len(self.means__initials)
                 for i in range(n_params):
                     mean = variables[i]
                     variance = variables[n_params+i]
                     self.fverbose_file.write(f"Param {i}: N({mean}, {variance})\n")
-            if self.domain_randomization__mode == "multivariate normal":
+            if self.domain_randomization____mode == "multivariate normal":
                 variables = [getattr(self, var) for var in self.model_branch2.get_trainable_variables()]
                 mu = np.array(variables[0])
                 sigma = tfp.math.fill_triangular(variables[1])
@@ -2783,10 +2827,27 @@ class ResNet2__0(keras.Model):
                         self.fverbose_file.write("\t         " + " ".join(map(str, row)) + "\n")
                     c+=1
             self.fverbose_file.write("\n\n")
+    
+        return cls(**config)
+
+    def get_config(self):
+        config = super(ResNet2__0, self).get_config()
+        config.update({
+            "n_classes": self.n_classes,
+            "input_shape_": self.input_shape_,
+            "field": self.field,
+            "domain_randomization": self.domain_randomization.get_config() if self.domain_randomization else None
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        domain_randomization = DomainRandomization_parameters.from_config(config['domain_randomization'])
+        return cls(n_classes=config['n_classes'], input_shape_=config['input_shape_'], field=config['field'], domain_randomization=domain_randomization)  
 
 
 
-
+@register_keras_serializable(package="Custom", name="ResNet2__1")
 class ResNet2__1(keras.Model):
     def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet2__1, self).__init__()
@@ -4150,10 +4211,26 @@ class ResNet2__1(keras.Model):
                         self.fverbose_file.write("\t         " + " ".join(map(str, row)) + "\n")
                     c+=1
             self.fverbose_file.write("\n\n")
+            
+    def get_config(self):
+        config = super(ResNet2__1, self).get_config()
+        config.update({
+            "n_classes": self.n_classes,
+            "input_shape_": self.input_shape_,
+            "field": self.field,
+            "domain_randomization": self.domain_randomization.get_config() if self.domain_randomization else None
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        domain_randomization = DomainRandomization_parameters.from_config(config['domain_randomization'])
+        return cls(n_classes=config['n_classes'], input_shape_=config['input_shape_'], field=config['field'], domain_randomization=domain_randomization)  
 
 
 
 
+@register_keras_serializable(package="Custom", name="ResNet2__0__1")
 class ResNet2__0__1(ResNet2__0):
     def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet2__0, self).__init__(n_classes, input_shape=input_shape, field=field, domain_randomization=domain_randomization)
@@ -4183,10 +4260,26 @@ class ResNet2__0__1(ResNet2__0):
         x = self.branch1_dense4(x)
         y = self.branch1_dense5(x)
         return y
+            
+    def get_config(self):
+        config = super(ResNet2__0__1, self).get_config()
+        config.update({
+            "n_classes": self.n_classes,
+            "input_shape_": self.input_shape_,
+            "field": self.field,
+            "domain_randomization": self.domain_randomization.get_config() if self.domain_randomization else None
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        domain_randomization = DomainRandomization_parameters.from_config(config['domain_randomization'])
+        return cls(n_classes=config['n_classes'], input_shape_=config['input_shape_'], field=config['field'], domain_randomization=domain_randomization)  
 
 
 
 
+@register_keras_serializable(package="Custom", name="ResNet2__1__1")
 class ResNet2__1__1(ResNet2__1):
     def __init__(self, n_classes, input_shape=(128, 128, 3), field='data', domain_randomization=None):
         super(ResNet2__1, self).__init__(n_classes, input_shape=input_shape, field=field, domain_randomization=domain_randomization)
@@ -4217,8 +4310,27 @@ class ResNet2__1__1(ResNet2__1):
         y = self.branch1_dense5(x)
         return y
 
+    def get_config(self):
+        config = super(ResNet2__1__1, self).get_config()
+        config.update({
+            "n_classes": self.n_classes,
+            "input_shape_": self.input_shape_,
+            "field": self.field,
+            "domain_randomization": self.domain_randomization.get_config() if self.domain_randomization else None
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        domain_randomization = DomainRandomization_parameters.from_config(config['domain_randomization'])
+        return cls(n_classes=config['n_classes'], input_shape_=config['input_shape_'], field=config['field'], domain_randomization=domain_randomization)  
 
 
+
+                                                             
+
+
+@register_keras_serializable(package="Custom", name="Branch")
 class Branch():
     def __new__(cls, *args, name="default", **kwargs):
         if kwargs.get("inputs", None) is None or kwargs.get("outputs", None) is None:
@@ -4226,7 +4338,15 @@ class Branch():
         else:
             kwargs["name"] = name
             return Branch_b(*args, **kwargs)
+            
+    def get_config(self):
+        return {}
+        
+    @classmethod
+    def from_config(cls, config):
+        return cls()
 
+@register_keras_serializable(package="Custom", name="Branch_a")
 class Branch_a():
     def __init__(self, name="default"):
         self.__name = name
@@ -4244,7 +4364,18 @@ class Branch_a():
 
     def get_trainable_variables(self):
         return self.__tr_vars
-
+        
+    def get_config(self):
+        return {
+            'name': self.__name,
+            'trainable_variables': self.__tr_vars
+        }
+        
+    @classmethod
+    def from_config(cls, config):
+        return cls(name=config['name'])
+    
+@register_keras_serializable(package="Custom", name="Branch_b")
 class Branch_b(keras.Model):
     def __init__(self, *args, **kwargs):
         super(Branch_b, self).__init__(*args, **kwargs)
@@ -4252,3 +4383,14 @@ class Branch_b(keras.Model):
 
     def get_name(self):
         return self.__name
+        
+    def get_config(self):
+        base_config = super(Branch_b, self).get_config()
+        return {
+            **base_config,
+            'name': self.__name
+        }
+        
+    @classmethod
+    def from_config(cls, config):
+        return cls(name=config['name'])

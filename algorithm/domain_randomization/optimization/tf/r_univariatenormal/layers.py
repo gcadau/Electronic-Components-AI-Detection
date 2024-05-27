@@ -1,8 +1,10 @@
 from tensorflow import keras
 import tensorflow as tf
 import random
+from tensorflow.keras.utils import register_keras_serializable
 
 
+@register_keras_serializable(package="Custom", name="RandomInvertoptimizationtfr_univariatenormallayers")
 class RandomInvert(keras.layers.Layer):
 
     def __init__(self, factor=0.5, seed=None, **kwargs):
@@ -30,7 +32,11 @@ class RandomInvert(keras.layers.Layer):
         config.update({'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomBrightnessoptimizationtfr_univariatenormallayers")
 class RandomBrightness(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         # usual behaviour (not mandatory): mean=-{0}, variance={sigma_delta} (-> delta sampled from N(0, sigma_delta),
@@ -95,7 +101,11 @@ class RandomBrightness(keras.layers.Layer):
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomContrastoptimizationtfr_univariatenormallayers")
 class RandomContrast(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -156,10 +166,14 @@ class RandomContrast(keras.layers.Layer):
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
 # possibile to define class RandomCrop(keras.layers.Layer), not so useful.
 
 
+@register_keras_serializable(package="Custom", name="RandomHorizontallyFlipoptimizationtfr_univariatenormallayers")
 class RandomHorizontallyFlip(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -222,7 +236,11 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomVerticallyFlipoptimizationtfr_univariatenormallayers")
 class RandomVerticallyFlip(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -285,7 +303,11 @@ class RandomVerticallyFlip(keras.layers.Layer):
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomHueoptimizationtfr_univariatenormallayers")
 class RandomHue(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         # usual behaviour (not mandatory): mean=-{0}, variance={sigma_delta} (-> delta sampled from N(0, sigma_delta),
@@ -350,7 +372,11 @@ class RandomHue(keras.layers.Layer):
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomJpegQualityoptimizationtfr_univariatenormallayers")
 class RandomJpegQuality(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -413,7 +439,11 @@ class RandomJpegQuality(keras.layers.Layer):
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
 
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
 
+@register_keras_serializable(package="Custom", name="RandomSaturationoptimizationtfr_univariatenormallayers")
 class RandomSaturation(keras.layers.Layer):
     def __init__(self, seed=None, factor=0.9, **kwargs):
         super().__init__(**kwargs)
@@ -475,3 +505,7 @@ class RandomSaturation(keras.layers.Layer):
         config = super().get_config()
         config.update({'seed': self.seed, 'factor': self.factor})
         return config
+
+	@classmethod
+	def from_config(cls, config):
+		return cls(**config)
