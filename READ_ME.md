@@ -33,7 +33,7 @@ Ensure you have Python installed and that the necessary dependencies are met bef
                             [--model_path MODEL_PATH]
 </pre>   
 
-test.py
+object_detection.py
 
 optional arguments:
 
