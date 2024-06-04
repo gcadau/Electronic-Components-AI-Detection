@@ -58,7 +58,9 @@ optional arguments:
 
 > **Author:** Giovanni Cadau
 >
-> **Project:** Electronic-Components-AI-Detection, object detection local version to be run on the local machine.
+> **Project:** Electronic Components AI Detection
+>
+> **Version:** Object detection local version to be run on the local machine.
 >
 > **Description:** Artificial Intelligence for electronic components detection. Master thesis project. 
 >
