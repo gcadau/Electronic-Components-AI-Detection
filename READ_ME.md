@@ -42,7 +42,7 @@ optional arguments:
                         Show this help message and exit
   --data_path DATA_PATH
                         Path of the directory in which input data are stored.
-                        (default: 'Input\dataset')
+                        (default: 'Input\regions')
   --name NAME           
                         Name of the dataset.
                         (default: 'Electronic components dataset')
