@@ -26,11 +26,11 @@ Ensure you have Python installed and that the necessary dependencies are met bef
 ## <span id="Usage">Usage</span>
 
 <pre>   
-       test.py  [-h]        
-                [--data_path DATA_PATH]          
-                [--name NAME] 
-                [--format FORMAT]
-                [--model_path MODEL_PATH]
+       object_detection.py  [-h]        
+                            [--data_path DATA_PATH]          
+                            [--name NAME] 
+                            [--format FORMAT]
+                            [--model_path MODEL_PATH]
 </pre>   
 
 test.py
