@@ -1,5 +1,6 @@
 from algorithm.utils.data.tf.fullimage import FullImage
 from algorithm.utils.data.tf.fullimage import sliding_window, preprocess_windows
+import tensorflow as tf
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import sys
