@@ -54,3 +54,14 @@ optional arguments:
                         Path of the directory from which the trained model has to be loaded.
                         (default: 'default: in\model')
 </pre>
+
+
+> **Author:** Giovanni Cadau
+>
+> **Project:** Electronic-Components-AI-Detection, object detection local version to be run on the local machine.
+>
+> **Description:** Artificial Intelligence for electronic components detection. Master thesis project. 
+>
+> **Msc Data Science and Engineering @Politecnico di Torino**
+>
+> **Held at Seica S.P.A.**
