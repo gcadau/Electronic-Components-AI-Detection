@@ -52,5 +52,5 @@ optional arguments:
                         (default: None)
   --model_path MODEL_PATH
                         Path of the directory from which the trained model has to be loaded.
-                        (default: 'default: in\model')
+                        (default: 'in\model')
 </pre>
