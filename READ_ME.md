@@ -1,6 +1,6 @@
-# Test
+# Object detection
 
-Script python to make predictions based on the model.
+Script python to detect objects based on the trained model.
 
 
 ## Installation
