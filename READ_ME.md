@@ -1,6 +1,6 @@
-# Test
+# Object detection
 
-Script python to make predictions based on the model.
+Script python to detect objects based on the trained model.
 
 
 ## Installation
@@ -17,23 +17,23 @@ pip install -r requirements.txt
 To execute the script, please follow these steps:
 
 1. Navigate to the root directory 
-2. Locate the script named *test.py*
+2. Locate the script named *object_detection.py*
 3. Run the script using the following command: python3 [script_name].py [optional_parameters]
-4. Optionally, you can pass some parameters to set all test options. See <a href="#Usage">next section</a> for details.
+4. Optionally, you can pass some parameters to set all object detection options. See <a href="#Usage">next section</a> for details.
 
 Ensure you have Python installed and that the necessary dependencies are met before running the script.
 
 ## <span id="Usage">Usage</span>
 
 <pre>   
-       test.py  [-h]        
-                [--data_path DATA_PATH]          
-                [--name NAME] 
-                [--format FORMAT]
-                [--model_path MODEL_PATH]
+       object_detection.py  [-h]        
+                            [--data_path DATA_PATH]          
+                            [--name NAME] 
+                            [--format FORMAT]
+                            [--model_path MODEL_PATH]
 </pre>   
 
-test.py
+object_detection.py
 
 optional arguments:
 
@@ -42,7 +42,7 @@ optional arguments:
                         Show this help message and exit
   --data_path DATA_PATH
                         Path of the directory in which input data are stored.
-                        (default: 'Input\dataset')
+                        (default: 'Input\regions')
   --name NAME           
                         Name of the dataset.
                         (default: 'Electronic components dataset')
