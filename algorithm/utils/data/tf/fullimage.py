@@ -129,3 +129,19 @@ def preprocess_windows(windows, positions, batch_size=100, resize=False, normali
         positions_batched.append(batch_positions)
     batches = list(zip(windows_batched, positions_batched))
     return batches
+
+
+def preprocess_image(image_, resize=False, normalize=False, img_height=None, img_width=None, mean=None, printable_object=None):
+    img = image.img_to_array(image_)
+    img = tf.convert_to_tensor(img)
+    if resize:
+        img = tf.image.resize(img, [img_height, img_width])
+    if normalize:
+            img = img*mean
+    image_data = tf.expand_dims(img, axis=0)
+    po = tf.expand_dims(printable_object, axis=0) 
+    batch_tens = {
+        'data': image_data, 
+        'print_object': po
+        }
+    return batch_tens
