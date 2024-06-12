@@ -14,14 +14,14 @@ pip install -r requirements.txt
 
 ## Execution
 
-To import the functions inside a client python script {ex: *client.py*}, please follow these steps:
+To import the functions inside a client python script (ex: *client.py*), please follow these steps:
 
-1. Navigate to the root directory {ex: *aidet*}
+1. Navigate to the root directory (ex: *aidet*)
 2. Locate the directory named *interface*
 3. import the available functions with the following code:
-   <pre>
+   ```
           from aidet.interface import detect_objects, classify
-   </pre> 
+   ```
    inside your client python script {client.py}
 4. Optionally, you can pass some parameters to the functions to set all object detection/image classification options. See <a href="#Usage">next section</a> for details.
 
