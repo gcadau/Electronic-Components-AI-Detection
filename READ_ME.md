@@ -80,6 +80,7 @@ detect_objects(
    A list of tuples (x, y, w, h, centroid_x, centroid_y, label, confidence), one for each detected object
   
      1. x
+         A float representing the x coordinate of the top-left corner of the rectangular area of the detected_object
      2. y
      3. w
      4. h
