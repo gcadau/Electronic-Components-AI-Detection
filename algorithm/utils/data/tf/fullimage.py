@@ -7,13 +7,15 @@ import glob
 from algorithm.utils.data.exceptions import *
 
 
-class FullImage:
-    def __init__(self, data_path="./data/regions", resize=False, height=None, width=None):
+class FullImages:
+    def __init__(self, data_path=".\\data\\regions", resize=False, height=None, width=None, classes_path=None):
 
         self.data_path = data_path
 
         self.resize = resize
         self.dims = height, width
+
+        self.classes_path = classes_path
 
         if self.resize:
             height, width = self.dims
@@ -58,7 +60,70 @@ class FullImage:
             return 128
 
     def __get_class_names(self, path):
-        names = glob.glob(os.path.join(self.data_path, '*.txt'))[0]
+        try:
+            names = glob.glob(os.path.join(self.data_path, '*.txt'))[0]
+        except IndexError:
+            names = glob.glob(os.path.join(self.classes_path, '*.txt'))[0]
+        return [line.strip() for line in open(names, 'r')]
+
+class FullImage:
+    def __init__(self, data_path=".\\data\\region", resize=False, height=None, width=None, classes_path=None):
+
+        self.data_path = data_path
+
+        self.resize = resize
+        self.dims = height, width
+
+        self.classes_path = classes_path
+
+        if self.resize:
+            height, width = self.dims
+            if self.dims[0] is None or self.dims[1] is None:
+                raise NotCorrectResizeException()
+            if self.dims[0] == 'auto':
+                height = self.__set_resize_parameters("height")
+            if self.dims[1] == 'auto':
+                width = self.__set_resize_parameters("width")
+            self.dims = (height, width)
+
+        if os.path.exists(self.data_path):
+            img_path = self.data_path
+            if os.path.splitext(img_path)[1].lower() == '.jpg':
+                if self.resize:
+                    img = image.load_img(img_path, target_size=self.dims)
+                else:
+                    img = image.load_img(img_path)
+                img_array = image.img_to_array(img)
+                self.image = img_array
+                self.labels = sorted(self.__get_class_names(self.data_path))
+            else:
+                raise NotCorrectImageFormatException(img_path)
+        else:
+            raise NotFoundFileException(self.data_path)
+
+
+
+    def __len__(self):
+        return 1
+
+    def get_element(self,):
+        return self.image
+
+    def print_item(self, obj):
+        return np.uint8(obj)
+
+
+    def __set_resize_parameters(self, param):
+        if param == "height":
+            return 128
+        if param == "width":
+            return 128
+
+    def __get_class_names(self, path):
+        try:
+            names = glob.glob(os.path.join(self.data_path, '*.txt'))[0]
+        except IndexError:
+            names = glob.glob(os.path.join(self.classes_path, '*.txt'))[0]
         return [line.strip() for line in open(names, 'r')]
 
 
@@ -129,3 +194,19 @@ def preprocess_windows(windows, positions, batch_size=100, resize=False, normali
         positions_batched.append(batch_positions)
     batches = list(zip(windows_batched, positions_batched))
     return batches
+
+
+def preprocess_image(image_, resize=False, normalize=False, img_height=None, img_width=None, mean=None, printable_object=None):
+    img = image.img_to_array(image_)
+    img = tf.convert_to_tensor(img)
+    if resize:
+        img = tf.image.resize(img, [img_height, img_width])
+    if normalize:
+            img = img*mean
+    image_data = tf.expand_dims(img, axis=0)
+    po = tf.expand_dims(printable_object, axis=0) 
+    batch_tens = {
+        'data': image_data, 
+        'print_object': po
+        }
+    return batch_tens

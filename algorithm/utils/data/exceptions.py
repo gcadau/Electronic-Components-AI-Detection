@@ -5,6 +5,13 @@ class NotFoundDirectoryException(Exception):
         super().__init__(self.message)
 
 
+class NotFoundFileException(Exception):
+    def __init__(self, path):
+        self.path = path
+        self.message = f"Invalid path. {self.path} does not exist."
+        super().__init__(self.message)
+
+
 class NotCorrectSplitException(Exception):
     def __init__(self, split, kind):
         self.split = split
