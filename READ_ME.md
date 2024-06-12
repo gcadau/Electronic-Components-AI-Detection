@@ -30,35 +30,34 @@ Ensure you have Python installed and that the necessary dependencies are met bef
 
 ## <span id="Usage">Usage</span>
 
-<pre>   
-       object_detection.py  [-h]        
-                            [--data_path DATA_PATH]          
-                            [--name NAME] 
-                            [--format FORMAT]
-                            [--model_path MODEL_PATH]
-</pre>   
+### detect_objects
 
-object_detection.py
+Perform object detections on the given image(s).
 
-optional arguments:
+```   
+detect_objects(
+    data_path: string = "Input\\regions",
+    name: string = "Electronic components dataset",
+    format: string = None, 
+    model_path: string ='in\\model', 
+    classes_path: string = "Input\\regions", 
+    gpu: bool = False, 
+    verbose: bool = False, 
+    info_dir: string = None
+```
 
-<pre>
-  -h, --help            
-                        Show this help message and exit
-  --data_path DATA_PATH
-                        Path of the directory in which input data are stored.
-                        (default: 'Input\regions')
-  --name NAME           
-                        Name of the dataset.
-                        (default: 'Electronic components dataset')
-  --format FORMAT       
-                        Image format (e.g.: RGB, Grayscale, RGBA). 
-                        If not present, automatically deduced from images. 
-                        (default: None)
-  --model_path MODEL_PATH
-                        Path of the directory from which the trained model has to be loaded.
-                        (default: 'in\model')
-</pre>
+- optional arguments:
+
+1. data_path
+      Path of the directory in which input data are stored (default: 'Input\\regions')
+2. name
+      Name of the dataset (default: 'Electronic components dataset')
+    format=None, # Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
+    model_path='in\\model', # Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
+    classes_path="Input\\regions", # Path of the directory in which classes names are stored (default: 'Input\\regions')
+    gpu=False, # Use GPU for inference
+    verbose=False, # Print infos to files into directory {info_dir}
+    info_dir=None # Directory in which info files will be stored
 
 
 > **Author:** Giovanni Cadau
