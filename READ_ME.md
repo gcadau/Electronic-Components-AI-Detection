@@ -51,15 +51,28 @@ detect_objects(
 
    1. data_path
    
-         Path of the directory in which input data are stored (default: 'Input\\regions')
-   3. name
-      Name of the dataset (default: 'Electronic components dataset')
-    format=None, # Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
-    model_path='in\\model', # Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
-    classes_path="Input\\regions", # Path of the directory in which classes names are stored (default: 'Input\\regions')
-    gpu=False, # Use GPU for inference
-    verbose=False, # Print infos to files into directory {info_dir}
-    info_dir=None # Directory in which info files will be stored
+       Path of the directory in which input data are stored (default: 'Input\\regions')
+   2. name
+      
+       Name of the dataset (default: 'Electronic components dataset')
+   3. format
+      
+       Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
+   4. model_path
+      
+       Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
+   5. classes_path
+      
+       Path of the directory in which classes names are stored (default: 'Input\\regions')
+   6. gpu
+     
+       Use GPU for inference
+   7. verbose
+ 
+       Print infos to files into directory {info_dir}
+   8. info_dir
+      
+       Directory in which info files will be stored (if {verbose} is False, use the default value: None)
 
 
 > **Author:** Giovanni Cadau
