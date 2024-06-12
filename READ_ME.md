@@ -49,10 +49,10 @@ detect_objects(
 
 - optional arguments:
 
-1. data_path
+   1. data_path
    
-      Path of the directory in which input data are stored (default: 'Input\\regions')
-3. name
+         Path of the directory in which input data are stored (default: 'Input\\regions')
+   3. name
       Name of the dataset (default: 'Electronic components dataset')
     format=None, # Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
     model_path='in\\model', # Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
