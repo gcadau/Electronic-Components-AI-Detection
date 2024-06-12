@@ -103,6 +103,62 @@ detect_objects(
      8. confidence
 
          A float (between 0 and 1) describing the confidence (i.e., probability of the prediction) associated with the detection
+
+### classify
+
+Perform classification on the given image(s).
+
+```   
+detect_objects(
+    data_path: string = "Input\\regions",
+    name: string = "Electronic components dataset",
+    format: string = None, 
+    model_path: string = "in\\model", 
+    classes_path: string = "Input\\regions", 
+    gpu: bool = False, 
+    verbose: bool = False, 
+    info_dir: string = None
+)
+```
+
+- optional arguments:
+
+   1. data_path
+   
+       Path of the directory in which input data are stored (default: 'Input\\regions')
+   2. name
+      
+       Name of the dataset (default: 'Electronic components dataset')
+   3. format
+      
+       Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
+   4. model_path
+      
+       Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
+   5. classes_path
+      
+       Path of the directory in which classes names are stored (default: 'Input\\regions')
+   6. gpu
+     
+       Use GPU for inference
+   7. verbose
+ 
+       Print infos to files into directory {info_dir}
+   8. info_dir
+      
+       Directory in which info files will be stored (if {verbose} is False, use the default value: None)
+
+
+- returns:
+
+   A tuples (label, confidence), one for the image classified
+  
+     1. label
+      
+         A string describing the classification related to the image
+     2. confidence
+
+         A float (between 0 and 1) describing the confidence (i.e., probability of the prediction) associated with the image
         
 
 
