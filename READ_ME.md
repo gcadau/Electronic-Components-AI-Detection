@@ -1,11 +1,11 @@
-# Object detection
+# Object detection and image classification
 
-Script python to detect objects based on the trained model.
+python libraries to detect objects and classify images based on the trained model.
 
 
 ## Installation
 
-Python $3.7.*$ is necessary to launch the python script.      
+Python $3.7.*$ is necessary to launch the use the python functions.      
 It is necessary to install all python packages listed in requirements.txt.       
 Quick install: 
 <pre>  
@@ -14,9 +14,9 @@ pip install -r requirements.txt
 
 ## Execution
 
-To execute the script, please follow these steps:
+To import the functions inside a client python script, please follow these steps:
 
-1. Navigate to the root directory 
+1. Navigate to the root directory {*aidet*}
 2. Locate the script named *object_detection.py*
 3. Run the script using the following command: python3 [script_name].py [optional_parameters]
 4. Optionally, you can pass some parameters to set all object detection options. See <a href="#Usage">next section</a> for details.
