@@ -19,6 +19,7 @@ To import the functions inside a client python script (ex: *client.py*), please 
 1. Navigate to the root directory (ex: *aidet*)
 2. Locate the directory named *interface*
 3. import the available functions with the following code:
+   
    ```
           from aidet.interface import detect_objects, classify
    ```
