@@ -109,7 +109,7 @@ detect_objects(
 Perform classification on the given image(s).
 
 ```   
-detect_objects(
+classify(
     data_path: string = "Input\\regions",
     name: string = "Electronic components dataset",
     format: string = None, 
