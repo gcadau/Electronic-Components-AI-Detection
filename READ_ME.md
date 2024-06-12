@@ -75,6 +75,20 @@ detect_objects(
        Directory in which info files will be stored (if {verbose} is False, use the default value: None)
 
 
+- returns:
+
+   A list of tuples (x, y, w, h, centroid_x, centroid_y, label, confidence), one for each detected object
+  
+     1. x
+     2. y
+     3. w
+     4. h
+     5. centroid_x
+     6. centroid_y
+     7. label
+     8. confidence
+
+
 > **Author:** Giovanni Cadau
 >
 > **Project:** Electronic Components AI Detection
