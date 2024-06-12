@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 ## Execution
 
-To import the functions inside a client python script {ex: *client.py*} , please follow these steps:
+To import the functions inside a client python script {ex: *client.py*}, please follow these steps:
 
 1. Navigate to the root directory {ex: *aidet*}
 2. Locate the directory named *interface*
