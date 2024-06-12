@@ -80,14 +80,30 @@ detect_objects(
    A list of tuples (x, y, w, h, centroid_x, centroid_y, label, confidence), one for each detected object
   
      1. x
+
          A float representing the x coordinate of the top-left corner of the rectangular area of the detected_object
      2. y
+
+         A float representing the y coordinate of the top-left corner of the rectangular area of the detected_object
      3. w
+
+         A float representing the width of the rectangular area of the detected_object
      4. h
+
+         A float representing the height of the rectangular area of the detected_object
      5. centroid_x
+
+         A float representing the x coordinate of the centroid of the detected_object
      6. centroid_y
+
+         A float representing the y coordinate of the centroid of the detected_object
      7. label
+      
+         A string describing the classification related to the object
      8. confidence
+
+         A float (between 0 and 1) describing the confidence (i.e., probability of the prediction) associated with the detection
+        
 
 
 > **Author:** Giovanni Cadau
