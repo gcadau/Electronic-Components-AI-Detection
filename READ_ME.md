@@ -39,18 +39,20 @@ detect_objects(
     data_path: string = "Input\\regions",
     name: string = "Electronic components dataset",
     format: string = None, 
-    model_path: string ='in\\model', 
+    model_path: string = "in\\model", 
     classes_path: string = "Input\\regions", 
     gpu: bool = False, 
     verbose: bool = False, 
     info_dir: string = None
+)
 ```
 
 - optional arguments:
 
 1. data_path
+   
       Path of the directory in which input data are stored (default: 'Input\\regions')
-2. name
+3. name
       Name of the dataset (default: 'Electronic components dataset')
     format=None, # Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
     model_path='in\\model', # Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
