@@ -1,0 +1,192 @@
+\documentclass[10pt,twocolumn,a4paper]{article}
+\usepackage[a4paper,top=2.0cm,bottom=2.2cm,left=1.8cm,right=1.8cm,columnsep=0.7cm]{geometry}
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=1.2em}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing{\section}{0pt}{9pt}{4pt}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titlespacing{\subsection}{0pt}{7pt}{3pt}
+
+\pagestyle{plain}
+
+
+\begin{document}
+
+\twocolumn[
+\begin{center}
+{\LARGE\bfseries Artificial Intelligence Algorithms for Electronic Component Recognition\par}
+\vspace{10pt}
+{\large\bfseries Giovanni Cadau\par}
+\vspace{3pt}
+{\normalsize Politecnico di Torino --- MSc in Data Science and Engineering\par}
+{\normalsize in collaboration with Seica S.p.A., Strambino (TO), Italy\par}
+\vspace{3pt}
+{\small Advisor: Prof.~Daniele Apiletti \quad Company advisors: Paolo Chiartano, Ing.~Francesco Grassino\par}
+\vspace{3pt}
+{\small Academic Year 2023/2024 --- Paper-style summary of the Master's thesis\par}
+\end{center}
+\vspace{8pt}
+\begin{center}
+\begin{minipage}{0.92\textwidth}
+\small
+\textbf{Abstract ---}
+In the Automatic Electronic Testing of Printed Circuit Boards (PCBs), a crucial and traditionally manual step is the recognition of specific electronic components such as resistors, capacitors, inductors, and integrated circuits. Manual recognition is time-consuming, error-prone, and requires a domain expert, while the heterogeneity of PCB designs and the variability of industrial acquisition conditions make automation challenging. This work develops a complete deep-learning pipeline for component recognition, from data collection and preprocessing to model deployment inside the production software of Flying Probe test systems. Eleven architectures are compared, ranging from Support Vector Machines with handcrafted features to transfer-learned Residual Networks; a ResNet152-based classifier reaches 95.0\% test accuracy over 22 component classes. To make the model robust to environmental shift without retraining, an \emph{Adaptive Domain Randomization} scheme is proposed in which the parameters of the augmentation distributions --- including a full 7-dimensional multivariate normal over image properties --- are optimized during training by the gradient-free CMA-ES algorithm running in a parallel branch of the network. On a deliberately domain-shifted dataset, accuracy improves from 82.5\% to 99.9\%. The classifier is extended to full-board object detection through a multi-scale sliding-window pipeline with image pyramids and Non-Maximum Suppression. Finally, thirty deployment-optimized variants combining data-reuse strategies, efficient layers, pruning, and quantization are benchmarked on the real industrial hardware: a binary quantized network reduces latency by 38\%, memory by 66\%, and energy by 40\% while retaining 95.6\% accuracy.\par\vspace{2pt}
+\textbf{Keywords ---} Electronic component recognition, Printed Circuit Boards, Adaptive Domain Randomization, CMA-ES, model compression, industrial AI deployment.
+\end{minipage}
+\end{center}
+\vspace{14pt}
+]
+
+\section{Introduction}
+Electronic testing verifies that assembled Printed Circuit Boards behave as designed. In Flying Probe systems, mobile probes contact the board at programmed positions, and the correct configuration of a test depends on knowing \emph{which} components are present and \emph{where} they are located. In current practice this information is produced largely by hand: an operator, often a domain expert, inspects high-resolution board images and annotates each component. The process is slow, scales poorly with production volumes, and is subject to human error~\cite{taha2014aoi}.
+
+Automating this step with computer vision is attractive but non-trivial. PCB designs differ widely in layout, color, and density; components of the same functional class vary strongly in package, marking, and size; acquisition conditions (illumination, camera settings, compression) change across production sites; and manufacturing tolerances introduce further appearance variation. A useful industrial model must therefore not only be accurate on the data it was trained on, but remain reliable under distribution shift, and it must respect the latency, memory, and energy budgets of the machines that host it~\cite{sze2017efficient}.
+
+This work, carried out with Seica S.p.A., an Italian manufacturer of Automatic Test Equipment, addresses the problem end-to-end. The contributions are: (i) a reproducible data pipeline over Seica's proprietary image database covering 22 component classes; (ii) a systematic comparison of eleven classification architectures, from SVMs with handcrafted features to transfer-learned Residual Networks~\cite{he2016resnet}; (iii) an \emph{Adaptive Domain Randomization} (ADR) method that optimizes the augmentation distributions themselves with a gradient-free evolutionary strategy~\cite{augerhansen2012cma}, yielding strong out-of-domain robustness; (iv) a sliding-window object-detection pipeline built on the classifier; and (v) an extensive deployment study of compression and acceleration techniques~\cite{han2015deepcompression,krishnamoorthi2018quant} evaluated on the actual Flying Probe host hardware.
+
+\section{Data and Preprocessing}
+Training data consist of high-quality photographs of PCBs used in Seica systems, stored in the company database and annotated per component --- partially by hand and partially through software assistance. Each annotation carries the component class together with geometric metadata (dimensions, shape, centroid, orientation). The target taxonomy comprises 22 classes, including ceramic and tantalum capacitors, resistors and resistor networks, inductors, diodes, LEDs, integrated circuits, connectors, relays, fuses, switches, and the ``not mounted'' case.
+
+The preprocessing pipeline loads images from the database, shuffles and splits them, resizes them to the network input resolution, normalizes pixel values, and one-hot encodes the labels. Throughput-oriented steps --- caching, batching, and prefetching --- overlap data preparation with training and keep the GPU saturated. The pipeline is implemented twice, on top of \texttt{tf.data} (TensorFlow~2.11) and of PyTorch datasets, with identical semantics.
+
+Standard data augmentation operates on seven image properties: brightness, contrast, horizontal flip, vertical flip, hue, JPEG quality, and saturation. These seven properties also constitute the parameter set of the domain-randomization machinery of Section~\ref{sec:adr}.
+
+\section{Model Architectures}
+\label{sec:models}
+Eleven models were designed and trained under identical conditions (Section~\ref{sec:results}). Models 1--3 are Support Vector Machines~\cite{chapelle1999svm} operating on handcrafted representations: Histograms of Oriented Gradients with linear and RBF kernels, and a PCA-compressed representation with a polynomial kernel. Models 4--6 are convolutional networks of increasing depth (two to four convolutional blocks with max pooling and a dense head), trained from scratch on the raw 3D image tensor. Models 7--11 are residual networks~\cite{he2016resnet}: a ResNet18 trained from scratch, and four ResNet152 variants pretrained on ImageNet~\cite{huh2016imagenet} --- with the backbone either fine-tuned or frozen, and with either a single 1000-unit dense layer or a deeper 1024--2048--1024 head before the softmax output.
+
+\section{Adaptive Domain Randomization}
+\label{sec:adr}
+Domain Randomization (DR)~\cite{tremblay2018dr} improves generalization by exposing the model, during training, to artificial variations of the input domain. At each batch, every parameter $i$ in the set $\mathbf{P}$ of the seven image properties is randomized with probability $p_i$: a value is sampled from a parameter distribution $\mathcal{D}_i$ and an augmented image is generated accordingly. Four families of distributions are supported: uniform $\mathcal{U}(a_i, b_i)$, triangular $\mathcal{T}(a_i, m_i, b_i)$, univariate normal $\mathcal{N}(\mu_i, \sigma_i^2)$, and a single 7-dimensional multivariate normal
+\begin{equation}
+\mathcal{N}_7\!\left(\boldsymbol{\mu}, \boldsymbol{\Sigma}\right),
+\end{equation}
+whose full covariance $\boldsymbol{\Sigma}$ captures correlations between augmentation parameters (e.g., between brightness and contrast).
+
+The practical difficulty of DR is choosing the distribution coefficients $a_i, b_i, m_i, \mu_i, \sigma_i^2, \sigma_{ij}$: too little variation does not help, too much destroys the training signal. \emph{Adaptive} Domain Randomization removes this manual tuning by treating the coefficients as decision variables of an outer optimization problem. A parallel branch is attached to the network: after each forward pass on augmented data, the training loss $\mathcal{L}$ is fed to a gradient-free optimizer that updates the coefficients of $\mathcal{D}_i(\mathbf{c}_i)$, from which the next augmentations are sampled. Because sampling and image generation are non-differentiable, gradient-free methods are required; all optimizers available in the Nevergrad library were tested, and CMA-ES~\cite{augerhansen2012cma} --- which adapts the covariance of its own search distribution --- consistently performed best, with Simulated Annealing the strongest alternative. Over training, the augmentation distributions visibly migrate and reshape (e.g., the contrast component first sharpens around a shifted mode, then widens again), automatically discovering the amount and correlation structure of nuisance variation that most helps generalization.
+
+\section{From Classification to Detection}
+The trained classifier supports two inference modes. In \emph{image classification}, a single board region is presented and the network returns the class-likelihood vector. In \emph{object detection}, an entire PCB image is scanned with a sliding window; each window is preprocessed and classified, and overlapping candidates are merged by Non-Maximum Suppression under an IoU criterion~\cite{lin2014coco}. To detect components of different physical sizes without committing to a window size, the input image is expanded into an image pyramid~\cite{adelson1984pyramid}: it is repeatedly rescaled by a factor $s>1$ down to a minimum size, and the sliding window is applied at every scale. The output is, for each detected component, its bounding box, class label, confidence score, and centroid --- the geometric quantities the test-programming software consumes. Batch processing and process/thread parallelism reduce end-to-end inference time on full boards.
+
+\section{Deployment Optimization}
+\label{sec:deploy}
+Industrial deployment adds constraints beyond accuracy: inference latency, memory usage, model size, and energy consumption~\cite{sze2017efficient,moons2016energy}. Two families of techniques are explored. The first maximizes \emph{data reuse} across the memory hierarchy: batching for fully connected layers; weights reuse, input-feature-map reuse, and batching for convolutional layers. The second exploits the \emph{tolerance of deep networks to approximation}: efficient layers (spatially and depthwise separable convolutions~\cite{howard2017mobilenets,guo2018decoupling}, grouped convolutions, width and resolution multipliers), pruning (magnitude-based, weight-saliency-based~\cite{kallakuri2024saliency}, block- and node-structured, with constant or gradually increasing schedules~\cite{han2015learning}), and quantization (integer formats from 16 down to 1 bit, minifloat, dynamic fixed point, base-2 logarithmic~\cite{lee2017lognet}, post-training and quantization-aware, up to fully binary networks~\cite{rastegari2016xnor}, plus weight clustering~\cite{han2015deepcompression,choi2016limit}).
+
+Thirty optimized variants of the best model, each combining a data-reuse pattern with one or two approximation techniques, were generated and evaluated directly on the hardware that manages the Flying Probe system, each over 1{,}000 inferences on distinct images --- simulating the number of windows produced by a full-board scan.
+
+\section{Experimental Results}
+\label{sec:results}
+All eleven models of Section~\ref{sec:models} were trained with 5-fold cross-validation; neural models used the Adam optimizer (learning rate $10^{-3}$), categorical cross-entropy, and 1{,}000 epochs (loss and accuracy plateau at ${\sim}420$ epochs for the CNNs and full ResNets, ${\sim}965$ for the frozen variants). Table~\ref{tab:models} reports test accuracy and F1.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Model comparison on the held-out test set (\%).}
+\label{tab:models}
+\begin{tabular}{@{}clcc@{}}
+\toprule
+ID & Architecture & Acc. & F1 \\
+\midrule
+1 & SVM, HOG, linear kernel & 21.61 & 21.61 \\
+2 & SVM, HOG, RBF kernel & 22.37 & 22.38 \\
+3 & SVM, PCA, polynomial kernel & 18.09 & 18.08 \\
+4 & CNN, 2 conv.\ blocks & 55.26 & 55.23 \\
+5 & CNN, 3 conv.\ blocks & 58.49 & 58.46 \\
+6 & CNN, 4 conv.\ blocks & 62.37 & 62.36 \\
+7 & ResNet18 (from scratch) & 87.13 & 87.09 \\
+8 & ResNet152 + 1000d head & 91.96 & 91.94 \\
+9 & ResNet152 (frozen) + 1000d head & 90.52 & 90.50 \\
+10 & \textbf{ResNet152 + 1024--2048--1024} & \textbf{95.03} & \textbf{95.01} \\
+11 & ResNet152 (frozen) + deep head & 94.96 & 94.94 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SVMs on handcrafted features barely exceed chance level over 22 classes, confirming that the spatial complexity of PCB imagery defeats shallow pipelines. Plain CNNs recover much of the gap, and transfer-learned residual networks dominate: the best configuration, Model~10, attains 95.03\% test accuracy (99.98\% train) with precision, recall, and F1 all around 95\%, and a log-scaled confusion matrix showing errors spread thinly across classes rather than concentrated in specific confusions.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Robustness on a domain-shifted dataset (Model 10): accuracy (\%) by training regime.}
+\label{tab:adr}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Training regime & Test & Train \\
+\midrule
+Baseline (no randomization) & 82.46 & 99.98 \\
+DR, $\mathcal{U}$ & 89.91 & 91.45 \\
+DR, $\mathcal{T}$ & 90.31 & 92.65 \\
+DR, univariate $\mathcal{N}$ & 89.25 & 92.84 \\
+DR, multivariate $\mathcal{N}$ & 87.88 & 89.13 \\
+ADR, $\mathcal{U}$ + CMA-ES & 93.24 & 94.22 \\
+ADR, $\mathcal{T}$ + CMA-ES & 91.39 & 93.57 \\
+ADR, univariate $\mathcal{N}$ + CMA-ES & 91.85 & 92.99 \\
+\textbf{ADR, multivariate $\mathcal{N}$ + CMA-ES} & \textbf{99.88} & \textbf{99.93} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Robustness.} Model~10 was then re-evaluated on a \emph{new} dataset whose images differ markedly from the training distribution (Table~\ref{tab:adr}). Without randomization, accuracy drops to 82.46\% despite near-perfect training accuracy --- a classic domain gap. Fixed-coefficient DR recovers 5--8 points; adaptive optimization adds several more for every distribution family; and the combination of the multivariate normal with CMA-ES essentially closes the gap at 99.88\%, indicating that the learned covariance across augmentation parameters is the key ingredient. Robustness of this kind translates directly into fewer retraining cycles when acquisition conditions change on the production floor.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Deployment on Flying Probe host hardware, 1{,}000 inferences: selected variants of Model 10.}
+\label{tab:deploy}
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Variant & Acc.\,\% & Lat.\,s & Mem.\,MB & En.\,Wh \\
+\midrule
+Reference (Model 10) & \textbf{99.98} & 587 & 763 & 21.32 \\
+v1: separable conv.\ + magn.\ prun. & 99.06 & 585 & 597 & 20.45 \\
+v8: grouped $G{=}32$ + 16-bit QAT & 99.87 & 463 & 501 & 16.23 \\
+v20: 16-bit QAT, base-2 log & 99.67 & 444 & 488 & 15.69 \\
+v21: grouped $G{=}64$ + sal.\ prun. & 99.91 & 549 & 581 & 19.21 \\
+v22: 16-bit minifloat QAT (W) & 99.87 & 462 & 502 & 16.21 \\
+v27: \textbf{binary NN, QAT, W+A} & 95.62 & \textbf{362} & \textbf{258} & \textbf{12.75} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Deployment.} Table~\ref{tab:deploy} shows representative points of the 30-variant grid. Reference accuracy here is measured in-domain. Quantization-aware 16-bit variants (integer with base-2 logarithmic encoding, or minifloat) retain ${\geq}99.7\%$ accuracy while cutting latency by ${\sim}20$--$25\%$ and memory by ${\sim}35\%$. Grouped convolutions combined with weight-saliency pruning even nudge accuracy to 99.91\% at reduced cost. At the aggressive end, fully binary networks trained with quantization-aware training reach 362\,s per 1{,}000 inferences (${-}38\%$), 258\,MB (${-}66\%$), and 12.75\,Wh (${-}40\%$) at 95.62\% accuracy --- an attractive operating point whenever throughput dominates the requirement mix. The grid gives the production team a menu of accuracy--efficiency trade-offs rather than a single compromise.
+
+\section{Conclusions and Future Work}
+This work demonstrates that a carefully engineered deep-learning pipeline can automate electronic-component recognition on PCBs to industrial standards: a transfer-learned ResNet152 reaches 95\% multi-class accuracy; Adaptive Domain Randomization with CMA-ES-optimized multivariate augmentation distributions makes it robust to substantial domain shift without retraining; a pyramid-based sliding-window pipeline turns the classifier into a full-board detector; and a systematic compression study identifies deployment variants meeting the latency, memory, and energy budgets of real test equipment. The models have been integrated into the company's production pipeline, reducing manual labor and inspection time.
+
+Future directions include semantic segmentation for pixel-level delineation of densely packed or overlapping components, continued training on new PCB designs and acquisition conditions, and a deeper analysis of class-confusion patterns to guide targeted data collection and feature refinement.
+
+\begin{thebibliography}{99}\small
+\bibitem{adelson1984pyramid} E.~H. Adelson, C.~H. Anderson, J.~R. Bergen, P.~J. Burt, and J.~M. Ogden. Pyramid methods in image processing. \emph{RCA Engineer}, 29(6):33--41, 1984.
+\bibitem{augerhansen2012cma} A.~Auger and N.~Hansen. Tutorial CMA-ES: evolution strategies and covariance matrix adaptation. In \emph{Proc.\ GECCO Companion}, pages 827--848, 2012.
+\bibitem{chapelle1999svm} O.~Chapelle, P.~Haffner, and V.~N. Vapnik. Support vector machines for histogram-based image classification. \emph{IEEE Trans.\ Neural Networks}, 10(5):1055--1064, 1999.
+\bibitem{choi2016limit} Y.~Choi, M.~El-Khamy, and J.~Lee. Towards the limit of network quantization. \emph{arXiv:1612.01543}, 2016.
+\bibitem{guo2018decoupling} J.~Guo, Y.~Li, W.~Lin, Y.~Chen, and J.~Li. Network decoupling: from regular to depthwise separable convolutions. \emph{arXiv:1808.05517}, 2018.
+\bibitem{han2015deepcompression} S.~Han, H.~Mao, and W.~J. Dally. Deep compression: compressing deep neural networks with pruning, trained quantization and Huffman coding. \emph{arXiv:1510.00149}, 2015.
+\bibitem{han2015learning} S.~Han, J.~Pool, J.~Tran, and W.~Dally. Learning both weights and connections for efficient neural networks. In \emph{NeurIPS}, 2015.
+\bibitem{he2016resnet} K.~He, X.~Zhang, S.~Ren, and J.~Sun. Deep residual learning for image recognition. In \emph{Proc.\ IEEE CVPR}, pages 770--778, 2016.
+\bibitem{howard2017mobilenets} A.~G. Howard et~al. MobileNets: efficient convolutional neural networks for mobile vision applications. \emph{arXiv:1704.04861}, 2017.
+\bibitem{huh2016imagenet} M.~Huh, P.~Agrawal, and A.~A. Efros. What makes ImageNet good for transfer learning? \emph{arXiv:1608.08614}, 2016.
+\bibitem{kallakuri2024saliency} U.~Kallakuri, E.~Humes, and T.~Mohsenin. Resource-aware saliency-guided differentiable pruning for deep neural networks. In \emph{Proc.\ GLSVLSI}, pages 694--699, 2024.
+\bibitem{krishnamoorthi2018quant} R.~Krishnamoorthi. Quantizing deep convolutional networks for efficient inference: a whitepaper. \emph{arXiv:1806.08342}, 2018.
+\bibitem{lee2017lognet} E.~H. Lee, D.~Miyashita, E.~Chai, B.~Murmann, and S.~S. Wong. LogNet: energy-efficient neural networks using logarithmic computation. In \emph{Proc.\ IEEE ICASSP}, pages 5900--5904, 2017.
+\bibitem{lin2014coco} T.-Y. Lin et~al. Microsoft COCO: common objects in context. In \emph{Proc.\ ECCV}, pages 740--755, 2014.
+\bibitem{moons2016energy} B.~Moons, B.~De~Brabandere, L.~Van~Gool, and M.~Verhelst. Energy-efficient ConvNets through approximate computing. In \emph{Proc.\ IEEE WACV}, 2016.
+\bibitem{rastegari2016xnor} M.~Rastegari, V.~Ordonez, J.~Redmon, and A.~Farhadi. XNOR-Net: ImageNet classification using binary convolutional neural networks. In \emph{Proc.\ ECCV}, pages 525--542, 2016.
+\bibitem{sze2017efficient} V.~Sze, Y.-H. Chen, T.-J. Yang, and J.~S. Emer. Efficient processing of deep neural networks: a tutorial and survey. \emph{Proc.\ IEEE}, 105(12):2295--2329, 2017.
+\bibitem{taha2014aoi} E.~M. Taha, E.~Emary, and K.~Moustafa. Automatic optical inspection for PCB manufacturing: a survey. \emph{Int.\ J.\ Sci.\ Eng.\ Research}, 5(7):1095--1102, 2014.
+\bibitem{tremblay2018dr} J.~Tremblay et~al. Training deep networks with synthetic data: bridging the reality gap by domain randomization. In \emph{Proc.\ IEEE CVPR Workshops}, pages 969--977, 2018.
+\end{thebibliography}
+
+\end{document}
