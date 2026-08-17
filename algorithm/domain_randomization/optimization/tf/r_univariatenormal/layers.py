@@ -446,7 +446,7 @@ class RandomSaturation(keras.layers.Layer):
                     else:
                         saturation_factor = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor:
-                        s = np.clip(jpeg_quality, 0, float('inf'))
+                        s = np.clip(saturation_factor, 0, float('inf'))
                         return tf.map_fn(lambda x: tf.image.adjust_saturation(x, s), x)
                     else:
                         return x  
