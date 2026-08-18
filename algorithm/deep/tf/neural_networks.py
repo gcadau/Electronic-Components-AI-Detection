@@ -2827,8 +2827,6 @@ class ResNet2__0(keras.Model):
                         self.fverbose_file.write("\t         " + " ".join(map(str, row)) + "\n")
                     c+=1
             self.fverbose_file.write("\n\n")
-    
-        return cls(**config)
 
     def get_config(self):
         config = super(ResNet2__0, self).get_config()
