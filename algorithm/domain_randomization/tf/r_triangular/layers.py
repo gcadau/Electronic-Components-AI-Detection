@@ -33,9 +33,9 @@ class RandomInvert(keras.layers.Layer):
         config.update({'factor': self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomBrightnesstfr_triangularlayers")
 class RandomBrightness(keras.layers.Layer):
@@ -88,9 +88,9 @@ class RandomBrightness(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomContrasttfr_triangularlayers")
 class RandomContrast(keras.layers.Layer):
@@ -140,9 +140,9 @@ class RandomContrast(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 # possibile to define class RandomCrop(keras.layers.Layer), not so useful.
 
@@ -197,9 +197,9 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomVerticallyFliptfr_triangularlayers")
 class RandomVerticallyFlip(keras.layers.Layer):
@@ -251,9 +251,9 @@ class RandomVerticallyFlip(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomHuetfr_triangularlayers")
 class RandomHue(keras.layers.Layer):
@@ -306,9 +306,9 @@ class RandomHue(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomJpegQualitytfr_triangularlayers")
 class RandomJpegQuality(keras.layers.Layer):
@@ -359,9 +359,9 @@ class RandomJpegQuality(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomSaturationtfr_triangularlayers")
 class RandomSaturation(keras.layers.Layer):
@@ -412,6 +412,6 @@ class RandomSaturation(keras.layers.Layer):
         config.update({"lower": self.lower, "mode": self.mode, "upper": self.upper, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
