@@ -4252,7 +4252,7 @@ class ResNet2__0__1(ResNet2__0):
 
     def call(self, inputs, training=False):
         super().call(inputs, training=training)
-        base_model_output = self.branch1_base_model(data)
+        base_model_output = self.branch1_base_model(inputs)
         x = self.branch1_flatten(base_model_output)
         x = self.branch1_dense1(x)
         x = self.branch1_dense2(x)
@@ -4301,7 +4301,7 @@ class ResNet2__1__1(ResNet2__1):
 
     def call(self, inputs, training=False):
         super().call(inputs, training=training)
-        base_model_output = self.branch1_base_model(data)
+        base_model_output = self.branch1_base_model(inputs)
         x = self.branch1_flatten(base_model_output)
         x = self.branch1_dense1(x)
         x = self.branch1_dense2(x)
