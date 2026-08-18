@@ -489,16 +489,17 @@ class RandomParameters(keras.layers.Layer):
 
 
 @register_keras_serializable(package="Custom", name="NoneTransformationoptimizationtfr_multivariatenormallayers")
-class NoneTransformation():
-    def __int__(self):
-        pass
+class NoneTransformation(keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-    def __call__(self, x, training=None):
+    def call(self, x, training=None):
         return x
 
     def get_config(self):
         config = super().get_config()
-        
+        return config
+
     @classmethod
     def from_config(cls, config):
         return cls(**config)
