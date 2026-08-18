@@ -7,6 +7,7 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-supported-EE4C2C?logo=pytorch&logoColor=white)
 ![Nevergrad](https://img.shields.io/badge/CMA--ES-Nevergrad-purple)
 ![Status](https://img.shields.io/badge/status-thesis%20project-success)
+[![lint](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml/badge.svg?branch=version-6.0)](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml)
 
 MSc thesis in **Data Science and Engineering** — Politecnico di Torino, in collaboration with [**Seica S.p.A.**](https://www.seica.com) (Automatic Test Equipment manufacturer), A.Y. 2023/24.
 
