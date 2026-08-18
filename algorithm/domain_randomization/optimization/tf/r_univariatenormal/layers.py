@@ -67,7 +67,7 @@ class RandomBrightness(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        delta = np.random.normal(mean, variance, size=1)[0]
+                        delta = rng.normal(mean, variance, size=1)[0]
                     else:
                         delta = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor:
@@ -133,7 +133,7 @@ class RandomContrast(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        contrast_factor = np.random.normal(mean, variance, size=1)[0]
+                        contrast_factor = rng.normal(mean, variance, size=1)[0]
                     else:
                         contrast_factor = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor:
@@ -203,7 +203,7 @@ class RandomHorizontallyFlip(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        prob = np.random.normal(mean, variance, size=1)[0]
+                        prob = rng.normal(mean, variance, size=1)[0]
                     else:
                         prob = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor and prob[i] < 0.5:
@@ -270,7 +270,7 @@ class RandomVerticallyFlip(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        prob = np.random.normal(mean, variance, size=1)[0]
+                        prob = rng.normal(mean, variance, size=1)[0]
                     else:
                         prob = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor and prob[i] < 0.5:
@@ -338,7 +338,7 @@ class RandomHue(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        delta = np.random.normal(mean, variance, size=1)[0]
+                        delta = rng.normal(mean, variance, size=1)[0]
                     else:
                         delta = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor:
@@ -405,7 +405,7 @@ class RandomJpegQuality(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        jpeg_quality = np.random.normal(mean, variance, size=1)[0]
+                        jpeg_quality = rng.normal(mean, variance, size=1)[0]
                     else:
                         jpeg_quality = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor:
@@ -472,7 +472,7 @@ class RandomSaturation(keras.layers.Layer):
                     if self.seed is not None:
                         tf.random.set_seed(self.seed)
                         rng = np.random.default_rng(seed=self.seed)
-                        saturation_factor = np.random.normal(mean, variance, size=1)[0]
+                        saturation_factor = rng.normal(mean, variance, size=1)[0]
                     else:
                         saturation_factor = np.random.normal(mean, variance, size=1)[0]
                     if random.random() <= self.factor:
