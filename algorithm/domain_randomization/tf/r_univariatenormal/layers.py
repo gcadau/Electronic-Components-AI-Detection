@@ -32,9 +32,9 @@ class RandomInvert(keras.layers.Layer):
         config.update({'factor': self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomBrightnesstfr_univariatenormallayers")
 class RandomBrightness(keras.layers.Layer):
@@ -83,9 +83,9 @@ class RandomBrightness(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomContrasttfr_univariatenormallayers")
 class RandomContrast(keras.layers.Layer):
@@ -130,9 +130,9 @@ class RandomContrast(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 # possibile to define class RandomCrop(keras.layers.Layer), not so useful.
 
@@ -182,9 +182,9 @@ class RandomHorizontallyFlip(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomVerticallyFliptfr_univariatenormallayers")
 class RandomVerticallyFlip(keras.layers.Layer):
@@ -231,9 +231,9 @@ class RandomVerticallyFlip(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomHuetfr_univariatenormallayers")
 class RandomHue(keras.layers.Layer):
@@ -281,9 +281,9 @@ class RandomHue(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomJpegQualitytfr_univariatenormallayers")
 class RandomJpegQuality(keras.layers.Layer):
@@ -330,9 +330,9 @@ class RandomJpegQuality(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="RandomSaturationtfr_univariatenormallayers")
 class RandomSaturation(keras.layers.Layer):
@@ -379,6 +379,6 @@ class RandomSaturation(keras.layers.Layer):
         config.update({"mean": self.mean, "variance": self.variance, "seed": self.seed, "factor": self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
