@@ -33,9 +33,9 @@ class RandomInvert(keras.layers.Layer):
         config.update({'factor': self.factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="Brightnesstfr_multivariatenormallayers")
 class Brightness(keras.layers.Layer):
@@ -59,9 +59,9 @@ class Brightness(keras.layers.Layer):
         config.update({'par': self.delta})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="Contrasttfr_multivariatenormallayers")
 class Contrast(keras.layers.Layer):
@@ -81,9 +81,9 @@ class Contrast(keras.layers.Layer):
         config.update({'par': self.contrast_factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 # possibile to define class Crop(keras.layers.Layer), not so useful.
 
@@ -109,9 +109,9 @@ class HorizontallyFlip(keras.layers.Layer):
         config.update({'par': self.prob})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="VerticallyFliptfr_multivariatenormallayers")
 class VerticallyFlip(keras.layers.Layer):
@@ -134,9 +134,9 @@ class VerticallyFlip(keras.layers.Layer):
         config.update({'par': self.prob})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="Huetfr_multivariatenormallayers")
 class Hue(keras.layers.Layer):
@@ -160,9 +160,9 @@ class Hue(keras.layers.Layer):
         config.update({'par': self.delta})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="JpegQualitytfr_multivariatenormallayers")
 class JpegQuality(keras.layers.Layer):
@@ -186,9 +186,9 @@ class JpegQuality(keras.layers.Layer):
         config.update({'par': self.jpeg_quality})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 @register_keras_serializable(package="Custom", name="Saturationtfr_multivariatenormallayers")
 class Saturation(keras.layers.Layer):
@@ -211,9 +211,9 @@ class Saturation(keras.layers.Layer):
         config.update({'par': self.saturation_factor})
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 
 
@@ -385,9 +385,9 @@ class RandomParameters(keras.layers.Layer):
         })
         return config
 
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 
 @register_keras_serializable(package="Custom", name="NoneTransformationtfr_multivariatenormallayers")
@@ -399,9 +399,9 @@ class NoneTransformation():
         return x
 
 
-	def get_config(self):
-		config = super().get_config()
-		
-	@classmethod
-	def from_config(cls, config):
-		return cls(**config)
+    def get_config(self):
+        config = super().get_config()
+        
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
