@@ -147,7 +147,7 @@ detections = detect_objects(data_path="aidet/Input/regions", gpu=True)
 predictions = classify(data_path="aidet/Input/regions")
 ```
 
-All options (paths, color format, GPU, verbose logging) are documented in the branch's [`READ_ME.md`](../../blob/version-13.0/READ_ME.md).
+All options (paths, color format, GPU, verbose logging) are documented in the branch's [`USAGE.md`](../../blob/version-13.0/USAGE.md).
 
 ### Training (`version-7.0`)
 
