@@ -11,10 +11,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 parser = argparse.ArgumentParser(description='test.py')
-parser.add_argument('--data_path', type=str, help='Path of the directory in which input data are stored\n(default: Input\dataset)', default="Input\\dataset")
+parser.add_argument('--data_path', type=str, help='Path of the directory in which input data are stored\n(default: Input\dataset)', default="Input/dataset")
 parser.add_argument('--name', type=str, help="Name of the dataset\n(default: 'Electronic components dataset')", default="Electronic components dataset")
 parser.add_argument('--format', type=str, help="Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. \n(default: None)", default=None)
-parser.add_argument('--model_path', type=str, help="Path of the directory from which the trained model has to be loaded.\n(default: in\model)", default="in\\model")
+parser.add_argument('--model_path', type=str, help="Path of the directory from which the trained model has to be loaded.\n(default: in\model)", default="in/model")
 args = parser.parse_args()
 
 # for gpus.
