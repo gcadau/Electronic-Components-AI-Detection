@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 parser = argparse.ArgumentParser(description='train.py')
-parser.add_argument('--data_path', type=str, help='Path of the directory in which input data are stored\n(default: Input\dataset)', default="Input\\dataset")
+parser.add_argument('--data_path', type=str, help='Path of the directory in which input data are stored\n(default: Input\dataset)', default="Input/dataset")
 parser.add_argument('--split', type=str, help="Percentage to split the dataset into train/validation sets. It can be a float between 0 and 1 (representing the percentage), or 'auto' (to use the standard split: 0.2) or 'train only' (to use all the dataset for training. Use this option if only training is needed).\n(default: 'train only')", default="train only")
 parser.add_argument('--transform', type=str, help="Transformations to be applied to images of the dataset.\n(default: None, i.e.: no transformations are appied.)", default=None)
 parser.add_argument('--normalize', action='store_true', help='Normalize option to be applied to images of the dataset.\n(default: True)', default=True)
