@@ -7,7 +7,7 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-supported-EE4C2C?logo=pytorch&logoColor=white)
 ![Nevergrad](https://img.shields.io/badge/CMA--ES-Nevergrad-purple)
 ![Status](https://img.shields.io/badge/status-thesis%20project-success)
-[![lint](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml/badge.svg?branch=version-7.0)](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml)
+[![lint](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml/badge.svg?branch=version-6.0)](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml)
 
 MSc thesis in **Data Science and Engineering** — Politecnico di Torino, in collaboration with [**Seica S.p.A.**](https://www.seica.com) (Automatic Test Equipment manufacturer), A.Y. 2023/24.
 
@@ -101,10 +101,11 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 | Branch | Purpose |
 |---|---|
 | `version-0.0` → `version-6.0` | Iterative development (notebooks: `main_tf.ipynb`, `main_pt.ipynb`, `demo.ipynb`); `version-6.0` is the default branch |
-| **`version-7.0`** | **Standalone training package** — CLI script `train.py` with full options (splits, transforms, DR distributions, network choice) |
-| `version-8.0` | Standalone evaluation package — `test.py` |
-| `version-9.0`, `version-12.0` | Later development snapshots (notebooks) |
-| `version-10.0`, `version-11.0`, **`version-13.0`** | **Deployable inference library** (`interface` package: `detect_objects`, `classify`); **`version-13.0` is the latest** |
+| **`version-7.0`** | **Standalone training package** — CLI script `train.py` with full options (splits, transforms, DR distributions, network choice, ...) |
+| `version-8.0` | Standalone evaluation package (testing the trained models with different options) — `test.py` |
+| `version-10.0` | Standalone object detection package (performing object detection using trained models with different options) — `object_detection.py` |
+| `version-11.0` | Standalone predictions package (use the models to make predictions with different options) — `prediction.py` |
+| **`version-13.0`** | **Deployable inference library** (object detection and image classification: `interface` package: `detect_objects`, `classify`, with full options) |
 
 ### Layout of `version-13.0` (inference library)
 
