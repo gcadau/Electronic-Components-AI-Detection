@@ -31,10 +31,10 @@ def classify_image(image, model, class_names):
 
 
 parser = argparse.ArgumentParser(description='prediction.py')
-parser.add_argument('--data_path', type=str, help='Path of the directory in which input data are stored\n(default: Input\\sections)', default="Input\\sections")
+parser.add_argument('--data_path', type=str, help='Path of the directory in which input data are stored\n(default: Input/sections)', default="Input/sections")
 parser.add_argument('--name', type=str, help="Name of the dataset\n(default: 'Electronic components dataset')", default="Electronic components dataset")
 parser.add_argument('--format', type=str, help="Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. \n(default: None)", default=None)
-parser.add_argument('--model_path', type=str, help="Path of the directory from which the trained model has to be loaded.\n(default: in\model)", default="in\\model")
+parser.add_argument('--model_path', type=str, help="Path of the directory from which the trained model has to be loaded.\n(default: in\model)", default="in/model")
 args = parser.parse_args()
 
 # for gpus.
@@ -57,7 +57,7 @@ single_image = single_images[0]
 class_names = sections.labels
 
 
-model_dir = "in\\model"
+model_dir = "in/model"
 tf.get_logger().setLevel('ERROR')
 
 model = tf.keras.models.load_model(model_dir)
