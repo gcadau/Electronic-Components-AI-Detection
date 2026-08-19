@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software or the associated thesis, please cite it as below."
+title: "Electronic Components AI Detection"
+type: software
+authors:
+  - family-names: Cadau
+    given-names: Giovanni
+repository-code: "https://github.com/gcadau/Electronic-Components-AI-Detection"
+keywords:
+  - electronic component recognition
+  - printed circuit boards
+  - deep learning
+  - domain randomization
+  - CMA-ES
+  - model compression
+preferred-citation:
+  type: thesis
+  thesis-type: "Master's thesis"
+  title: "Artificial Intelligence Algorithms for Electronic Component Recognition"
+  authors:
+    - family-names: Cadau
+      given-names: Giovanni
+  institution:
+    name: "Politecnico di Torino"
+  year: 2024
+  notes: "MSc in Data Science and Engineering, in collaboration with Seica S.p.A."
