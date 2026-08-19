@@ -100,7 +100,7 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 
 | Branch | Purpose |
 |---|---|
-| `version-0.0` → `version-6.0` | Iterative development (notebooks: `main_tf.ipynb`, `main_pt.ipynb`, `demo.ipynb`); `version-6.0` is the default branch |
+| `version-0.0` → `version-6.0`, `version-9.0`, `version-12.0` | Iterative development (notebooks: `main_tf.ipynb`, `main_pt.ipynb`, `demo.ipynb`); `version-12.0` is the default branch |
 | **`version-7.0`** | **Standalone training package** — CLI script `train.py` with full options (splits, transforms, DR distributions, network choice, ...) |
 | `version-8.0` | Standalone evaluation package (testing the trained models with different options) — `test.py` |
 | `version-10.0` | Standalone object detection package (performing object detection using trained models with different options) — `object_detection.py` |
