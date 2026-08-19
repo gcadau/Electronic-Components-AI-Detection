@@ -46,11 +46,11 @@ args = parser.parse_args()
 
 sections = FullImage(data_path=args.data_path)
 
-single_images = regions.get_set()
-single_image = full_images[0]
+single_images = sections.get_set()
+single_image = single_images[0]
 
 #get first image and print it
-# printable_object = regions.print_item(single_images)
+# printable_object = sections.print_item(single_images)
 # plt.imshow(printable_object)
 # plt.axis('off')  
 
