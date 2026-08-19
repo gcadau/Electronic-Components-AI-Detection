@@ -19,11 +19,11 @@ from .classification import classify_image
 
 
 def detect_objects(
-    data_path="Input\\regions", # Path of the directory in which input data are stored (default: 'Input\\regions')
+    data_path="Input/regions", # Path of the directory in which input data are stored (default: 'Input/regions')
     name="Electronic components dataset", # Name of the dataset (default: 'Electronic components dataset')
     format=None, # Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
-    model_path='in\\model', # Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
-    classes_path="Input\\regions", # Path of the directory in which classes names are stored (default: 'Input\\regions')
+    model_path='in/model', # Path of the directory from which the trained model has to be loaded. (default: 'in/model')
+    classes_path="Input/regions", # Path of the directory in which classes names are stored (default: 'Input/regions')
     gpu=False, # Use GPU for inference
     verbose=False, # Print infos to files into directory {info_dir}
     info_dir=None # Directory in which info files will be stored
@@ -58,7 +58,7 @@ def detect_objects(
             printable_object = region.print_item(full_image)
         plt.imshow(printable_object)
         plt.axis('off') 
-        plt.savefig(f"{info_dir}\\Image")
+        plt.savefig(f"{info_dir}/Image")
         plt.close()
 
 
@@ -98,7 +98,7 @@ def detect_objects(
             rect = plt.Rectangle((x, y), window_dims[0], window_dims[1], edgecolor='r', facecolor='none')
             plt.gca().add_patch(rect)
 
-        plt.savefig(f"{info_dir}\\Image windowed")
+        plt.savefig(f"{info_dir}/Image windowed")
         plt.close()
 
 
@@ -115,7 +115,7 @@ def detect_objects(
                 break 
 
         plt.tight_layout()
-        plt.savefig(f"{info_dir}\\Windows")
+        plt.savefig(f"{info_dir}/Windows")
         plt.close()
 
 
@@ -306,7 +306,7 @@ def detect_objects(
             plt.close()
 
 
-        plot_detections(full_image, nms_detections, f"{info_dir}\\Detecetd windows")
+        plot_detections(full_image, nms_detections, f"{info_dir}/Detecetd windows")
 
 
         # plot single detected windows
@@ -341,19 +341,19 @@ def detect_objects(
             plt.savefig(out_file)
             plt.close()
 
-        plot_single_detection(full_image, nms_detections[1], f"{info_dir}\\Single detection")
-        plot_single_detection__alone(full_image, nms_detections[1], f"{info_dir}\\Single detection alone")
+        plot_single_detection(full_image, nms_detections[1], f"{info_dir}/Single detection")
+        plot_single_detection__alone(full_image, nms_detections[1], f"{info_dir}/Single detection alone")
 
     nms_detections = [add_centroid(nms) for nms in nms_detections]
 
     return nms_detections
 
 def classify(
-    data_path="Input\\sections", # Path of the directory in which input data are stored (default: 'Input\\sections')
+    data_path="Input/sections", # Path of the directory in which input data are stored (default: 'Input/sections')
     name="Electronic components dataset", # Name of the dataset (default: 'Electronic components dataset')
     format=None, # Image format (e.g.: RGB, Grayscale, RGBA). If not present, automatically deduced from images. (default: None)
-    model_path='in\\model', # Path of the directory from which the trained model has to be loaded. (default: 'in\\model')
-    classes_path="Input\\sections", # Path of the directory in which classes names are stored (default: 'Input\\sections')
+    model_path='in/model', # Path of the directory from which the trained model has to be loaded. (default: 'in/model')
+    classes_path="Input/sections", # Path of the directory in which classes names are stored (default: 'Input/sections')
     gpu=False, # Use GPU for inference
     verbose=False, # Print infos to files into directory {info_dir}
     info_dir=None # Directory in which info files will be stored
@@ -387,7 +387,7 @@ def classify(
             printable_object = section.print_item(single_image)
         plt.imshow(printable_object)
         plt.axis('off') 
-        plt.savefig(f"{info_dir}\\Image")
+        plt.savefig(f"{info_dir}/Image")
         plt.close()
 
 
@@ -437,7 +437,7 @@ def classify(
         except UnboundLocalError:
             printable_object = section.print_item(single_image)
         plt.imshow(printable_object)
-        plt.savefig(f"{info_dir}\\Image classified")
+        plt.savefig(f"{info_dir}/Image classified")
         plt.close()
 
     return classification

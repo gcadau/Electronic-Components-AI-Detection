@@ -8,7 +8,7 @@ from algorithm.utils.data.exceptions import *
 
 
 class FullImages:
-    def __init__(self, data_path=".\\data\\regions", resize=False, height=None, width=None, classes_path=None):
+    def __init__(self, data_path="./data/regions", resize=False, height=None, width=None, classes_path=None):
 
         self.data_path = data_path
 
@@ -67,7 +67,7 @@ class FullImages:
         return [line.strip() for line in open(names, 'r')]
 
 class FullImage:
-    def __init__(self, data_path=".\\data\\region", resize=False, height=None, width=None, classes_path=None):
+    def __init__(self, data_path="./data/region", resize=False, height=None, width=None, classes_path=None):
 
         self.data_path = data_path
 
