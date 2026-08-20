@@ -179,6 +179,7 @@ python train.py --data_path Input/dataset --split auto --normalize --resize --on
 ```
 
 `train.py --help` exposes the full configuration surface: train/validation split, normalization presets per color mode, resizing, choice of ResNet variant (five presets from fast-and-light to deep), DR/ADR distribution family and coefficients, and gradient-free optimizer selection.
+
 All options (paths, color format, GPU, verbose logging) are documented in the the branch's [`USAGE.md`](../../blob/version-7.0/USAGE.md).
 
 ## Dataset
