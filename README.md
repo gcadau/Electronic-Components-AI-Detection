@@ -112,6 +112,17 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 ```
 ├── interface/                              # public API: detect_objects(), classify()
 ├── algorithm/
+├── Input/
+│   ├── dataset/                            # sample component crops (Seica)
+│   └── regions/                            # sample full-PCB image + classes.txt (22 classes)
+├── in/model/                               # → pretrained weights of the model (Google Drive link inside)
+└── requirements.txt
+```
+
+### Layout of `version-12.0`
+
+```
+├── algorithm/
 │   ├── deep/{tf,pt}/                       # ResNet-based network definitions
 │   ├── domain_randomization/
 │   │   ├── {tf,pt}/                        # DR layers: uniform, triangular, univ./multiv. normal
@@ -129,7 +140,7 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 ├── Input/
 │   ├── dataset/                            # sample component crops (Seica)
 │   └── regions/                            # sample full-PCB image + classes.txt (22 classes)
-├── in/model/                               # → pretrained weights (Google Drive link inside)
+├── out/models/                             # → trained models (Google Drive link inside)
 └── requirements.txt
 ```
 
