@@ -120,6 +120,11 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 │   │   │   ├── r_uniform/
 │   │   │   └── r_univariatenormal/
 │   │   └── optimization/       # ADR layers (CMA-ES-optimizable coefficients)
+│   │       └── {tf,pt}/
+│   │           ├── r_multivariatenormal/
+│   │           ├── r_triangular/
+│   │           ├── r_uniform/
+│   │           └── r_univariatenormal/
 │   └── utils/                  # data loading, DR parameter handling
 ├── Input/
 │   ├── dataset/                # sample component crops (Seica)
