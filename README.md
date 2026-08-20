@@ -140,7 +140,7 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 ├── Input/
 │   ├── dataset/                            # sample component crops (Seica)
 │   └── regions/                            # sample full-PCB image + classes.txt (22 classes)
-├── out/models/                             # → trained models (Google Drive link inside)
+└── out/models/                             # → trained models (Google Drive link inside)
 ```
 
 ## Quick start
