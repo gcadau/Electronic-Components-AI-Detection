@@ -7,7 +7,7 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-supported-EE4C2C?logo=pytorch&logoColor=white)
 ![Nevergrad](https://img.shields.io/badge/CMA--ES-Nevergrad-purple)
 ![Status](https://img.shields.io/badge/status-thesis%20project-success)
-[![lint](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml/badge.svg?branch=version-13.0)](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml)
+[![lint](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml/badge.svg?branch=version-12.0)](https://github.com/gcadau/Electronic-Components-AI-Detection/actions/workflows/lint.yml)
 
 MSc thesis in **Data Science and Engineering** — Politecnico di Torino, in collaboration with [**Seica S.p.A.**](https://www.seica.com) (Automatic Test Equipment manufacturer), A.Y. 2023/24.
 
@@ -110,18 +110,37 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 ### Layout of `version-13.0` (inference library)
 
 ```
-├── interface/                  # public API: detect_objects(), classify()
+├── interface/                              # public API: detect_objects(), classify()
 ├── algorithm/
-│   ├── deep/{tf,pt}/           # ResNet-based network definitions
-│   ├── domain_randomization/
-│   │   ├── {tf,pt}/            # DR layers: uniform, triangular, univ./multiv. normal
-│   │   └── optimization/       # ADR layers (CMA-ES-optimizable coefficients)
-│   └── utils/                  # data loading, DR parameter handling
 ├── Input/
-│   ├── dataset/                # sample component crops (Seica)
-│   └── regions/                # sample full-PCB image + classes.txt (22 classes)
-├── in/model/                   # → pretrained weights (Google Drive link inside)
+│   ├── dataset/                            # sample component crops (Seica)
+│   └── regions/                            # sample full-PCB image + classes.txt (22 classes)
+├── in/model/                               # → pretrained weights of the model (Google Drive link inside)
 └── requirements.txt
+```
+
+### Layout of `version-12.0`
+
+```
+├── algorithm/
+│   ├── deep/{tf,pt}/                       # ResNet-based network definitions
+│   ├── domain_randomization/
+│   │   ├── {tf,pt}/                        # DR layers: uniform, triangular, univ./multiv. normal
+│   │   │   ├── r_multivariatenormal/
+│   │   │   ├── r_triangular/
+│   │   │   ├── r_uniform/
+│   │   │   └── r_univariatenormal/
+│   │   └── optimization/                   # ADR layers (CMA-ES-optimizable coefficients)
+│   │       └── {tf,pt}/
+│   │           ├── r_multivariatenormal/
+│   │           ├── r_triangular/
+│   │           ├── r_uniform/
+│   │           └── r_univariatenormal/
+│   └── utils/                              # data loading, DR parameter handling
+├── Input/
+│   ├── dataset/                            # sample component crops (Seica)
+│   └── regions/                            # sample full-PCB image + classes.txt (22 classes)
+└── out/models/                             # → trained models (Google Drive link inside)
 ```
 
 ## Quick start
@@ -160,6 +179,41 @@ python train.py --data_path Input/dataset --split auto --normalize --resize --on
 ```
 
 `train.py --help` exposes the full configuration surface: train/validation split, normalization presets per color mode, resizing, choice of ResNet variant (five presets from fast-and-light to deep), DR/ADR distribution family and coefficients, and gradient-free optimizer selection.
+
+All options are documented in the the branch's [`USAGE.md`](../../blob/version-7.0/USAGE.md).
+
+### Test (`version-8.0`)
+
+```bash
+git clone -b version-8.0 https://github.com/gcadau/Electronic-Components-AI-Detection.git aidet-test
+cd aidet-test
+pip install -r requirements.txt
+python test.py
+```
+
+All options are documented in the the branch's [`USAGE.md`](../../blob/version-8.0/USAGE.md).
+
+### Object detections (`version-10.0`)
+
+```bash
+git clone -b version-10.0 https://github.com/gcadau/Electronic-Components-AI-Detection.git aidet-obj_det
+cd aidet-obj_det
+pip install -r requirements.txt
+python object_detection.py
+```
+
+All options are documented in the the branch's [`USAGE.md`](../../blob/version-10.0/USAGE.md).
+
+### Predictions (classification) (`version-11.0`)
+
+```bash
+git clone -b version-11.0 https://github.com/gcadau/Electronic-Components-AI-Detection.git aidet-pred
+cd aidet-pred
+pip install -r requirements.txt
+python prediction.py
+```
+
+All options are documented in the the branch's [`USAGE.md`](../../blob/version-11.0/USAGE.md).
 
 ## Dataset
 
