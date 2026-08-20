@@ -110,26 +110,26 @@ Full grid of 30 variants (data-reuse patterns × efficient layers × pruning × 
 ### Layout of `version-13.0` (inference library)
 
 ```
-├── interface/                  # public API: detect_objects(), classify()
+├── interface/                              # public API: detect_objects(), classify()
 ├── algorithm/
-│   ├── deep/{tf,pt}/           # ResNet-based network definitions
+│   ├── deep/{tf,pt}/                       # ResNet-based network definitions
 │   ├── domain_randomization/
-│   │   ├── {tf,pt}/            # DR layers: uniform, triangular, univ./multiv. normal
+│   │   ├── {tf,pt}/                        # DR layers: uniform, triangular, univ./multiv. normal
 │   │   │   ├── r_multivariatenormal/
 │   │   │   ├── r_triangular/
 │   │   │   ├── r_uniform/
 │   │   │   └── r_univariatenormal/
-│   │   └── optimization/       # ADR layers (CMA-ES-optimizable coefficients)
+│   │   └── optimization/                   # ADR layers (CMA-ES-optimizable coefficients)
 │   │       └── {tf,pt}/
 │   │           ├── r_multivariatenormal/
 │   │           ├── r_triangular/
 │   │           ├── r_uniform/
 │   │           └── r_univariatenormal/
-│   └── utils/                  # data loading, DR parameter handling
+│   └── utils/                              # data loading, DR parameter handling
 ├── Input/
-│   ├── dataset/                # sample component crops (Seica)
-│   └── regions/                # sample full-PCB image + classes.txt (22 classes)
-├── in/model/                   # → pretrained weights (Google Drive link inside)
+│   ├── dataset/                            # sample component crops (Seica)
+│   └── regions/                            # sample full-PCB image + classes.txt (22 classes)
+├── in/model/                               # → pretrained weights (Google Drive link inside)
 └── requirements.txt
 ```
 
