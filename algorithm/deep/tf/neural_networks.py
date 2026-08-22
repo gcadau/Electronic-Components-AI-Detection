@@ -6,7 +6,7 @@ import numpy as np
 from collections.abc import Iterable
 from itertools import chain
 from algorithm.deep.exceptions import NotFoundOptimizerException, NotImplementedOptimizerException
-from algorithm.deep.utils import (set_parameters__ranges, set_parameters__initials,
+from algorithm.deep.utils.tf import (set_parameters__ranges, set_parameters__initials,
                                   fill_matrix, scaleAndFlat_matrix, spiral_flat_from_progressive, iterate_over_elements_below_diagonal,
                                   Triangular,
                                   MinMaxNorm_ElementWise,
@@ -20,7 +20,7 @@ from algorithm.domain_randomization.optimization.tf import (
 from algorithm.domain_randomization.tf import r_uniform, r_triangular, r_univariatenormal, r_multivariatenormal
 from tensorflow.keras.optimizers import Optimizer as KerasOptimizer
 from nevergrad.optimization import Optimizer as NevergradOptimizer
-from algorithm.deep.utils import is_keras_optimizer, is_nevergrad_optimizer
+from algorithm.deep.utils.tf import is_keras_optimizer, is_nevergrad_optimizer
 
 
 class ResNetBlock(keras.layers.Layer):
