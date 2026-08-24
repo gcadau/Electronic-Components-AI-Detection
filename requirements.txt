@@ -1,3 +1,5 @@
+# Default environment: TensorFlow backend (algorithm/*/tf/, interface/). 
+
 absl-py==2.1.0
 astunparse==1.6.3
 bayesian-optimization==1.4.3
@@ -62,3 +64,18 @@ urllib3==2.0.7
 Werkzeug==2.2.3
 wrapt==1.16.0
 zipp==3.15.0
+
+
+# The repository also ships a PyTorch implementation of the same modules
+# (algorithm/*/pt/).
+# If you want it, install it in a separate environment.
+
+bayesian-optimization==1.4.3
+cma==3.3.0
+matplotlib==3.5.3
+nevergrad==0.8.0
+numpy==1.21.6
+Pillow==9.5.0
+torch==1.13.1
+torchvision==0.14.1
+typing_extensions==4.7.1
